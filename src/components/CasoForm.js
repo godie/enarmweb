@@ -72,7 +72,7 @@ let proccessQuestions = (questions, onChangeAnswer, onChangeQuestion,deleteQuest
               </div>
             </div>
               <div className={"input-field col s8 offset-s1 "+(answer.is_correct ? 'show' : 'hide')}>
-                <textarea onChange={(event) => onChangeAnswer(questionIndex,answerIndex,'description',event)} className="materialize-textarea z-depth-1" name="description" id={'answer-description'+keyId} value={description} />
+                <textarea onChange={(event) =>  (questionIndex,answerIndex,'description',event)} className="materialize-textarea z-depth-1" name="description" id={'answer-description'+keyId} value={description} />
                 <label>¿Por que es correcta?</label>
               </div>
 
