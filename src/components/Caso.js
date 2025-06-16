@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 //import FacebookProvider, { Comments } from 'react-facebook';
 import ExamService from "../services/ExamService";
@@ -9,73 +9,55 @@ import "sweetalert2/dist/sweetalert2.css";
 import { withRouter } from 'react-router-dom';
 import { alertError } from "../services/AlertService";
 
-class Caso extends Component {
-  constructor(props) {
-    super(props);
-    var clinicCaseId = this.props.clinicCaseId;
+const Caso = (props) => {
+  const { clinicCaseId, history } = props;
 
-    this.state = {
-      next: 2,
-      current: clinicCaseId,
-      prev: 0,
-      data: [],
-      caso_clinico: "",
-      selectedAnswers: [],
-      goNext: false,
-      width: 300,
-      height: 80,
-      showAnswers: false,
-    };
-    this.handleSelectOption = this.handleSelectOption.bind(this);
-  }
+  const [next, setNext] = useState(2);
+  const [current, setCurrent] = useState(clinicCaseId);
+  const [prev, setPrev] = useState(0);
+  const [data, setData] = useState([]);
+  const [casoClinico, setCasoClinico] = useState("");
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [goNext, setGoNext] = useState(false);
+  const [width, setWidth] = useState(300); // Still included, as per analysis
+  const [height, setHeight] = useState(80); // Still included, as per analysis
+  const [showAnswers, setShowAnswers] = useState(false);
+  const [showAlert, setShowAlert] = useState(false); // Added for SweetAlert
 
-  handleSelectOption(questionIndex, answerIndex, changeEvent) {
-    let selectedAnswers = this.state.selectedAnswers;
-    let data = this.state.data;
-    selectedAnswers[questionIndex] = data[questionIndex].answers[answerIndex];
+  const handleSelectOption = (questionIndex, answerIndex, changeEvent) => {
+    let newSelectedAnswers = [...selectedAnswers];
+    let currentData = data;
+    newSelectedAnswers[questionIndex] = currentData[questionIndex].answers[answerIndex];
 
-    this.setState({
-      selectedAnswers: selectedAnswers,
-    });
-  }
+    setSelectedAnswers(newSelectedAnswers);
+  };
 
-  componentDidMount() {
-    var clinicCaseId = this.props.clinicCaseId;
-    this.loadPreguntas(clinicCaseId);
-  }
+  // componentDidMount and componentWillReceiveProps will be replaced by useEffect
 
-  componentWillReceiveProps(nextProps) {
-    var clinicCaseId = nextProps.clinicCaseId;
-    //console.log(nextProps);
-    this.loadPreguntas(clinicCaseId);
-  }
-
-  checkAnswers(e) {
+  const checkAnswers = (e) => {
     e.preventDefault();
-    if (this.state.goNext) {
-      this.setState({ goNext: false, showAnswers: false });
-      const { history } = this.props;
-      history.push("/caso/" + this.state.next);
+    if (goNext) {
+      setGoNext(false);
+      setShowAnswers(false);
+      history.push("/caso/" + next);
     } else {
-      let selectedAnswers = this.state.selectedAnswers;
-      let goNext = true;
-      for (let selectedAnswer of selectedAnswers) {
+      let currentSelectedAnswers = selectedAnswers;
+      let shouldGoNext = true;
+      for (let selectedAnswer of currentSelectedAnswers) {
         if (selectedAnswer.id === 0) {
-          goNext = false;
+          shouldGoNext = false;
         }
       }
-      if (goNext) {
-        this.sendAnswers(selectedAnswers);
+      if (shouldGoNext) {
+        sendAnswers(currentSelectedAnswers);
       }
-      this.setState({
-        goNext: goNext,
-        showAnswers: goNext,
-        showAlert: !goNext,
-      });
+      setGoNext(shouldGoNext);
+      setShowAnswers(shouldGoNext);
+      setShowAlert(!shouldGoNext);
     }
-  }
+  };
 
-  sendAnswers(answers) {
+  const sendAnswers = (answers) => {
     let fbUser = JSON.parse(Auth.getFacebookUser());
     let playerAnswers = { facebook_id: fbUser.facebook_id, player_answers: [] };
     for (let answer of answers) {
@@ -91,89 +73,91 @@ class Caso extends Component {
       .catch((error) => {
         console.log("tronadera", error);
       });
-  }
+  };
 
-  loadPreguntas(clinicCaseId) {
-    if (clinicCaseId > 40) {
-      clinicCaseId = 1;
+  const loadPreguntas = (currentClinicCaseId) => {
+    let caseIdToLoad = currentClinicCaseId;
+    if (caseIdToLoad > 40) {
+      caseIdToLoad = 1;
     }
-    var next = parseInt(clinicCaseId) + 1;
-    var prev = parseInt(clinicCaseId) - 1;
+    var newNext = parseInt(caseIdToLoad) + 1;
+    var newPrev = parseInt(caseIdToLoad) - 1;
 
-    this.setState({ current: clinicCaseId, next: next, prev: prev });
+    setCurrent(caseIdToLoad);
+    setNext(newNext);
+    setPrev(newPrev);
 
-    ExamService.getQuestions(clinicCaseId)
+    ExamService.getQuestions(caseIdToLoad)
       .then((response) => {
-        //  console.log(response);
-        var data = response.data;
-        if(data.length === 0){
+        var responseData = response.data;
+        if(responseData.length === 0){
           alertError('Opps', 'No Se encontraron mas preguntas!');
           return;
         }
-        var nombre = data[0].clinical_case.description;
-        var selectedAnswers = [];
-        for (var i = 0; i < data.length; i++) {
-          selectedAnswers.push({ id: 0 });
+        var nombre = responseData[0].clinical_case.description;
+        var initialSelectedAnswers = [];
+        for (var i = 0; i < responseData.length; i++) {
+          initialSelectedAnswers.push({ id: 0 });
         }
 
-        this.setState({
-          data: response.data,
-          selectedAnswers: selectedAnswers,
-        });
-        this.setState({ caso_clinico: nombre });
+        setData(responseData);
+        setSelectedAnswers(initialSelectedAnswers);
+        setCasoClinico(nombre);
       })
       .catch((error) => {
         console.log("OCurrio un error", error);
       });
-  }
+  };
 
-  render() {
-    var preguntas = this.state.data.map((pregunta, index) => {
-      return (
-        <Pregunta
-          key={index}
-          index={index}
-          description={pregunta.text}
-          answers={pregunta.answers}
-          selectedAnswer={this.state.selectedAnswers[index]}
-          handleSelectOption={this.handleSelectOption}
-          showCorrectAnswer={this.state.showAnswers}
-        />
-      );
-    });
+  useEffect(() => {
+    loadPreguntas(clinicCaseId);
+  }, [clinicCaseId]); // Runs on mount and when clinicCaseId changes
 
+  var preguntas = data.map((pregunta, index) => {
     return (
-      <div className="col s12 m12 l12 white">
-        <div className="col s12 m9 l9 offset-m1 offset-l1">
-          <h6>Caso Clinico:</h6>
-          <p>{this.state.caso_clinico}</p>
-        </div>
-        {preguntas}
-        <div className="row">
-          <div className="col offset-s3 offset-m4 offset-l8">
-            <button
-              onClick={this.checkAnswers.bind(this)}
-              className="waves-effect btn"
-            >
-              <i className="material-icons right">navigate_next</i>Siguiente
-            </button>
-          </div>
-        </div>
-        <SweetAlert
-          show={this.state.showAlert}
-          title="Espera.."
-          text="No has respondido todas las preguntas, respondelas para poder continuar"
-          type="warning"
-          onConfirm={() => this.setState({ showAlert: false })}
-        />
-      </div>
+      <Pregunta
+        key={index}
+        index={index}
+        description={pregunta.text}
+        answers={pregunta.answers}
+        selectedAnswer={selectedAnswers[index]}
+        handleSelectOption={handleSelectOption}
+        showCorrectAnswer={showAnswers}
+      />
     );
-  }
-}
+  });
+
+  return (
+    <div className="col s12 m12 l12 white">
+      <div className="col s12 m9 l9 offset-m1 offset-l1">
+        <h6>Caso Clinico:</h6>
+        <p>{casoClinico}</p>
+      </div>
+      {preguntas}
+      <div className="row">
+        <div className="col offset-s3 offset-m4 offset-l8">
+          <button
+            onClick={checkAnswers}
+            className="waves-effect btn"
+          >
+            <i className="material-icons right">navigate_next</i>Siguiente
+          </button>
+        </div>
+      </div>
+      <SweetAlert
+        show={showAlert}
+        title="Espera.."
+        text="No has respondido todas las preguntas, respondelas para poder continuar"
+        type="warning"
+        onConfirm={() => setShowAlert(false)}
+      />
+    </div>
+  );
+};
 
 Caso.propTypes = {
   clinicCaseId: PropTypes.number,
-  router: PropTypes.object,
+  history: PropTypes.object, // history is passed by withRouter
 };
 
 export default withRouter(Caso);

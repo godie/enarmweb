@@ -1,6 +1,6 @@
 // src/components/CasoTable.js
-import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
 import ExamService from "../services/ExamService";
 import EnarmUtil from "../modules/EnarmUtil";
 import Util from "../commons/Util";
@@ -13,150 +13,139 @@ import {
   CollectionItem,
   Col,
   Icon,
-  Button
+  Button,
 } from "react-materialize";
 
-class CasoTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.itemsPerPage = 10;
-    const pageParam = parseInt(props.match?.params.page, 10);
-    this.state = {
-      data: null,
-      total_cases: 0,
-      categories: [],
-      page: !isNaN(pageParam) ? pageParam : 1,
-    };
-    this.nextPage = this.nextPage.bind(this);
-  }
+const ITEMS_PER_PAGE = 10;
 
-  componentDidMount() {
-    this.loadData(this.state.page);
-    this.loadCategories();
-  }
+const CasoTable = () => {
+  const history = useHistory();
+  const { page: pageParam } = useParams();
 
-  componentDidUpdate(prevProps) {
-    const prevPage = parseInt(prevProps.match?.params.page, 10) || 1;
-    const currPage = parseInt(this.props.match?.params.page, 10) || 1;
-    if (prevPage !== currPage) {
-      this.setState({ page: currPage }, () => this.loadData(currPage));
-    }
-  }
+  const [casesData, setCasesData] = useState(null);
+  const [totalCases, setTotalCases] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  loadData(page) {
-    this.setState({ data: null }); // muestra Preloader
-    ExamService.getExams(page)
-      .then((response) => {
-        this.setState({
-          data: response.data.clinical_cases,
-          total_cases: response.data.total_entries,
-        });
-      })
-      .catch((error) => console.error("Error loading exams", error));
-  }
+  useEffect(() => {
+    const pageNum = parseInt(pageParam, 10);
+    setCurrentPage(!isNaN(pageNum) && pageNum > 0 ? pageNum : 1);
+  }, [pageParam]);
 
-  loadCategories() {
-    const cached = EnarmUtil.getCategories();
-    if (cached === null) {
+  useEffect(() => {
+    // Load categories
+    const cachedCategories = EnarmUtil.getCategories();
+    if (cachedCategories === null) {
       ExamService.loadCategories()
         .then((response) => {
           EnarmUtil.setCategories(JSON.stringify(response.data));
-          this.setState({ categories: response.data });
+          setCategories(response.data);
         })
         .catch((error) => console.error("Error loading categories", error));
     } else {
-      this.setState({ categories: JSON.parse(cached) });
+      setCategories(JSON.parse(cachedCategories));
     }
-  }
+  }, []); // Runs once on mount
 
-  changeCategory(caso, index, event) {
+  useEffect(() => {
+    // Load cases data
+    setCasesData(null); // Show Preloader
+    ExamService.getExams(currentPage)
+      .then((response) => {
+        setCasesData(response.data.clinical_cases);
+        setTotalCases(response.data.total_entries);
+      })
+      .catch((error) => console.error("Error loading exams", error));
+  }, [currentPage]);
+
+  const changeCategory = (caso, index, event) => {
     const categoryId = parseInt(event.target.value, 10);
     const updatedCaso = { ...caso, category_id: categoryId };
+
     ExamService.saveCaso(updatedCaso)
       .then((response) => {
         Util.showToast("Se actualizo la especialidad");
-        const data = [...this.state.data];
-        data[index] = response.data;
-        this.setState({ data });
+        setCasesData((prevCasesData) => {
+          const newData = [...prevCasesData];
+          newData[index] = response.data;
+          return newData;
+        });
       })
       .catch((error) => {
         console.error("Error updating case", error);
         Util.showToast("No se pudo actualizar la especialidad");
       });
+  };
+
+  const handlePageClick = (newPage) => {
+    if (newPage === currentPage) return;
+    history.push(`/dashboard/casos/${newPage}`);
+  };
+
+  if (casesData === null) {
+    return <Preloader size="big" />;
   }
 
-  nextPage(newPage) {
-    if(newPage === this.state.page) return
-    // ajusta la URL según tu ruta: aquí asume /casos/:page
-    this.props.history.push(`/dashboard/casos/${newPage}`);
-  }
+  const numPages = Math.ceil(totalCases / ITEMS_PER_PAGE);
 
-  render() {
-    const { data, total_cases, categories, page } = this.state;
+  const especialidadesOptions = categories.map((esp) => (
+    <option key={esp.id} value={esp.id}>
+      {esp.name}
+    </option>
+  ));
 
-    if (data === null) {
-      return <Preloader size="big" />;
-    }
+  const casosRows = casesData.map((caso, idx) => (
+    <CollectionItem key={caso.id}>
+      <Row>
+        <Col m={4} s={12}>
+          <Select
+            s={12}
+            label="Especialidad"
+            value={caso.category_id?.toString() || "0"}
+            onChange={(e) => changeCategory(caso, idx, e)}
+            // Ensure Materialize Select is re-initialized if necessary, or value prop is enough
+          >
+            <option value="0">Sin Especialidad</option>
+            {especialidadesOptions}
+          </Select>
+        </Col>
+        <Col m={7} s={12}>
+          {caso.description}
+        </Col>
+        <Link to={`/dashboard/edit/caso/${caso.id}`} className="secondary-content">
+          <Button
+            tooltip="Editar Caso clinico"
+            className="btn-flat"
+            icon={<Icon>edit</Icon>}
+          />
+        </Link>
+      </Row>
+    </CollectionItem>
+  ));
 
-    // número total de páginas
-    const numPages = Math.ceil(total_cases / this.itemsPerPage);
+  return (
+    <Collection header={`Casos Clinicos (${totalCases})`}>
+      <Pagination
+        activePage={currentPage}
+        items={numPages}
+        leftBtn={<Icon>chevron_left</Icon>}
+        rightBtn={<Icon>chevron_right</Icon>}
+        maxButtons={8}
+        onSelect={handlePageClick}
+        className="white" // Added white class as in original
+      />
+      {casosRows}
+      <Pagination
+        activePage={currentPage}
+        items={numPages}
+        leftBtn={<Icon>chevron_left</Icon>}
+        rightBtn={<Icon>chevron_right</Icon>}
+        maxButtons={8}
+        onSelect={handlePageClick}
+        className="white" // Added white class as in original
+      />
+    </Collection>
+  );
+};
 
-    // opciones de Select
-    const especialidadesOptions = categories.map((esp) => (
-      <option key={esp.id} value={esp.id}>
-        {esp.name}
-      </option>
-    ));
-
-    // filas de casos
-    const casos = data.map((caso, idx) => (
-      <CollectionItem key={caso.id}>
-        <Row>
-          <Col m={4} s={12}>
-            <Select
-              s={12}
-              label="Especialidad"
-              value={caso.category_id?.toString() || "0"}
-              onChange={(e) => this.changeCategory(caso, idx, e)}
-            >
-              <option value="0">Sin Especialidad</option>
-              {especialidadesOptions}
-            </Select>
-          </Col>
-          <Col m={7} s={12}>
-            {caso.description}
-          </Col>
-          <Link to={`/dashboard/edit/caso/${caso.id}`} className="secondary-content">
-          <Button 
-          tooltip="Editar Caso clinico"
-          className="btn-flat"
-          icon={<Icon>edit</Icon>}
-          />    
-          </Link>
-        </Row>
-      </CollectionItem>
-    ));
-
-    return (
-      <Collection header={`Casos Clinicos (${total_cases})`}>
-        <Pagination
-          activePage={page}
-          items={numPages}
-          maxButtons={8}
-          onSelect={this.nextPage}
-          className="white"
-        />
-        {casos}
-        <Pagination
-          activePage={page}
-          items={numPages}
-          maxButtons={8}
-          onSelect={this.nextPage}
-          className="white"
-        />
-      </Collection>
-    );
-  }
-}
-
-export default withRouter(CasoTable);
+export default CasoTable; // Removed withRouter
