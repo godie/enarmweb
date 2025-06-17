@@ -11,7 +11,7 @@ const Pregunta = ({
 }) => {
   const answerItems = answerList.map((answer, ansIndex) => {
     let extraClass = "";
-    let checked = selectedAnswer && selectedAnswer.id === answer.id; // Ensure selectedAnswer exists
+    let checked = !!(selectedAnswer && selectedAnswer.id === answer.id);; // Ensure selectedAnswer exists
     let answerIcon = "";
     let answerFeedbackDescription = ""; // Renamed to avoid conflict with questionDescription
 
@@ -22,15 +22,16 @@ const Pregunta = ({
           answerFeedbackDescription = <p className="feedback-description">{answer.description}</p>;
         }
       }
-      if (checked) {
-        if (!answer.is_correct) {
+
+        if (checked &&!answer.is_correct) {
           extraClass = "red lighten-4"; // Lighter red
           answerIcon = (
             <a href="#!" className="secondary-content black-text">
               <i className="material-icons">highlight_off</i>
             </a>
           );
-        } else {
+        }  
+        if(checked && answer.is_correct) {
           // If checked and correct, extraClass would already be green
           // Ensure green class takes precedence or combine if needed
           extraClass = "green lighten-4";
@@ -40,7 +41,7 @@ const Pregunta = ({
             </a>
           );
         }
-      }
+      
     }
 
     return (
@@ -78,11 +79,11 @@ const Pregunta = ({
 };
 
 // Default props defined via default parameters in function signature.
-// Pregunta.defaultProps = {
-//   showCorrectAnswer: false, // This is now handled by default param
-//   answers: [], // Added for safety, though also handled by default param
-//   description: "Pregunta" // Added for safety, also handled by default param
-// };
+Pregunta.defaultProps = {
+  showCorrectAnswer: false, // This is now handled by default param
+  answers: [], // Added for safety, though also handled by default param
+  description: "Pregunta" // Added for safety, also handled by default param
+};
 
 Pregunta.propTypes = {
   answers: PropTypes.array,
