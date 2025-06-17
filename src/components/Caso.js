@@ -13,14 +13,10 @@ const Caso = (props) => {
   const { clinicCaseId, history } = props;
 
   const [next, setNext] = useState(2);
-  const [current, setCurrent] = useState(clinicCaseId);
-  const [prev, setPrev] = useState(0);
   const [data, setData] = useState([]);
   const [casoClinico, setCasoClinico] = useState("");
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [goNext, setGoNext] = useState(false);
-  const [width, setWidth] = useState(300); // Still included, as per analysis
-  const [height, setHeight] = useState(80); // Still included, as per analysis
   const [showAnswers, setShowAnswers] = useState(false);
   const [showAlert, setShowAlert] = useState(false); // Added for SweetAlert
 
@@ -77,15 +73,9 @@ const Caso = (props) => {
 
   const loadPreguntas = (currentClinicCaseId) => {
     let caseIdToLoad = currentClinicCaseId;
-    if (caseIdToLoad > 40) {
-      caseIdToLoad = 1;
-    }
     var newNext = parseInt(caseIdToLoad) + 1;
-    var newPrev = parseInt(caseIdToLoad) - 1;
-
-    setCurrent(caseIdToLoad);
+  
     setNext(newNext);
-    setPrev(newPrev);
 
     ExamService.getQuestions(caseIdToLoad)
       .then((response) => {
@@ -148,7 +138,7 @@ const Caso = (props) => {
         show={showAlert}
         title="Espera.."
         text="No has respondido todas las preguntas, respondelas para poder continuar"
-        type="warning"
+        type="warning"xw
         onConfirm={() => setShowAlert(false)}
       />
     </div>

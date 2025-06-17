@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import CasoForm from "./CasoForm";
 import ExamService from "../services/ExamService";
-import Util from "../commons/Util";
 import Materialize from "materialize-css";
-import SweetAlert from "sweetalert2-react";
 import { useHistory, useParams, withRouter } from 'react-router-dom'; // Added withRouter for now, can be removed if props are not used from it directly.
 
 import "sweetalert2/dist/sweetalert2.css";
-// import { createBrowserHistory } from "history"; // Not needed
+import { alertError, alertSuccess } from "../services/AlertService";
 
 const CasoContainer = (props) => { // props might still be needed if withRouter provides something essential not covered by hooks
   const history = useHistory();
@@ -15,15 +13,6 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
   const currentIdRef = useRef(null);
 
   // State initialization
-  const [clinicCaseId, setClinicCaseId] = useState(0);
-  const [errors, setErrors] = useState({});
-  // const [showAlert, setShowAlert] = useState(false); // Replaced by alert.show
-  const [alert, setAlertState] = useState({ // Renamed setAlert to avoid conflict with window.alert
-    title: "",
-    type: "info",
-    message: "",
-    show: false,
-  });
   const [caso, setCaso] = useState({
     description: "Un caso clinico nuevo",
     questions: [],
@@ -36,21 +25,11 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
     let clinicalCaseToSave = prepareClinicalCase(caso);
     ExamService.saveCaso(clinicalCaseToSave)
       .then((response) => {
-        setAlertState({
-          title: "Caso Clinico",
-          message: "Se ha guardado correctamente",
-          type: "success",
-          show: true,
-        });
+        alertSuccess('Caso Clinico', 'Se ha guardado correctamente');
       })
       .catch((error) => {
         console.log("ocurrio un erro", error);
-        setAlertState({
-          title: "Caso Clinico",
-          message: "Ha ocurrido un error, no se pudo guardar",
-          type: "error",
-          show: true,
-        });
+        alertError('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
       });
   };
 
@@ -213,16 +192,16 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
         .then((response) => {
           setCaso(response.data);
           // Ensure Materialize updates fields after data is loaded
-          setTimeout(() => Materialize.updateTextFields(), 0);
+          setTimeout(() => Materialize.updateTextFields(), 10);
         })
         .catch((error) => {
           console.log("OCurrio un error loading caso", error);
-          setAlertState({ title: "Error", message: "No se pudo cargar el caso clínico.", type: "error", show: true });
+          alertError('Error','No se pudo cargar el caso clínico.' );
         });
     } else {
       // Reset form for new case
       setCaso({ description: "Un caso clinico nuevo", questions: [] });
-       setTimeout(() => Materialize.updateTextFields(), 0);
+       setTimeout(() => Materialize.updateTextFields(), 10);
     }
   }, [identificador]); // Depends on the route parameter
 
@@ -244,7 +223,6 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
       <CasoForm
         onSubmit={processForm}
         onChange={changeCaso}
-        errors={errors}
         caso={caso}
         addQuestion={addQuestion}
         deleteQuestion={deleteQuestion}
@@ -253,13 +231,6 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
         addAnswer={addAnswer}
         deleteAnswer={deleteAnswer}
         onCancel={onCancel}
-      />
-      <SweetAlert
-        show={alert.show}
-        title={alert.title}
-        type={alert.type}
-        text={alert.message}
-        onConfirm={() => setAlertState(prevAlert => ({ ...prevAlert, show: false }))}
       />
     </div>
   );
