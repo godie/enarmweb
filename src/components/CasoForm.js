@@ -227,7 +227,6 @@ CasoForm.propTypes = {
   onChangeAnswer: PropTypes.func.isRequired,
   onChangeQuestion: PropTypes.func.isRequired,
   deleteQuestion: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
   caso: PropTypes.object.isRequired,
   addQuestion: PropTypes.func,
   addAnswer: PropTypes.func,
