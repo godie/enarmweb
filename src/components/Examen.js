@@ -48,7 +48,6 @@ const Examen = () => {
     <div className="s12 m12 l6 white">
       <Caso
         clinicCaseId={clinicCaseId}
-        // router prop removed; Caso component (if refactored or using withRouter) should handle its own router needs
       />
       <div className="row">
         <div className="col s12 m10 l8">

@@ -26,6 +26,8 @@ const CasoTable = () => {
   const [totalCases, setTotalCases] = useState(0);
   const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loadingError, setLoadingError] = useState(false);
+  const [perPage, setPerpage] = useState(ITEMS_PER_PAGE);
 
   useEffect(() => {
     const pageNum = parseInt(pageParam, 10);
@@ -55,7 +57,13 @@ const CasoTable = () => {
         setCasesData(response.data.clinical_cases);
         setTotalCases(response.data.total_entries);
       })
-      .catch((error) => console.error("Error loading exams", error));
+      .catch((error) => {
+        setCasesData([]);
+        setTotalCases(0);
+        setLoadingError(true);
+        console.error("Error loading exams", error)
+        Util.showToast("Error al cargar los casos clínicos.");
+      });
   }, [currentPage]);
 
   const changeCategory = (caso, index, event) => {
@@ -82,11 +90,7 @@ const CasoTable = () => {
     history.push(`/dashboard/casos/${newPage}`);
   };
 
-  if (casesData === null) {
-    return <Preloader size="big" />;
-  }
-
-  const numPages = Math.ceil(totalCases / ITEMS_PER_PAGE);
+  const numPages = Math.ceil(totalCases / perPage);
 
   const especialidadesOptions = categories.map((esp) => (
     <option key={esp.id} value={esp.id}>
@@ -94,7 +98,7 @@ const CasoTable = () => {
     </option>
   ));
 
-  const casosRows = casesData.map((caso, idx) => (
+  const casosRows = casesData?.map((caso, idx) => (
     <CollectionItem key={caso.id}>
       <Row>
         <Col m={4} s={12}>
@@ -123,6 +127,16 @@ const CasoTable = () => {
     </CollectionItem>
   ));
 
+  if (casesData === null && !loadingError) {
+    return <div role="progressbar"><Preloader size="big" /></div>;
+  }
+
+  if(loadingError){
+    return (<CollectionItem className="center-align red-text text-darken-4">
+          Error al cargar los casos. Intente de nuevo más tarde.
+        </CollectionItem>)
+  }
+
   return (
     <Collection header={`Casos Clinicos (${totalCases})`}>
       <Pagination
@@ -134,6 +148,11 @@ const CasoTable = () => {
         onSelect={handlePageClick}
         className="white" // Added white class as in original
       />
+      {casesData !== null && !loadingError && casesData.length === 0 && ( // Show "No data" message if loaded, no error, and empty
+        <CollectionItem className="center-align grey-text text-darken-1">
+          No se encontraron casos clínicos.
+        </CollectionItem>
+      )}
       {casosRows}
       <Pagination
         activePage={currentPage}

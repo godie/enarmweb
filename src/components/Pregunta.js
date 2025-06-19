@@ -31,7 +31,7 @@ const Pregunta = ({
             </a>
           );
         }  
-        if(checked && answer.is_correct) {
+        if(checked && answer.is_correct){
           // If checked and correct, extraClass would already be green
           // Ensure green class takes precedence or combine if needed
           extraClass = "green lighten-4";
@@ -48,6 +48,7 @@ const Pregunta = ({
       <li className={`collection-item ${extraClass}`} key={ansIndex}>
         <label htmlFor={`${questionDescription}-${answer.id}`} className="black-text">
           <input
+            aria-label={answer.text}
             type="radio"
             value={answer.id} // Corrected: use answer.id for value
             name={questionDescription} // Group radio buttons by question description

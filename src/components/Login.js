@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import SweetAlert from "sweetalert2-react";
-import "sweetalert2/dist/sweetalert2.css";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
 import { Button, Col, Row, TextInput } from "react-materialize";
@@ -11,7 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   let showAlert = useRef(false);
   const history = useHistory();
-  const { from } = useLocation().state || { from: { pathname: "/" } };
+  const { from } = useLocation().state || { from: { pathname: "/dashboard" } };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

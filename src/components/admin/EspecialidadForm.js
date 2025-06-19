@@ -36,7 +36,7 @@ export default function EspecialidadForm(props){
         e.preventDefault();
         console.log('sending form.')
         ExamService.saveCategory(formData)
-        .then((response) => alertSuccess('Especialidad!', 'creada correctamente').then(browserHistory.goBack()))
+        .then((response) => alertSuccess('Especialidad!', 'creada correctamente').then(() => browserHistory.goBack()))
         .catch((err)=> alertError('ops!', 'ocurrio un error'));
         
     }

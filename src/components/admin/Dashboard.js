@@ -1,5 +1,5 @@
 import React from "react";
-import Navi from "./Navi";
+import Navi from "../Navi";
 import { SideNav, SideNavItem } from "react-materialize";
 
 export default function Dashboard(props){
@@ -13,6 +13,7 @@ export default function Dashboard(props){
             <SideNavItem userView user={{name: 'diego mendoza'}} />
             <SideNavItem href="#/dashboard/casos/1">Casos clinicos</SideNavItem>
             <SideNavItem href="#/dashboard/especialidades">Especialidades</SideNavItem>
+            <SideNavItem href="#/dashboard/logout">Salir</SideNavItem>
           </SideNav>
         </header>
         <main>
