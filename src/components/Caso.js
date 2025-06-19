@@ -6,7 +6,7 @@ import Pregunta from "./Pregunta";
 import Auth from "../modules/Auth";
 import SweetAlert from "sweetalert2-react";
 import { useHistory } from 'react-router-dom';
-import { alertError } from "../services/AlertService";
+import { alertError, alertSuccess } from "../services/AlertService";
 
 const Caso = (props) => {
   const { clinicCaseId } = props;
@@ -67,6 +67,7 @@ const Caso = (props) => {
         console.log("se guardaron las respuestas");
       })
       .catch((error) => {
+        alertError('Enarm simulator', 'Ocurrio un erro al guardar las respuestas');
         console.log("tronadera", error);
       });
   };

@@ -36,8 +36,9 @@ const CasoForm = ({
             name="description"
             id="description"
             value={caso.description}
+            label="Caso clinico" // Added label prop
           />
-          <label>Caso clinico</label>
+          {/* <label>Caso clinico</label> Removed external label */}
         </div>
       </Row>
       <Row>
@@ -154,6 +155,7 @@ let proccessQuestions = (
                 className="red"
                 waves="light"
                 tooltip="Borrar respuesta"
+                aria-label="Borrar respuesta" // Added aria-label
                 onClick={(event) =>
                   deleteAnswer(questionIndex, answerIndex, event)
                 }
@@ -164,7 +166,7 @@ let proccessQuestions = (
           <div
             className={
               "input-field col s8 offset-s1 " +
-              (answer.is_correct ? "show" : "hide")
+              (answer.is_correct && answer.description && answer.description.length > 0 ? "show" : "hide")
             }
           >
             <textarea
@@ -199,7 +201,7 @@ let proccessQuestions = (
             onClick={(event) => addAnswer(questionIndex, event)}
             floating
             tooltip="Agregar una respuesta"
-            
+            aria-label="Agregar una respuesta" // Added aria-label
             icon={<Icon>playlist_add</Icon>}
           ></Button>
         </div>
@@ -211,6 +213,7 @@ let proccessQuestions = (
             className="red darken-1"
             icon={<Icon>delete</Icon>}
             tooltip="Borrar Pregunta"
+            aria-label="Borrar Pregunta" // Added aria-label
           ></Button>
         </div>
         {answers}
