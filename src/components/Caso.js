@@ -5,12 +5,12 @@ import ExamService from "../services/ExamService";
 import Pregunta from "./Pregunta";
 import Auth from "../modules/Auth";
 import SweetAlert from "sweetalert2-react";
-import "sweetalert2/dist/sweetalert2.css";
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { alertError } from "../services/AlertService";
 
 const Caso = (props) => {
-  const { clinicCaseId, history } = props;
+  const { clinicCaseId } = props;
+  const history = useHistory();
 
   const [next, setNext] = useState(2);
   const [data, setData] = useState([]);
@@ -150,4 +150,4 @@ Caso.propTypes = {
   history: PropTypes.object, // history is passed by withRouter
 };
 
-export default withRouter(Caso);
+export default Caso;

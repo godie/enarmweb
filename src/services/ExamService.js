@@ -2,6 +2,8 @@ import axios from "axios";
 import BaseService from "./BaseService";
 import Auth from "../modules/Auth";
 
+axios.defaults.timeout = 10000;
+
 export default class ExamService {
   static getExams(page) {
     let token = `bearer ${Auth.getToken()}`;

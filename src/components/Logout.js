@@ -6,6 +6,14 @@ import Auth from "../modules/Auth";
 export default function Logout() {
   useEffect(() => {
     Auth.deauthenticateUser();
+    Auth.removeFacebookUser();
   }, []);
   return <Redirect to="/" />;
+}
+
+export function AdminLogout(){
+  useEffect(() => {
+    Auth.deauthenticateUser();
+  }, []);
+  return <Redirect to="/login" />;
 }

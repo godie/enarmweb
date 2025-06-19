@@ -34,7 +34,9 @@ const Profile = () => {
     }
   }
 
-  return <div className="section center">Nombre:{fbUser.name}</div>;
+  return <div className="section center">
+    Nombre:{fbUser.name}
+  </div>;
 };
 
 export default Profile;

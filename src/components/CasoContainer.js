@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import CasoForm from "./CasoForm";
 import ExamService from "../services/ExamService";
 import Materialize from "materialize-css";
-import { useHistory, useParams, withRouter } from 'react-router-dom'; // Added withRouter for now, can be removed if props are not used from it directly.
-
-import "sweetalert2/dist/sweetalert2.css";
+import { useHistory, useParams } from 'react-router-dom'; // Added withRouter for now, can be removed if props are not used from it directly.
 import { alertError, alertSuccess } from "../services/AlertService";
+
 
 const CasoContainer = (props) => { // props might still be needed if withRouter provides something essential not covered by hooks
   const history = useHistory();
@@ -25,10 +24,10 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
     let clinicalCaseToSave = prepareClinicalCase(caso);
     ExamService.saveCaso(clinicalCaseToSave)
       .then((response) => {
-        alertSuccess('Caso Clinico', 'Se ha guardado correctamente');
+        alertSuccess('Caso Clinico', 'Se ha guardado correctamente').then(() => history.goBack());
       })
       .catch((error) => {
-        console.log("ocurrio un erro", error);
+        console.error("ocurrio un erro", error);
         alertError('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
       });
   };
@@ -236,5 +235,5 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
   );
 };
 
-export default withRouter(CasoContainer); // Keep withRouter if props like location or match are used by CasoForm or needed for some other HOC interaction.
+export default CasoContainer; // Keep withRouter if props like location or match are used by CasoForm or needed for some other HOC interaction.
 // If not, it can be removed and props drilling can be managed or Context API used.

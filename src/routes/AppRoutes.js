@@ -6,13 +6,13 @@ import App from "../App";
 import Examen from "../components/Examen";
 import CasoTable from "../components/CasoTable";
 import CasoContainer from "../components/CasoContainer";
-import Dashboard from "../components/Dashboard";
+import { Dashboard } from "../components/admin";
 import Login from "../components/Login";
 import FacebookLoginContainer from "../components/facebook/FacebookLoginContainer";
 import Profile from "../components/Profile";
-import PrivateRoute from "../components/PrivateRoute";
+import PrivateRoute from './PrivateRoute';
 import FacebookRoute from "../components/facebook/FacebookRoute";
-import Logout from "../components/Logout";
+import Logout, {AdminLogout} from "../components/Logout";
 import Especialidades from '../components/admin/Especialidades';
 import { Button, Icon } from "react-materialize";
 import EspecialidadForm from "../components/admin/EspecialidadForm";
@@ -88,8 +88,9 @@ export default function AppRoutes() {
       />
 
       {/* — Login / Logout — */}
-      <Route path="/login" exact component={Login} />
+      <Route path="/admin" exact component={() => (<App><Login /></App>)} />
       <Route path="/logout" exact component={Logout} />
+      <Route path="/dashboard/logout" exact component={AdminLogout} />
 
       {/* — Routes protected by Facebook “loginfb” — */}
       <FacebookRoute
