@@ -1,7 +1,7 @@
 class Auth {
 
   static TOKEN_KEY = 'token';
-  static FB_USER_KEY = 'fbuser';
+  static FB_USER_KEY = 'fbUser';
 
   /**
    * Authenticate a user. Save a token string in Local Storage
@@ -40,7 +40,7 @@ class Auth {
   }
 
   static saveFacebookUser(fbuser){
-    localStorage.setItem(Auth.FB_USER_KEY,fbuser);
+    localStorage.setItem(Auth.FB_USER_KEY,JSON.stringify(fbuser));
   }
 
   static isFacebookUser(){
@@ -48,7 +48,8 @@ class Auth {
   }
 
   static getFacebookUser() {
-    return localStorage.getItem(Auth.FB_USER_KEY);
+    const fbUser = localStorage.getItem(Auth.FB_USER_KEY);
+    return fbUser ? JSON.parse(fbUser) : null;
   }
 
   static removeFacebookUser(){
