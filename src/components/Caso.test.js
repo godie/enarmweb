@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 import Caso from './Caso';
 import ExamService from '../services/ExamService';
 import Auth from '../modules/Auth';
-import { alertError } from '../services/AlertService';
+import { alertError, alertSuccess } from '../services/AlertService';
 
 // Mock dependencies
 jest.mock('../services/ExamService');
@@ -55,7 +55,6 @@ const mockQuestions = [
   {
     id: 1,
     text: 'Question 1 Text',
-    clinical_case: { description: 'Mock Case Description 1' },
     answers: [
       { id: 101, text: 'Answer 1.1', is_correct: true, question_id: 1, description: 'Correct one' },
       { id: 102, text: 'Answer 1.2', is_correct: false, question_id: 1, description: null },
@@ -64,13 +63,13 @@ const mockQuestions = [
   {
     id: 2,
     text: 'Question 2 Text',
-    clinical_case: { description: 'Mock Case Description 1' }, // usually same case for questions
     answers: [
       { id: 201, text: 'Answer 2.1', is_correct: false, question_id: 2, description: null },
       { id: 202, text: 'Answer 2.2', is_correct: true, question_id: 2, description: 'Correct choice here' },
     ],
   },
 ];
+const mockClinicalCase =  { description: 'Mock Case Description 1', questions: mockQuestions }
 
 // Helper function to render the component with common props
 const renderCaso = (clinicCaseId = 1, props = {}) => {
@@ -86,9 +85,10 @@ describe('Caso Component', () => {
 
     // Default mock implementations
     Auth.getFacebookUser.mockReturnValue(JSON.stringify(mockFbUser));
-    ExamService.getQuestions.mockResolvedValue({ data: mockQuestions });
+    ExamService.getQuestions.mockResolvedValue({ data: mockClinicalCase });
     ExamService.sendAnswers.mockResolvedValue({ data: {} }); // Default success response
     alertError.mockImplementation(() => {}); // Mock implementation for alertError
+    alertSuccess.mockImplementation(() => {}); // Mock implementation for alertSuccess
   });
 
   test('renders without crashing and displays static text', async () => {
@@ -97,7 +97,7 @@ describe('Caso Component', () => {
     await waitFor(() => expect(screen.getByText('Caso Clinico:')).toBeInTheDocument());
     expect(ExamService.getQuestions).toHaveBeenCalledWith(1);
     // Check for first question's case description (taken from the first question's clinical_case)
-    await waitFor(() => expect(screen.getByText(mockQuestions[0].clinical_case.description)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(mockClinicalCase.description)).toBeInTheDocument());
   });
 
   test('displays questions and answers', async () => {
@@ -165,8 +165,7 @@ describe('Caso Component', () => {
     fireEvent.click(siguienteButton);
 
     await waitFor(() => {
-      expect(screen.getByTestId('sweet-alert')).toBeInTheDocument();
-      expect(screen.getByText('Espera..')).toBeInTheDocument(); // Title of the alert
+      expect(alertError).toHaveBeenCalledWith('Espera', 'No has respondido todas las preguntas, respondelas para poder continuar');
     });
     expect(ExamService.sendAnswers).not.toHaveBeenCalled();
     expect(mockPush).not.toHaveBeenCalled();

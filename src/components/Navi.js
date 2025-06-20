@@ -19,6 +19,7 @@ const Navi = () => { // Removed props as it's not used
       Auth.removeFacebookUser();
       window.location.reload(); // This is generally an anti-pattern in React.
     }
+    logoutLink = <Link to="/logout" role="link">Salir</Link>;
   }
 
   return (

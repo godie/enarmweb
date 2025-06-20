@@ -21,6 +21,9 @@
   color: #09d3ac;
 }
 
-.dashboard header, main{
-  padding-left: 300px;
+@media only screen and (min-width: 993px) {
+  .dashboard header, main{
+    padding-left: 300px;
+  }
 }
+
