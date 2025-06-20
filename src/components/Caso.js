@@ -4,9 +4,8 @@ import PropTypes from "prop-types";
 import ExamService from "../services/ExamService";
 import Pregunta from "./Pregunta";
 import Auth from "../modules/Auth";
-import SweetAlert from "sweetalert2-react";
 import { useHistory } from 'react-router-dom';
-import { alertError, alertSuccess } from "../services/AlertService";
+import { alertError } from "../services/AlertService";
 
 const Caso = (props) => {
   const { clinicCaseId } = props;
@@ -18,7 +17,6 @@ const Caso = (props) => {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [goNext, setGoNext] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
-  const [showAlert, setShowAlert] = useState(false); // Added for SweetAlert
 
   const handleSelectOption = (questionIndex, answerIndex, changeEvent) => {
     let newSelectedAnswers = [...selectedAnswers];
@@ -36,20 +34,22 @@ const Caso = (props) => {
       setGoNext(false);
       setShowAnswers(false);
       history.push("/caso/" + next);
+      return;
     } else {
-      let currentSelectedAnswers = selectedAnswers;
       let shouldGoNext = true;
-      for (let selectedAnswer of currentSelectedAnswers) {
-        if (selectedAnswer.id === 0) {
-          shouldGoNext = false;
-        }
+      const unansweredQuestions = selectedAnswers.filter(answer => !answer.id || answer.id === 0);
+      if(unansweredQuestions.length > 0){
+        shouldGoNext = false;
       }
+
       if (shouldGoNext) {
-        sendAnswers(currentSelectedAnswers);
+        sendAnswers(selectedAnswers);
       }
       setGoNext(shouldGoNext);
       setShowAnswers(shouldGoNext);
-      setShowAlert(!shouldGoNext);
+      if(!shouldGoNext){
+        alertError('Espera', 'No has respondido todas las preguntas, respondelas para poder continuar');
+      }
     }
   };
 
@@ -85,15 +85,16 @@ const Caso = (props) => {
           alertError('Opps', 'No Se encontraron mas preguntas!');
           return;
         }
-        var nombre = responseData[0].clinical_case.description;
+      
+        const {questions, description} = responseData;
         var initialSelectedAnswers = [];
-        for (var i = 0; i < responseData.length; i++) {
+        for (var i = 0; i < questions.length; i++) {
           initialSelectedAnswers.push({ id: 0 });
         }
 
-        setData(responseData);
+        setData(questions);
         setSelectedAnswers(initialSelectedAnswers);
-        setCasoClinico(nombre);
+        setCasoClinico(description);
       })
       .catch((error) => {
         console.log("OCurrio un error", error);
@@ -135,13 +136,6 @@ const Caso = (props) => {
           </button>
         </div>
       </div>
-      <SweetAlert
-        show={showAlert}
-        title="Espera.."
-        text="No has respondido todas las preguntas, respondelas para poder continuar"
-        type="warning"xw
-        onConfirm={() => setShowAlert(false)}
-      />
     </div>
   );
 };

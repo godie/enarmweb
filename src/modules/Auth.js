@@ -1,6 +1,7 @@
 class Auth {
 
   static TOKEN_KEY = 'token';
+  static PLAYER_TOKEN = 'player_token'
   static FB_USER_KEY = 'fbUser';
 
   /**
@@ -12,6 +13,10 @@ class Auth {
     localStorage.setItem(Auth.TOKEN_KEY, token);
   }
 
+  static authenticatePlayer(token){
+    localStorage.setItem(Auth.PLAYER_TOKEN, token);
+  }
+
   /**
    * Check if a user is authenticated - check if a token is saved in Local Storage
    *
@@ -19,6 +24,15 @@ class Auth {
    */
   static isUserAuthenticated() {
     return localStorage.getItem(Auth.TOKEN_KEY) !== null;
+  }
+
+  /**
+   * Check if a user is authenticated - check if a token is saved in Local Storage
+   *
+   * @returns {boolean}
+   */
+  static isPlayerAuthenticated() {
+    return localStorage.getItem(Auth.PLAYER_TOKEN) !== null;
   }
 
   /**
@@ -36,7 +50,7 @@ class Auth {
    */
 
   static getToken() {
-    return localStorage.getItem(Auth.TOKEN_KEY);
+    return localStorage.getItem(Auth.TOKEN_KEY) || localStorage.getItem(Auth.PLAYER_TOKEN) ;
   }
 
   static saveFacebookUser(fbuser){

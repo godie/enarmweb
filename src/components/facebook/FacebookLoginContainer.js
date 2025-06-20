@@ -22,7 +22,8 @@ export default function FacebookLoginContainer() {
           // Persist in localStorage and backend
           Auth.saveFacebookUser(JSON.stringify(params));
           UserService.createPlayer(params)
-            .then(() => {
+            .then((response) => {
+              Auth.authenticatePlayer(response.data.token);
               history.replace("/");
             })
             .catch((err) => console.error("UserService error:", err));
