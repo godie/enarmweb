@@ -7,8 +7,12 @@ jest.mock('./App.css', () => ({}));
 
 
 const M = {
+     updateTextFields: jest.fn(),
      FormSelect: {
         init: jest.fn(),
+     },
+     Modal: {
+      init: jest.fn()
      },
      Tooltip: {
         init: jest.fn()

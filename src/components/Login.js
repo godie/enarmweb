@@ -4,11 +4,11 @@ import SweetAlert from "sweetalert2-react";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
 import { Button, Col, Row, TextInput } from "react-materialize";
+import { alertError } from "../services/AlertService";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  let showAlert = useRef(false);
   const history = useHistory();
   const { from } = useLocation().state || { from: { pathname: "/dashboard" } };
 
@@ -23,7 +23,7 @@ export default function Login() {
       history.replace(from);
     } catch (err) {
       console.error(err);
-      showAlert.current = true;
+      alertError('Error!', 'Invalid Credentials!');
     }
   };
 
@@ -67,13 +67,6 @@ export default function Login() {
           </Row>
         </form>
       </Row>
-      <SweetAlert
-        show={showAlert.current}
-        title="Error!"
-        text="Invalid Credentiasl"
-        type="error"
-        onConfirm={() => (showAlert.current = false)}
-      />
     </div>
   );
 }
