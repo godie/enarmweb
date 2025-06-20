@@ -18,7 +18,7 @@ describe('AlertService', () => {
       alertSuccess(title, text);
       expect(Swal.fire).toHaveBeenCalledTimes(1);
       expect(Swal.fire).toHaveBeenCalledWith({
-        type: 'success',
+        icon: 'success',
         title: title,
         text: text,
       });
@@ -32,7 +32,7 @@ describe('AlertService', () => {
       alertError(title, text);
       expect(Swal.fire).toHaveBeenCalledTimes(1);
       expect(Swal.fire).toHaveBeenCalledWith({
-        type: 'error',
+        icon: 'error',
         title: title,
         text: text,
       });

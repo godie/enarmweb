@@ -5,14 +5,12 @@ import Login from "./Login";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
 import { MemoryRouter } from "react-router-dom"; // Removed useHistory, useLocation direct import
+import { alertError } from "../services/AlertService";
 
 // Mock services and modules
 jest.mock("../services/UserService");
 jest.mock("../modules/Auth");
-jest.mock("sweetalert2-react", () => ({
-  __esModule: true,
-  default: jest.fn().mockImplementation(() => null),
-}));
+jest.mock('../services/AlertService');
 
 // Mock react-router-dom hooks
 let mockHistoryReplace = jest.fn();
@@ -26,15 +24,6 @@ jest.mock("react-router-dom", () => ({
   useLocation: (...args) => mockableUseLocationLogic(...args),
 }));
 
-// Mock Materialize M object
-global.M = {
-  updateTextFields: jest.fn(),
-  Modal: {
-    init: jest.fn(),
-  },
-  validate_field: jest.fn(),
-};
-
 // Suppress console.error for expected error messages during tests
 let consoleErrorSpy;
 
@@ -46,6 +35,7 @@ beforeEach(() => {
   // Reset mockableUseLocationLogic to its default implementation before each test
   mockableUseLocationLogic.mockImplementation(() => ({ state: { from: { pathname: "/dashboard" } } }));
   mockHistoryReplace.mockClear();
+  alertError.mockImplementation(() => {}); 
 });
 
 afterEach(() => {
@@ -118,6 +108,9 @@ describe("Login Component", () => {
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(Auth.authenticateUser).not.toHaveBeenCalled();
     expect(mockHistoryReplace).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(alertError).toHaveBeenCalledWith('Error!', 'Invalid Credentials!')
+    })
   });
 
   it("should use 'from' location from router state if available", async () => {
