@@ -14,20 +14,25 @@ import PrivateRoute from './PrivateRoute';
 import FacebookRoute from "../components/facebook/FacebookRoute";
 import Logout, {AdminLogout} from "../components/Logout";
 import Especialidades from '../components/admin/Especialidades';
-import { Button, Icon } from "react-materialize";
+// import { Button, Icon } from "react-materialize"; // Removed
+import CustomButton from "../components/custom/CustomButton"; // Added
+// CustomIcon is not directly used here if CustomButton handles the icon prop
 import EspecialidadForm from "../components/admin/EspecialidadForm";
 
 function DashboardCases(props) {
   return (
     <Dashboard>
       <CasoTable {...props} />
-      <Button
+      <CustomButton
           href="#/dashboard/new/caso"
-          className="red btn btn-large btn-floating fixed-action-btn direction-top active"
+          className="red btn-large btn-floating fixed-action-btn direction-top active" // Ensured btn-large and btn-floating are here
           node="a"
-          tooltipOptions={{position:'top'}}
-          icon={<Icon>add</Icon>}
+          // tooltipOptions prop is not standard, tooltip text is passed directly
+          // For position, CustomButton would need a new prop e.g. tooltipPosition="top"
+          // For now, CustomButton's default tooltip position will be used.
+          icon="add"
           tooltip="Agregar nuevo caso"
+          waves="light" // Adding default waves
          />
     </Dashboard>
   );
@@ -53,13 +58,14 @@ function DashboardEspecialidades(props){
   return (
     <Dashboard>
       <Especialidades {...props} />
-      <Button
+      <CustomButton
                       href="#/dashboard/new/especialidad"
-                      className="red btn btn-large btn-floating fixed-action-btn direction-top active"
+                      className="red btn-large btn-floating fixed-action-btn direction-top active" // Ensured
                       node="a"
-                      tooltipOptions={{position:'top'}}
-                      icon={<Icon>add</Icon>}
+                      // tooltipOptions={{position:'top'}} // See comment above
+                      icon="add"
                       tooltip="Agregar especialidad"
+                      waves="light" // Adding default waves
                      />
     </Dashboard>
   );

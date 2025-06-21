@@ -15,7 +15,7 @@ export default class ExamService {
 
   static getQuestions(clinicCaseId) {
     let headers = this.getHeaders();
-    let url = `clinical_cases/${clinicCaseId}`;
+    let url = `clinical_cases/${clinicCaseId}/questions`;
     return axios.get(BaseService.getURL(url), headers);
   }
 

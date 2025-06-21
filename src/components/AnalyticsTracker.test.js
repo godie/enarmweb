@@ -19,24 +19,14 @@ describe('AnalyticsTracker', () => {
     ReactGA.pageview.mockClear();
   });
 
-  test('initializes ReactGA on module load (implicitly tested by import)', () => {
-    // Since ReactGA.initialize is called at the top level of AnalyticsTracker.js,
-    // simply importing the module (which happens when this test file is loaded)
-    // should have triggered the mocked initialize.
-    // We need to ensure our mock setup correctly captures this.
-    // The actual call happens when AnalyticsTracker.js is imported by the test runner.
-    // For this test, we can re-require the module if necessary or rely on the fact
-    // that it has been called once when the test suite starts.
-    // Let's verify it was called (at least once due to module import).
-    // Note: This kind of test can be a bit tricky depending on Jest's module caching and execution order.
-    // A more direct way to test component logic is to focus on effects.
-    // The initialize call in AnalyticsTracker.js is outside the component.
-    // We'll assert it was called at least once from the initial module load.
-    expect(ReactGA.initialize).toHaveBeenCalledWith("UA-2989088-15");
-    // To be more precise for future re-imports/loads if that were a pattern:
-    // const initialCallCount = ReactGA.initialize.mock.calls.length;
-    // require('./AnalyticsTracker'); // or import
-    // expect(ReactGA.initialize.mock.calls.length).toBeGreaterThanOrEqual(initialCallCount);
+  test('initializes ReactGA on module load', () => {
+    // This test specifically checks the module-level initialization.
+    // We need to ensure we're observing the effect of AnalyticsTracker.js's import.
+    // jest.resetModules() can be used to clear the cache and re-import.
+    jest.resetModules(); // Reset module cache
+    const ReactGAMock = require('react-ga'); // Get the fresh mock for react-ga
+    require('./AnalyticsTracker'); // Re-import AnalyticsTracker to trigger its top-level code
+    expect(ReactGAMock.initialize).toHaveBeenCalledWith("UA-2989088-15");
   });
 
   test('calls ReactGA.set and ReactGA.pageview on mount with initial location', () => {

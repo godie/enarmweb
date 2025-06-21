@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Auth from "../modules/Auth";
-import { Navbar } from "react-materialize";
+// import { Navbar } from "react-materialize"; // Removed
+import CustomNavbar from "./custom/CustomNavbar"; // Added
 
-const Navi = () => { // Removed props as it's not used
-  let logoutLink = null; // Changed variable name for clarity, initialized to null
-  var fbUserName = { name: "" }; // Kept var for direct translation, though let/const is preferred in new JS
+const Navi = () => {
+  let logoutLink = null;
+  var fbUserName = { name: "" }; // Kept var for direct translation
 
   if (Auth.isUserAuthenticated()) {
     logoutLink = <Link to="/logout" role="link">Salir</Link>;
@@ -22,21 +23,26 @@ const Navi = () => { // Removed props as it's not used
     logoutLink = <Link to="/logout" role="link">Salir</Link>;
   }
 
+  // For CustomNavbar, links should be wrapped in <li>
+  const navLinks = (
+    <>
+      <li><Link role="link" to="/">Home</Link></li>
+      <li><Link role="link" to="/caso/1">Caso Clinico</Link></li>
+      <li><Link role="link" to="/dashboard">Admin</Link></li>
+      {logoutLink && <li>{logoutLink}</li>}
+    </>
+  );
+
   return (
-    <Navbar
+    <CustomNavbar
       className="green darken-1"
       brand={<span>Enarm Simulator</span>}
-      centerLogo
+      centerLogo // This prop is available in CustomNavbar
       alignLinks="left"
-      // Standard Navbar options/props for react-materialize
-      // Fixed children structure if needed, or pass as children if Navbar expects that.
-      // The original structure implies these Link components are direct children.
+      sidenavTriggerId="mobile-nav-main" // Example ID, though SideNav isn't used in this specific file
     >
-      <Link role="link" to="/">Home</Link>
-      <Link role="link" to="/caso/1">Caso Clinico</Link>
-      <Link role="link" to="/dashboard">Admin</Link>
-      {logoutLink}
-    </Navbar>
+      {navLinks}
+    </CustomNavbar>
   );
 };
 

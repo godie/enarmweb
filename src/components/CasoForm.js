@@ -1,14 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  TextInput,
-  Checkbox,
-  Button,
-  Icon,
-  Row,
-  Col,
-  Textarea,
-} from "react-materialize";
+// All react-materialize imports will be removed
+import CustomTextInput from "./custom/CustomTextInput";
+import CustomCheckbox from "./custom/CustomCheckbox";
+import CustomTextarea from "./custom/CustomTextarea";
+import CustomButton from "./custom/CustomButton";
+import CustomIcon from "./custom/CustomIcon"; // In case any Icon is used standalone
+import CustomRow from "./custom/CustomRow";
+import CustomCol from "./custom/CustomCol";
 
 const CasoForm = ({
   onSubmit,
@@ -26,39 +25,38 @@ const CasoForm = ({
     <form className="col s12" onSubmit={onSubmit}>
       <h3 className="center">Caso Clinico</h3>
 
-      <Row>
-        <div className="input-field col s10 offset-s1">
-          <Textarea
-            s={10}
-            onChange={onChange}
-            offset={1}
-            className="z-depth-1"
-            name="description"
+      <CustomRow>
+        <CustomCol s={10} offset="s1">
+          <CustomTextarea
             id="description"
+            label="Caso clinico"
             value={caso.description}
-            label="Caso clinico" // Added label prop
+            onChange={onChange}
+            name="description" // Pass name for onChange handler in parent
+            textareaClassName="z-depth-1"
+            // s={10} and offset="s1" are handled by the wrapping CustomCol
           />
-          {/* <label>Caso clinico</label> Removed external label */}
-        </div>
-      </Row>
-      <Row>
-        <Row>
-          <Col s={8}>
+        </CustomCol>
+      </CustomRow>
+      <CustomRow>
+        <CustomRow> {/* This inner Row might be redundant if CustomCol handles margins correctly, but preserving structure for now */}
+          <CustomCol s={8}>
             <h4 className="center">Preguntas:</h4>
-          </Col>
-          <Col s={4}>
-            <Button
+          </CustomCol>
+          <CustomCol s={4}>
+            <CustomButton
               onClick={addQuestion}
               type="button"
-              className="black"
+              className="black" // Will be merged with btn classes
               large
-              icon={<Icon left={true}>add</Icon>}
+              icon="add" // CustomButton handles icon string
+              iconPosition="left" // Default is left, but explicit
             >
               Agregar Pregunta
-            </Button>
-          </Col>
-        </Row>
-        {proccessQuestions(
+            </CustomButton>
+          </CustomCol>
+        </CustomRow>
+        {proccessQuestions( // This function also needs internal Row/Col/Button/Icon replaced
           caso.questions,
           onChangeAnswer,
           onChangeQuestion,
@@ -70,30 +68,31 @@ const CasoForm = ({
 
       <div className="divider"></div>
 
-      <Row>
-        <Col s={12}>
-          <Col s={6}>
-            <p className="left-align">
-              <Button
-                large
-                label="Cancelar"
-                type="button"
-                waves="light"
-                onClick={onCancel}
-              >
-                Cancelar
-              </Button>
-            </p>
-          </Col>
-          <Col s={6}>
-            <p className="right-align">
-              <Button large label="Guardar" type="submit" waves="light" tooltip="Guardar Caso">
-                Guardar
-              </Button>
-            </p>
-          </Col>
-        </Col>
-      </Row>
+      <CustomRow>
+        <CustomCol s={12}>
+          <CustomRow> {/* Inner row for button alignment */}
+            <CustomCol s={6}>
+              <p className="left-align">
+                <CustomButton
+                  large
+                  type="button"
+                  waves="light"
+                  onClick={onCancel}
+                >
+                  Cancelar
+                </CustomButton>
+              </p>
+            </CustomCol>
+            <CustomCol s={6}>
+              <p className="right-align">
+                <CustomButton large type="submit" waves="light" tooltip="Guardar Caso">
+                  Guardar
+                </CustomButton>
+              </p>
+            </CustomCol>
+          </CustomRow>
+        </CustomCol>
+      </CustomRow>
     </form>
   </div>
 );
@@ -119,105 +118,103 @@ let proccessQuestions = (
       }
 
       return (
-        <div className="row" key={keyId}>
-          <div className="col s10 offset-s1">
-            <TextInput
-              id={"answer-" + keyId}
-              value={answer.text}
-              label=""
-              s={8}
-              onChange={(event) =>
-                onChangeAnswer(questionIndex, answerIndex, "text", event)
-              }
-            />
-            <div className="col s2">
-              <Checkbox
-                name="is_correct"
-                className=""
-                id={keyName + "[is_correct]"}
-                value="is_correct"
-                checked={answer.is_correct}
-                label="¿correcta?"
-                onChange={(event) => {
-                  onChangeAnswer(
-                    questionIndex,
-                    answerIndex,
-                    "is_correct",
-                    event
-                  );
-                }}
-              />
-            </div>
-            <div className="col s1 offset-s1 input-field">
-              <Button
-                type="button"
-                floating
-                className="red"
-                waves="light"
-                tooltip="Borrar respuesta"
-                aria-label="Borrar respuesta" // Added aria-label
-                onClick={(event) =>
-                  deleteAnswer(questionIndex, answerIndex, event)
-                }
-                icon={<Icon>delete</Icon>}
-              />
-            </div>
-          </div>
-          <div
-            className={
-              "input-field col s8 offset-s1 " +
-              (answer.is_correct && answer.description && answer.description.length > 0 ? "show" : "hide")
-            }
-          >
-            <textarea
+        <CustomRow key={keyId}>
+          <CustomCol s={10} offset="s1">
+            <CustomRow> {/* Inner Row for layout */}
+              <CustomCol s={8}>
+                <CustomTextInput
+                  id={"answer-" + keyId}
+                  value={answer.text}
+                  label="" // No label needed as per original
+                  onChange={(event) =>
+                    onChangeAnswer(questionIndex, answerIndex, "text", event)
+                  }
+                  // s={8} handled by wrapping CustomCol
+                />
+              </CustomCol>
+              <CustomCol s={2}>
+                <CustomCheckbox
+                  id={keyName + "[is_correct]"}
+                  label="¿correcta?"
+                  checked={answer.is_correct}
+                  onChange={(event) => {
+                    onChangeAnswer(
+                      questionIndex,
+                      answerIndex,
+                      "is_correct",
+                      event
+                    );
+                  }}
+                  value="is_correct" // HTML value attribute
+                />
+              </CustomCol>
+              <CustomCol s={1} offset="s1" className="input-field"> {/* input-field might be redundant if button is only content */}
+                <CustomButton
+                  type="button"
+                  floating
+                  className="red" // Will be merged
+                  waves="light"
+                  tooltip="Borrar respuesta"
+                  aria-label="Borrar respuesta"
+                  onClick={(event) =>
+                    deleteAnswer(questionIndex, answerIndex, event)
+                  }
+                  icon="delete"
+                />
+              </CustomCol>
+            </CustomRow>
+          </CustomCol>
+          {/* Replacing raw textarea for answer description */}
+          <CustomCol s={8} offset="s1" className={(answer.is_correct && description && description.length > 0 ? "show" : "hide")}>
+            {/* CustomTextarea handles the input-field wrapper itself */}
+            <CustomTextarea
+              id={"answer-description" + keyId}
+              label="¿Por que es correcta?"
+              value={description}
               onChange={(event) =>
                 onChangeAnswer(questionIndex, answerIndex, "description", event)
               }
-              className="materialize-textarea z-depth-1"
+              textareaClassName="z-depth-1" // Pass specific class to textarea
               name="description"
-              id={"answer-description" + keyId}
-              value={description}
             />
-            <label>¿Por que es correcta?</label>
-          </div>
-        </div>
+          </CustomCol>
+        </CustomRow>
       );
     });
     return (
-      <div className="row" key={questionIndex}>
-        <div className="input-field col s8 offset-s1">
-          <textarea
-            className="materialize-textarea"
+      <CustomRow key={questionIndex}>
+        <CustomCol s={8} offset="s1">
+          <CustomTextarea
             id={"question-" + questionIndex}
+            label={`Pregunta ${questionIndex + 1}`}
             name={"questions[" + questionIndex + "][text]"}
             value={question.text}
             onChange={(event) => onChangeQuestion(questionIndex, event)}
-          ></textarea>
-          <label>Pregunta {questionIndex + 1}</label>
-        </div>
-        <div className="input-field col offset-s1 s1">
-          <Button
+          />
+        </CustomCol>
+        <CustomCol offset="s1" s={1} className="input-field"> {/* input-field might be redundant */}
+          <CustomButton
             type="button"
             onClick={(event) => addAnswer(questionIndex, event)}
             floating
             tooltip="Agregar una respuesta"
-            aria-label="Agregar una respuesta" // Added aria-label
-            icon={<Icon>playlist_add</Icon>}
-          ></Button>
-        </div>
-        <div className="input-field col s1">
-          <Button
+            aria-label="Agregar una respuesta"
+            icon="playlist_add"
+          />
+        </CustomCol>
+        <CustomCol s={1} className="input-field">  {/* input-field might be redundant */}
+          <CustomButton
             type="button"
             onClick={(event) => deleteQuestion(questionIndex, event)}
             floating
-            className="red darken-1"
-            icon={<Icon>delete</Icon>}
+            className="red darken-1" // Will be merged
+            icon="delete"
             tooltip="Borrar Pregunta"
-            aria-label="Borrar Pregunta" // Added aria-label
-          ></Button>
-        </div>
+            aria-label="Borrar Pregunta"
+          />
+        </CustomCol>
         {answers}
-      </div>
+      </CustomRow>
     );
   });
 

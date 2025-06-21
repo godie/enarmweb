@@ -1,9 +1,12 @@
 import React, { useState, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import SweetAlert from "sweetalert2-react";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
-import { Button, Col, Row, TextInput } from "react-materialize";
+// import { TextInput } from "react-materialize"; // Removed
+import CustomButton from "./custom/CustomButton";
+import CustomRow from "./custom/CustomRow";
+import CustomCol from "./custom/CustomCol";
+import CustomTextInput from "./custom/CustomTextInput"; // Added
 import { alertError } from "../services/AlertService";
 
 export default function Login() {
@@ -29,41 +32,45 @@ export default function Login() {
 
   return (
     <div className="container section">
-      <Row className="z-depth-2 green darken-4">
-        <form onSubmit={handleSubmit} className="col s12">
+      <CustomRow className="z-depth-2 green darken-4">
+        <form onSubmit={handleSubmit} className="col s12"> {/* This form implies it's a Col s12 already */}
           <h2 className="center white-text">Entrar</h2>
-          <Row>
-            <Col s={12}>
-              <TextInput
+          <CustomRow>
+            <CustomCol s={12}>
+              <CustomTextInput
                 label="email"
                 id="email"
-                s={12}
-                className="white-text validate "
+                // s={12} // Handled by CustomCol wrapper
+                inputClassName="white-text" // Pass 'white-text' to input itself
+                validate // Adds 'validate' class to input
                 onChange={(e) => setEmail(e.target.value)}
+                value={email} // Added value prop for controlled component
               />
-            </Col>
-            <Col s={12}>
-              <TextInput
-                password
+            </CustomCol>
+            {/* Password field's Col should get the offset */}
+            <CustomCol s={12} offset="s2">
+              <CustomTextInput
+                type="password" // Changed from 'password' boolean prop
                 label="password"
-                s={12}
+                // s={12} // Handled by CustomCol wrapper
                 id="password"
-                className="white-text validate "
-                offset="s2"
+                inputClassName="white-text" // Pass 'white-text' to input itself
+                validate // Adds 'validate' class to input
                 onChange={(e) => setPassword(e.target.value)}
+                value={password} // Added value prop for controlled component
               />
-            </Col>
-          </Row>
-          <Row>
-            <Button
-              s={8}
+            </CustomCol>
+          </CustomRow>
+          <CustomRow>
+            <CustomButton
+              type="submit"
               large
               waves="light"
-              offset="s2"
               className="col s8 offset-s2 grey lighten-3 green-text"
+              // s={8} and offset="s2" are part of className now
             >
               Entrar
-            </Button>
+            </CustomButton>
           </Row>
         </form>
       </Row>

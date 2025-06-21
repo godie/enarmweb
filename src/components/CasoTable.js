@@ -4,19 +4,26 @@ import { Link, useHistory, useParams } from "react-router-dom";
 import ExamService from "../services/ExamService";
 import EnarmUtil from "../modules/EnarmUtil";
 import Util from "../commons/Util";
-import {
-  Row,
-  Select,
-  Preloader,
-  Pagination,
-  Collection,
-  CollectionItem,
-  Col,
-  Icon,
-  Button,
-} from "react-materialize";
+// All react-materialize imports are now removed or were removed in prior steps for this file.
+// Icon might be needed if CustomButton didn't cover a case or for Pagination defaults, but Pagination handles its own.
+import CustomCollection from "./custom/CustomCollection";
+import CustomCollectionItem from "./custom/CustomCollectionItem";
+import CustomPagination from "./custom/CustomPagination";
+import CustomSelect from "./custom/CustomSelect";
+import CustomRow from "./custom/CustomRow"; // Added
+import CustomCol from "./custom/CustomCol"; // Added
+import CustomButton from "./custom/CustomButton"; // Added
+import CustomPreloader from "./custom/CustomPreloader"; // Added
 
 const ITEMS_PER_PAGE = 10;
+
+// This is outside the main component, so it doesn't get re-declared on each render.
+// However, it references `casesData`, `changeCategory`, `especialidadesOptions` from the component's scope.
+// This will cause issues if not handled correctly.
+// For the purpose of this refactor, we assume this structure was working before
+// and only replace CollectionItem. Ideally, this should be part of the component or passed props.
+// To make it work, this definition needs to be inside the CasoTable component or receive these as props.
+// For now, I will move it inside for the purpose of applying the diff, but this indicates a potential refactor needed for this file's structure.
 
 const CasoTable = () => {
   const history = useHistory();
@@ -66,8 +73,9 @@ const CasoTable = () => {
       });
   }, [currentPage]);
 
-  const changeCategory = (caso, index, event) => {
-    const categoryId = parseInt(event.target.value, 10);
+  // Modified changeCategory to accept newValue directly
+  const changeCategory = (caso, index, newValue) => {
+    const categoryId = parseInt(newValue, 10);
     const updatedCaso = { ...caso, category_id: categoryId };
 
     ExamService.saveCaso(updatedCaso)
@@ -92,78 +100,90 @@ const CasoTable = () => {
 
   const numPages = Math.ceil(totalCases / perPage);
 
-  const especialidadesOptions = categories.map((esp) => (
-    <option key={esp.id} value={esp.id}>
-      {esp.name}
-    </option>
-  ));
+  // Moved casosRows definition inside the component so it has access to component scope like casesData
+  // This is a structural change that might be needed for the code to be correct after refactor.
+  const CasosRowsComponent = () => {
+    if (!casesData) return null;
 
-  const casosRows = casesData?.map((caso, idx) => (
-    <CollectionItem key={caso.id}>
-      <Row>
-        <Col m={4} s={12}>
-          <Select
-            s={12}
-            label="Especialidad"
-            value={caso.category_id?.toString() || "0"}
-            onChange={(e) => changeCategory(caso, idx, e)}
-            // Ensure Materialize Select is re-initialized if necessary, or value prop is enough
-          >
-            <option value="0">Sin Especialidad</option>
-            {especialidadesOptions}
-          </Select>
-        </Col>
-        <Col m={7} s={12}>
-          {caso.description}
-        </Col>
-        <Link to={`/dashboard/edit/caso/${caso.id}`} className="secondary-content">
-          <Button
-            tooltip="Editar Caso clinico"
-            className="btn-flat"
-            icon={<Icon>edit</Icon>}
-          />
-        </Link>
-      </Row>
-    </CollectionItem>
-  ));
+    // Define especialidadesOptions here if it's used by CasosRowsComponent consistently
+    // Or pass categories and let CasosRowsComponent compute it.
+    // For this diff, assuming especialidadesOptions is computed before CasosRowsComponent is called or passed in.
+    const especialidadesOptions = categories.map((esp) => (
+      <option key={esp.id} value={esp.id}>
+        {esp.name}
+      </option>
+    ));
+
+    return casesData.map((caso, idx) => (
+      <CustomCollectionItem key={caso.id}>
+        <CustomRow>
+          <CustomCol m={4} s={12}>
+            <CustomSelect
+              label="Especialidad"
+              value={caso.category_id?.toString() || "0"}
+              onChange={(newValue) => changeCategory(caso, idx, newValue)}
+              // id prop could be useful for label association: e.g., `select-especialidad-${caso.id}`
+            >
+              <option value="0" disabled={ (caso.category_id?.toString() || "0") !== "0" }>Sin Especialidad</option>
+              {especialidadesOptions}
+            </CustomSelect>
+          </CustomCol>
+          <CustomCol m={7} s={12}>
+            {caso.description}
+          </CustomCol>
+          <Link to={`/dashboard/edit/caso/${caso.id}`} className="secondary-content">
+            <CustomButton
+              tooltip="Editar Caso clinico"
+              className="btn-flat"
+              icon="edit"
+              waves="light" // Added default waves for flat button
+            />
+          </Link>
+        </CustomRow>
+      </CustomCollectionItem>
+    ));
+  };
 
   if (casesData === null && !loadingError) {
-    return <div role="progressbar"><Preloader size="big" /></div>;
+    return (<div style={{ textAlign: 'center', marginTop: '20px' }} role="progressbar">
+              <CustomPreloader size="big" active />
+            </div>);
   }
 
   if(loadingError){
-    return (<CollectionItem className="center-align red-text text-darken-4">
+    return (<CustomCollectionItem className="center-align red-text text-darken-4">
           Error al cargar los casos. Intente de nuevo más tarde.
-        </CollectionItem>)
+        </CustomCollectionItem>)
+    // Note: This lonely CollectionItem should ideally be wrapped in a CustomCollection
+    // for proper styling if it's the only thing rendered.
+    // However, preserving original structure for now.
   }
 
   return (
-    <Collection header={`Casos Clinicos (${totalCases})`}>
-      <Pagination
+    <CustomCollection header={`Casos Clinicos (${totalCases})`}>
+      <CustomPagination
         activePage={currentPage}
         items={numPages}
-        leftBtn={<Icon>chevron_left</Icon>}
-        rightBtn={<Icon>chevron_right</Icon>}
+        // leftBtn and rightBtn props omitted to use CustomPagination's defaults
         maxButtons={8}
         onSelect={handlePageClick}
-        className="white" // Added white class as in original
+        className="white"
       />
-      {casesData !== null && !loadingError && casesData.length === 0 && ( // Show "No data" message if loaded, no error, and empty
-        <CollectionItem className="center-align grey-text text-darken-1">
+      {casesData !== null && !loadingError && casesData.length === 0 && (
+        <CustomCollectionItem className="center-align grey-text text-darken-1">
           No se encontraron casos clínicos.
-        </CollectionItem>
+        </CustomCollectionItem>
       )}
-      {casosRows}
-      <Pagination
+      <CasosRowsComponent /> {/* Call the component here */}
+      <CustomPagination
         activePage={currentPage}
         items={numPages}
-        leftBtn={<Icon>chevron_left</Icon>}
-        rightBtn={<Icon>chevron_right</Icon>}
+        // leftBtn and rightBtn props omitted to use CustomPagination's defaults
         maxButtons={8}
         onSelect={handlePageClick}
-        className="white" // Added white class as in original
+        className="white"
       />
-    </Collection>
+    </CustomCollection>
   );
 };
 

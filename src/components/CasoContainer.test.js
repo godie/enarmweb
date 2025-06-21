@@ -225,7 +225,7 @@ describe('CasoContainer Component', () => {
     // NUEVO: Aserciones para AlertService.alertSuccess
     await waitFor(() => expect(AlertService.alertSuccess).toHaveBeenCalledTimes(1));
     expect(AlertService.alertSuccess).toHaveBeenCalledWith('Caso Clinico', 'Se ha guardado correctamente');
-    expect(mockGoBack).toHaveBeenCalledTimes(1); // Assuming it calls goBack after success alert
+    await waitFor(() => expect(mockGoBack).toHaveBeenCalledTimes(1)); // Assuming it calls goBack after success alert
   });
 
   test('form submission error shows error alert', async () => {

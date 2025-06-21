@@ -30,22 +30,6 @@ jest.mock('react-router-dom', () => ({
   })
 }));
 
-jest.mock('sweetalert2-react', () => {
-  // Mocking SweetAlert to make it easier to test its presence
-  return (props) => {
-    if (!props.show) {
-      return null;
-    }
-    return (
-      <div data-testid="sweet-alert">
-        <h1>{props.title}</h1>
-        <p>{props.text}</p>
-        <button onClick={props.onConfirm}>Confirm</button>
-      </div>
-    );
-  };
-});
-
 const mockFbUser = {
   facebook_id: '123456789',
   name: 'Test User',
