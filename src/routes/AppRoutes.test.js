@@ -46,8 +46,8 @@ jest.mock('../modules/Auth', () => {
 
 // --- Mock Leaf Components ---
 jest.mock('../components/Examen', () => () => <div data-testid="examen-mock">Examen Component</div>);
-jest.mock('../components/CasoTable', () => () => <div data-testid="casotable-mock">CasoTable Component</div>);
-jest.mock('../components/CasoContainer', () => () => <div data-testid="casocontainer-mock">CasoContainer Component</div>);
+jest.mock('../components/admin/CasoTable', () => () => <div data-testid="casotable-mock">CasoTable Component</div>);
+jest.mock('../components/admin/CasoContainer', () => () => <div data-testid="casocontainer-mock">CasoContainer Component</div>);
 jest.mock('../components/Login', () => () => <div data-testid="login-mock">Login Component</div>);
 jest.mock('../components/facebook/FacebookLoginContainer', () => () => <div data-testid="fb-login-container-mock">FacebookLoginContainer Component</div>);
 jest.mock('../components/Profile', () => () => <div data-testid="profile-mock">Profile Component</div>);
@@ -61,11 +61,11 @@ jest.mock('../components/admin/EspecialidadForm', () => () => <div data-testid="
 
 // --- Mock Specific Materialize Components ---
 // Mock SideNav from react-materialize to prevent 'destroy' error
-jest.mock('react-materialize', () => {
-  const actualMaterialize = jest.requireActual('react-materialize');
+jest.mock('../components/custom', () => {
+  const actualMaterialize = jest.requireActual('../components/custom');
   return {
     ...actualMaterialize,
-    SideNav: (props) => <div data-testid="mock-sidenav">{props.trigger}{props.children}</div>,
+    CustomSideNav: (props) => <div data-testid="mock-sidenav">{props.trigger}{props.children}</div>,
     // Add other components if they cause similar issues, e.g., Modal, Tooltip
     Modal: (props) => <div data-testid="mock-modal">{props.trigger}{props.children}</div>,
     Tooltip: (props) => <div data-testid="mock-tooltip">{props.children}</div>,
@@ -74,7 +74,6 @@ jest.mock('react-materialize', () => {
     Button: (props) => <button className={props.className} node={props.node} href={props.href} onClick={props.onClick}>{props.icon || props.children}</button>,
     Icon: (props) => <i className="material-icons">{props.children}</i>,
     TextInput: (props) => <input type={props.password ? 'password' : 'text'} aria-label={props.label} onChange={props.onChange} />,
-
   };
 });
 

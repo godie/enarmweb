@@ -4,9 +4,9 @@ import { MemoryRouter, Route } from 'react-router-dom'; // Import MemoryRouter a
 
 
 import CasoTable from './CasoTable';
-import ExamService from '../services/ExamService';
-import EnarmUtil from '../modules/EnarmUtil';
-import Util from '../commons/Util';
+import ExamService from '../../services/ExamService';
+import EnarmUtil from '../../modules/EnarmUtil';
+import Util from '../../commons/Util';
 
 // Mock react-router-dom
 const mockHistoryPush = jest.fn();
@@ -29,9 +29,9 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // Mock services and utils
-jest.mock('../services/ExamService');
-jest.mock('../modules/EnarmUtil');
-jest.mock('../commons/Util');
+jest.mock('../../services/ExamService');
+jest.mock('../../modules/EnarmUtil');
+jest.mock('../../commons/Util');
 
 // Mock react-materialize components that might be problematic or we want to inspect
 // For Preloader, we can just check for its default text or a role if it has one.

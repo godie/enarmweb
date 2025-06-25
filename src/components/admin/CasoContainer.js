@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import CasoForm from "./CasoForm";
-import ExamService from "../services/ExamService";
+import ExamService from "../../services/ExamService";
 import Materialize from "materialize-css";
 import { useHistory, useParams } from 'react-router-dom'; // Added withRouter for now, can be removed if props are not used from it directly.
-import { alertError, alertSuccess } from "../services/AlertService";
+import { alertError, alertSuccess } from "../../services/AlertService";
 
 
 const CasoContainer = (props) => { // props might still be needed if withRouter provides something essential not covered by hooks

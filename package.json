@@ -1,25 +1,24 @@
 {
   "name": "enarmweb",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "dependencies": {
     "axios": "0.21.4",
     "materialize-css": "^1.0.0",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-ga": "^3.3.1",
-    "react-materialize": "^3.4.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.4",
-    "sweetalert2": "^11.22.0",
-    "sweetalert2-react": "^0.8.3"
+    "react-scripts": "^4.0.3",
+    "sweetalert2": "^11.22.0"
   },
   "scripts": {
     "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
     "start-https": "HTTPS=true SSL_CRT_FILE=localhost.pem SSL_KEY_FILE=localhost-key.pem react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,7 +37,6 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^12.1.5",
-    "jest-environment-jsdom-sixteen": "^2.0.0"
+    "@testing-library/react": "^12.1.5"
   }
 }

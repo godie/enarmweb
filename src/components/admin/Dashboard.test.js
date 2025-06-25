@@ -9,19 +9,14 @@ jest.mock('../Navi', () => () => <div data-testid="navi-mock">Navigation Bar</di
 // Mock react-materialize components used by Dashboard if they are not already broadly mocked
 // If SideNav and SideNavItem are part of the broad 'react-materialize' mock from AppRoutes.test.js setup,
 // this might not be strictly necessary here, but explicit mocking is safer.
-jest.mock('react-materialize', () => {
-  const actualMaterialize = jest.requireActual('react-materialize');
+jest.mock('../custom', () => {
+  const actualMaterialize = jest.requireActual('../custom');
   return {
     ...actualMaterialize,
-    SideNav: (props) => <div data-testid="sidenav-mock" className={props.className}>{props.children}{props.trigger}</div>,
-    SideNavItem: (props) => (
+    CustomSideNav: (props) => <div data-testid="sidenav-mock" className={props.className}>{props.children}{props.trigger}</div>,
+    CustomSideNavItem: (props) => (
       <a data-testid="sidenavitem-mock" href={props.href} className={props.className}>
         {/* If userView prop is true, render mock user view */}
-        {props.userView && (
-          <div data-testid="sidenavitem-userview-mock">
-            User: {props.user && props.user.name}
-          </div>
-        )}
         {props.children}
       </a>
     ),
@@ -100,16 +95,11 @@ describe('Dashboard Component', () => {
     renderDashboard();
     expect(screen.getByTestId('sidenav-mock')).toBeInTheDocument();
     // Check for the specific class passed in Dashboard.js
-    expect(screen.getByTestId('sidenav-mock')).toHaveClass('green darken-3 white-text');
+    expect(screen.getByTestId('sidenav-mock')).toHaveClass('green sidenav-fixed darken-3');
   });
 
   it('should render SideNavItems with correct links and text', () => {
     renderDashboard();
-
-    // UserView (first item)
-    const userViewItem = screen.getByTestId('sidenavitem-userview-mock');
-    expect(userViewItem).toBeInTheDocument();
-    expect(userViewItem).toHaveTextContent('User: diego mendoza');
 
     // Casos clinicos
     const casosLink = screen.getByText('Casos clinicos').closest('a');

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Row,Col, TextInput, Textarea, Button } from "react-materialize";
+
 import { createBrowserHistory } from "history";
 import ExamService from "../../services/ExamService";
+import {CustomRow, CustomCol, CustomTextInput, CustomButton, CustomTextarea} from "../custom"; // Added
 import { alertError, alertSuccess} from "../../services/AlertService";
 import { useParams } from "react-router-dom";
 
@@ -42,45 +43,67 @@ export default function EspecialidadForm(props){
     }
 
     return(
-        <Col s={12} m={12} l={12} className="white">
+        <CustomCol s={12} m={12} l={12} className="white">
         <form onSubmit={onSubmit}>
             <h3 className="center">Especialidad</h3>
-            <Row>
-            <TextInput type="hidden" name="id" value={formData.id.toString()} s={1}/>
-            </Row>
-            <Row>
-                <TextInput label="Especialidad" s={10} name="name" onChange={handleChange} value={formData.name} />
-            </Row>
-            <Row>
-                <Textarea label="Description" s={10} onChange={handleChange} name="description" value={formData.description}/>
-            </Row>
-            <Row>
-        <div className="divider"></div>
-        <Col s={12}>
-          <Col s={6}>
-            <p className="left-align">
-              <Button
-                large
-                label="Cancelar"
-                type="button"
-                waves="light"
-                onClick={onCancel}
-              >
-                Cancelar
-              </Button>
-            </p>
-          </Col>
-          <Col s={6}>
-            <p className="right-align">
-              <Button large label="Guardar" type="submit" waves="light" tooltip="Guardar Caso">
-                Guardar
-              </Button>
-            </p>
-          </Col>
-        </Col>
-      </Row>
+            {/* Hidden input for ID doesn't need Materialize styling or CustomTextInput */}
+            <input type="hidden" name="id" value={formData.id.toString()} />
+
+            <CustomRow>
+                <CustomCol s={10}> {/* Wrapped TextInput */}
+                    <CustomTextInput
+                        label="Especialidad"
+                        name="name"
+                        onChange={handleChange}
+                        value={formData.name}
+                        id="especialidad_name"
+                    />
+                </CustomCol>
+            </CustomRow>
+            <CustomRow>
+                <CustomCol s={10}> {/* Wrapped Textarea */}
+                    <CustomTextarea
+                        label="Description"
+                        name="description"
+                        onChange={handleChange}
+                        value={formData.description}
+                        id="especialidad_description"
+                    />
+                </CustomCol>
+            </CustomRow>
+            <CustomRow>
+                <div className="divider"></div>
+                <CustomCol s={12}>
+                  <CustomRow> {/* Inner row for button alignment */}
+                    <CustomCol s={6}>
+                        <p className="left-align">
+                        <CustomButton
+                            large
+                            type="button"
+                            waves="light"
+                            onClick={onCancel}
+                        >
+                            Cancelar
+                        </CustomButton>
+                        </p>
+                    </CustomCol>
+                    <CustomCol s={6}>
+                        <p className="right-align">
+                        <CustomButton
+                            large
+                            type="submit"
+                            waves="light"
+                            tooltip="Guardar Especialidad" // Corrected tooltip text
+                        >
+                            Guardar
+                        </CustomButton>
+                        </p>
+                    </CustomCol>
+                  </CustomRow>
+                </CustomCol>
+            </CustomRow>
         </form>
-        </Col>
+        </CustomCol>
     );
 
 }

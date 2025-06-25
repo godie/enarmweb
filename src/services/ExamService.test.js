@@ -55,13 +55,13 @@ describe("ExamService", () => {
   describe("getQuestions", () => {
     it("should call axios.get with correct URL and headers", async () => {
       const clinicCaseId = "case123";
-      const expectedUrl = `${baseApiUrl}/clinical_cases/${clinicCaseId}/questions`;
+      const expectedUrl = `${baseApiUrl}/clinical_cases/${clinicCaseId}`;
       // Mock getHeaders directly for this class if it's static and calls itself
       const getHeadersSpy = jest.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
 
       await ExamService.getQuestions(clinicCaseId);
 
-      expect(BaseService.getURL).toHaveBeenCalledWith(`clinical_cases/${clinicCaseId}/questions`);
+      expect(BaseService.getURL).toHaveBeenCalledWith(`clinical_cases/${clinicCaseId}`);
       expect(getHeadersSpy).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedHeaders);
       getHeadersSpy.mockRestore();
@@ -96,8 +96,8 @@ describe("ExamService", () => {
   });
 
   describe("saveCaso", () => {
-    const casoNew = { title: "New Case" }; // No ID
-    const casoExisting = { id: 1, title: "Existing Case" };
+    const casoNew = { description: "New Case" }; // No ID
+    const casoExisting = { id: 1, description: "Existing Case" };
 
     it("should call axios.post for a new caso", async () => {
       const expectedUrl = `${baseApiUrl}/clinical_cases`;
@@ -109,9 +109,10 @@ describe("ExamService", () => {
     });
 
     it("should call axios.put for an existing caso", async () => {
-      const expectedUrl = `${baseApiUrl}/clinical_cases/${casoExisting.id}`;
+      const {id} = casoExisting
+      const expectedUrl = `${baseApiUrl}/clinical_cases/${id}`;
       await ExamService.saveCaso(casoExisting);
-      expect(BaseService.getURL).toHaveBeenCalledWith(`clinical_cases/${casoExisting.id}`);
+      expect(BaseService.getURL).toHaveBeenCalledWith(`clinical_cases/${id}`);
       expect(Auth.getToken).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(expectedUrl, { clinical_case: casoExisting }, expectedHeaders);
       expect(axios.post).not.toHaveBeenCalled();

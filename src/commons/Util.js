@@ -26,7 +26,7 @@ class Util {
 
 static showToast(message){
   if(typeof M !== 'undefined'){
-      M.toast({html:message});     // eslint-disable-line no-undef
+    M.toast({html:message});     // eslint-disable-line no-undef
   } 
 }
 

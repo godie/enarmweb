@@ -35,9 +35,10 @@ export default class ExamService {
     let token = `bearer ${Auth.getToken()}`;
     let url = "clinical_cases";
     let headers = { headers: { Authorization: token } };
-
+    caso['name'] = caso.description.slice(0,10);
     if (caso.id > 0) {
       url = url + "/" + caso.id;
+      delete caso.id
       return axios.put(BaseService.getURL(url),{ clinical_case: caso },headers);
     } else {
       return axios.post(BaseService.getURL(url),{ clinical_case: caso },headers);

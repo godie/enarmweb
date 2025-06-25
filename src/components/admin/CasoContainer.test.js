@@ -3,11 +3,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import CasoContainer from './CasoContainer';
-import ExamService from '../services/ExamService';
+import ExamService from '../../services/ExamService';
 import Materialize from 'materialize-css';
 
+import * as AlertService from '../../services/AlertService';
+
 // NUEVO: Importar y mockear AlertService
-import * as AlertService from '../services/AlertService'; 
+//import {alertSuccess, alertError} from '../services/AlertService'; 
 
 // Mock react-router-dom
 const mockGoBack = jest.fn();
@@ -24,12 +26,12 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // Mock services
-jest.mock('../services/ExamService');
+jest.mock('../../services/ExamService');
 
-// NUEVO: Mockear AlertService
-jest.mock('../services/AlertService', () => ({
-  alertSuccess: jest.fn(() => Promise.resolve({ isConfirmed: true })), // Simula la resolución de SweetAlert
-  alertError: jest.fn(() => Promise.resolve({ isConfirmed: true })),
+
+jest.mock('../../services/AlertService', () => ({
+  alertSuccess: jest.fn(),
+  alertError: jest.fn(),
 }));
 
 
@@ -67,7 +69,7 @@ jest.mock('./CasoForm', () => (props) => {
       </button>
       {props.caso.questions.map((q, qIdx) => (
         <div key={`q-${qIdx}`}>
-          <input data-testid={`question-text-${qIdx}`} value={q.text} onChange={(e) => props.onChangeQuestion(qIdx, e)} />
+          <input id={`question-${qIdx}`} data-testid={`question-text-${qIdx}`} value={q.text} onChange={(e) => props.onChangeQuestion(qIdx, e)} />
           <button type="button" data-testid={`delete-question-${qIdx}`} onClick={() => props.deleteQuestion(qIdx)}>Eliminar Pregunta</button>
           <button type="button" data-testid={`add-answer-q${qIdx}`} onClick={() => props.addAnswer(qIdx)}>
             Agregar Respuesta
@@ -86,7 +88,6 @@ jest.mock('./CasoForm', () => (props) => {
   );
 });
 
-// ELIMINADO: El mock de sweetalert2-react ya no es necesario.
 
 
 // Mock Materialize.updateTextFields
@@ -97,7 +98,7 @@ jest.mock('materialize-css', () => ({
 
 // Mock document.getElementById().focus()
 const mockFocus = jest.fn();
-global.document.getElementById = jest.fn(() => ({ focus: mockFocus }));
+global.document.getElementById = jest.fn();
 
 const initialCasoState = {
   description: "Un caso clinico nuevo",
@@ -112,19 +113,26 @@ const mockCasoData = {
   ],
 };
 
+const {alertError, alertSuccess} = AlertService;
+
 describe('CasoContainer Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    AlertService.alertSuccess.mockImplementation(() => Promise.resolve({ isConfirmed: true }));
+    AlertService.alertError.mockImplementation(() => Promise.resolve({ isConfirmed: true }));
+    global.document.getElementById.mockImplementation((id) => {
+      if (id && (id.startsWith('question-') || id.startsWith('answer-'))) {
+        return { focus: mockFocus }
+      }
+      return null; 
+    });
     mockParams = {}; 
     passedCasoProp = null; 
     casoFormProps = null;
 
     ExamService.getCaso.mockResolvedValue({ data: mockCasoData });
     ExamService.saveCaso.mockResolvedValue({ data: { id: '1', ...mockCasoData } });
-    
-    // NUEVO: Limpiar los mocks de AlertService
-    AlertService.alertSuccess.mockClear();
-    AlertService.alertError.mockClear();
   });
 
   const renderContainer = () => render(<CasoContainer />);
@@ -159,7 +167,6 @@ describe('CasoContainer Component', () => {
     renderContainer();
     const initialQuestionsCount = passedCasoProp.questions.length;
     fireEvent.click(screen.getByTestId('add-question'));
-    
     await waitFor(() => expect(passedCasoProp.questions.length).toBe(initialQuestionsCount + 1));
     expect(passedCasoProp.questions[initialQuestionsCount]).toEqual({ id: 0, text: "Pregunta", answers: [] });
     expect(global.document.getElementById).toHaveBeenCalledWith(`question-${initialQuestionsCount}`);
@@ -223,9 +230,9 @@ describe('CasoContainer Component', () => {
     }));
 
     // NUEVO: Aserciones para AlertService.alertSuccess
-    await waitFor(() => expect(AlertService.alertSuccess).toHaveBeenCalledTimes(1));
-    expect(AlertService.alertSuccess).toHaveBeenCalledWith('Caso Clinico', 'Se ha guardado correctamente');
-    expect(mockGoBack).toHaveBeenCalledTimes(1); // Assuming it calls goBack after success alert
+    await waitFor(() => expect(alertSuccess).toHaveBeenCalledTimes(1));
+    expect(alertSuccess).toHaveBeenCalledWith('Caso Clinico', 'Se ha guardado correctamente');
+    await waitFor(() => expect(mockGoBack).toHaveBeenCalledTimes(1)); // Assuming it calls goBack after success alert
   });
 
   test('form submission error shows error alert', async () => {
@@ -241,8 +248,8 @@ describe('CasoContainer Component', () => {
     }));
     
     // NUEVO: Aserciones para AlertService.alertError
-    await waitFor(() => expect(AlertService.alertError).toHaveBeenCalledTimes(1));
-    expect(AlertService.alertError).toHaveBeenCalledWith('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
+    await waitFor(() => expect(alertError).toHaveBeenCalledTimes(1));
+    expect(alertError).toHaveBeenCalledWith('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
   });
 
   test('cancel button calls history.goBack', () => {

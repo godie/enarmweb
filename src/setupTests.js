@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom';
-import { Tooltip } from 'materialize-css';
 
 // Mock CSS
 jest.mock('./index.css', () => ({}));
@@ -20,6 +19,7 @@ const M = {
      Sidenav: {
       init: jest.fn()
      },
+     toast: jest.fn(),
      validate_field: jest.fn()
 };
 

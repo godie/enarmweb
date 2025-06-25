@@ -1,0 +1,28 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="120" height="120">
+  <g fill="none" stroke="#2e7d32" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Tubos del estetoscopio -->
+    <path d="M50,30 Q40,60 50,90 Q60,120 100,120 Q140,120 150,90 Q160,60 150,30" />
+
+    <!-- Auriculares -->
+    <circle cx="40" cy="30" r="8" fill="#2e7d32"/>
+    <circle cx="160" cy="30" r="8" fill="#2e7d32"/>
+
+    <!-- Tubo que conecta con el diafragma -->
+    <line x1="100" y1="120" x2="100" y2="150" />
+
+    <!-- Diafragma -->
+    <circle cx="100" cy="160" r="10" fill="#fdd835" stroke="#2e7d32" stroke-width="3"/>
+  </g>
+
+  <!-- Icono de examen (documento con check) -->
+  <g transform="translate(80, 80)">
+    <!-- Documento -->
+    <rect x="0" y="0" width="40" height="50" rx="4" fill="#ffffff" stroke="#2e7d32" stroke-width="2"/>
+    <!-- Check -->
+    <path d="M10 30 l5 5 l15 -15" stroke="#fdd835" stroke-width="3" fill="none"/>
+    <!-- Línea de texto -->
+    <line x1="8" y1="12" x2="32" y2="12" stroke="#2e7d32" stroke-width="2"/>
+    <line x1="8" y1="20" x2="32" y2="20" stroke="#2e7d32" stroke-width="2"/>
+  </g>
+</svg>

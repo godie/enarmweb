@@ -1,24 +1,25 @@
 import React from "react";
 import Navi from "../Navi";
-import { SideNav, SideNavItem } from "react-materialize";
+import SideNavAdmin from './SideNavAdmin';
 
 export default function Dashboard(props){
+    // The CustomNavbar inside Navi needs its sidenavTriggerId prop set to "admin-dashboard-sidenav"
+    // for this SideNav to be triggered by the default menu icon in the navbar.
+    // This change would need to be made in Navi.js or where Navi's CustomNavbar is configured.
+    // For now, we ensure CustomSideNav has an ID.
+    <SideNavAdmin />
+
     return (
       <div className="dashboard">
         <header>
           <div className="navbar-fixed">
-          <Navi />
+          <Navi /> {/* Ensure Navi's CustomNavbar data-target matches sidenavId */}
           </div>
-          <SideNav className="green darken-3 white-text">
-            <SideNavItem userView user={{name: 'diego mendoza'}} />
-            <SideNavItem href="#/dashboard/casos/1">Casos clinicos</SideNavItem>
-            <SideNavItem href="#/dashboard/especialidades">Especialidades</SideNavItem>
-            <SideNavItem href="#/dashboard/logout">Salir</SideNavItem>
-          </SideNav>
+          <SideNavAdmin />
         </header>
         <main>
         <div className="container">
-          <div className="row">{props.children}</div>
+          <div className="row white">{props.children}</div>
         </div>
         </main>
       </div>
