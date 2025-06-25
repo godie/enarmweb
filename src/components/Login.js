@@ -36,7 +36,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="col s12"> {/* This form implies it's a Col s12 already */}
           <h2 className="center white-text">Entrar</h2>
           <CustomRow>
-            <CustomCol s={12}>
+            <CustomCol s={8} offset="s2">
               <CustomTextInput
                 label="email"
                 id="email"
@@ -48,7 +48,7 @@ export default function Login() {
               />
             </CustomCol>
             {/* Password field's Col should get the offset */}
-            <CustomCol s={12} offset="s2">
+            <CustomCol s={8} offset="s2">
               <CustomTextInput
                 type="password" // Changed from 'password' boolean prop
                 label="password"
@@ -71,9 +71,9 @@ export default function Login() {
             >
               Entrar
             </CustomButton>
-          </Row>
+          </CustomRow>
         </form>
-      </Row>
+      </CustomRow>
     </div>
   );
 }

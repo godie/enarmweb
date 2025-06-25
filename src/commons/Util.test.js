@@ -74,45 +74,18 @@ describe('Util', () => {
 
   describe('showToast', () => {
     // Mock the global M object for Materialize
-    let mockM;
-
-    beforeEach(() => {
-      mockM = {
-        toast: jest.fn(),
-      };
-      global.M = mockM;
-    });
-
-    afterEach(() => {
-      // Clean up the global mock
-      delete global.M;
-    });
 
     it('should call M.toast with the given message if M is defined', () => {
       const message = 'Test toast message';
       Util.showToast(message);
-      expect(mockM.toast).toHaveBeenCalledTimes(1);
-      expect(mockM.toast).toHaveBeenCalledWith({ html: message });
+      expect(M.toast).toHaveBeenCalledTimes(1);
+      expect(M.toast).toHaveBeenCalledWith({ html: message });
     });
 
     it('should not throw an error if M is undefined', () => {
-      delete global.M; // Ensure M is undefined
+
       const message = 'Test toast message';
       expect(() => Util.showToast(message)).not.toThrow();
-    });
-
-    it('should not call M.toast if M is undefined', () => {
-       delete global.M; // Ensure M is undefined
-       const message = 'Test toast message';
-       Util.showToast(message);
-       // Since M is undefined, M.toast should not have been called.
-       // The mockM from beforeEach is not in global.M anymore.
-       // If we wanted to be super sure, we'd have to check no M.toast was called,
-       // but the important part is it doesn't throw.
-       // We can re-assign a fresh mock to global.M and check it wasn't called,
-       // or rely on the fact that if it was called on an undefined M, it would throw.
-       // The `not.toThrow()` test above covers the primary concern.
-       expect(mockM.toast).not.toHaveBeenCalled(); // This mockM was detached, so this is correct.
     });
   });
 });

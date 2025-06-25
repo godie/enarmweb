@@ -1,13 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // All react-materialize imports will be removed
-import CustomTextInput from "./custom/CustomTextInput";
-import CustomCheckbox from "./custom/CustomCheckbox";
-import CustomTextarea from "./custom/CustomTextarea";
-import CustomButton from "./custom/CustomButton";
-import CustomIcon from "./custom/CustomIcon"; // In case any Icon is used standalone
-import CustomRow from "./custom/CustomRow";
-import CustomCol from "./custom/CustomCol";
+import { CustomCheckbox, CustomButton, CustomTextInput, CustomTextarea, CustomRow, CustomCol } from "../custom";
 
 const CasoForm = ({
   onSubmit,
@@ -64,7 +58,8 @@ const CasoForm = ({
           addAnswer,
           deleteAnswer
         )}
-      </Row>
+      </CustomRow>
+
 
       <div className="divider"></div>
 
@@ -116,7 +111,7 @@ let proccessQuestions = (
       if (description === null) {
         description = "";
       }
-
+      const showOrHide = (answer.is_correct && description && description.length > 0 ? "show" : "hide");
       return (
         <CustomRow key={keyId}>
           <CustomCol s={10} offset="s1">
@@ -165,9 +160,10 @@ let proccessQuestions = (
             </CustomRow>
           </CustomCol>
           {/* Replacing raw textarea for answer description */}
-          <CustomCol s={8} offset="s1" className={(answer.is_correct && description && description.length > 0 ? "show" : "hide")}>
+          <CustomCol s={8} offset="s1" className={showOrHide}>
             {/* CustomTextarea handles the input-field wrapper itself */}
             <CustomTextarea
+              className={showOrHide}
               id={"answer-description" + keyId}
               label="¿Por que es correcta?"
               value={description}

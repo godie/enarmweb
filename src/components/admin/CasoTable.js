@@ -1,19 +1,18 @@
 // src/components/CasoTable.js
 import React, { useState, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-import ExamService from "../services/ExamService";
-import EnarmUtil from "../modules/EnarmUtil";
-import Util from "../commons/Util";
-// All react-materialize imports are now removed or were removed in prior steps for this file.
+import ExamService from "../../services/ExamService";
+import EnarmUtil from "../../modules/EnarmUtil";
+import Util from "../../commons/Util";
 // Icon might be needed if CustomButton didn't cover a case or for Pagination defaults, but Pagination handles its own.
-import CustomCollection from "./custom/CustomCollection";
-import CustomCollectionItem from "./custom/CustomCollectionItem";
-import CustomPagination from "./custom/CustomPagination";
-import CustomSelect from "./custom/CustomSelect";
-import CustomRow from "./custom/CustomRow"; // Added
-import CustomCol from "./custom/CustomCol"; // Added
-import CustomButton from "./custom/CustomButton"; // Added
-import CustomPreloader from "./custom/CustomPreloader"; // Added
+import CustomCollection from "../custom/CustomCollection";
+import CustomCollectionItem from "../custom/CustomCollectionItem";
+import CustomPagination from "../custom/CustomPagination";
+import CustomSelect from "../custom/CustomSelect";
+import CustomRow from "../custom/CustomRow"; // Added
+import CustomCol from "../custom/CustomCol"; // Added
+import CustomButton from "../custom/CustomButton"; // Added
+import CustomPreloader from "../custom/CustomPreloader"; // Added
 
 const ITEMS_PER_PAGE = 10;
 

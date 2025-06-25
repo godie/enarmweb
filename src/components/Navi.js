@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Auth from "../modules/Auth";
 // import { Navbar } from "react-materialize"; // Removed
-import CustomNavbar from "./custom/CustomNavbar"; // Added
+import {CustomNavbar} from "./custom"; // Added
 
 const Navi = () => {
   let logoutLink = null;
@@ -37,6 +37,7 @@ const Navi = () => {
     <CustomNavbar
       className="green darken-1"
       brand={<span>Enarm Simulator</span>}
+      brandClassName='center'
       centerLogo // This prop is available in CustomNavbar
       alignLinks="left"
       sidenavTriggerId="mobile-nav-main" // Example ID, though SideNav isn't used in this specific file

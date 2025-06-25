@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-// import { Row,Col, TextInput, Textarea, Button } from "react-materialize"; // Removed
+
 import { createBrowserHistory } from "history";
 import ExamService from "../../services/ExamService";
-import CustomRow from "../custom/CustomRow"; // Added
-import CustomCol from "../custom/CustomCol"; // Added
-import CustomTextInput from "../custom/CustomTextInput"; // Added
-import CustomTextarea from "../custom/CustomTextarea"; // Added
-import CustomButton from "../custom/CustomButton"; // Added
+import {CustomRow, CustomCol, CustomTextInput, CustomButton, CustomTextarea} from "../custom"; // Added
 import { alertError, alertSuccess} from "../../services/AlertService";
 import { useParams } from "react-router-dom";
 

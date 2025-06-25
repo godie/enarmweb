@@ -71,7 +71,7 @@ export default function Expecialidades({title}){
             </thead>
             <tbody>{rows}</tbody>
             <tfoot></tfoot>
-        </Table>
+        </CustomTable>
 
         </div>
     )

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import AnalyticsTracker from "./components/AnalyticsTracker";
+import {GoogleTagManager, GTMRouteTracker} from './components/google/GoogleTagManager';
 import AppRoutes from "./routes/AppRoutes";
 import { HashRouter as Router } from "react-router-dom";
 
@@ -9,7 +9,8 @@ import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <Router>
-    <AnalyticsTracker />
+    <GoogleTagManager gtmId="G-XH57C3M6CB" />
+    <GTMRouteTracker />
     <AppRoutes />
   </Router>,
   document.getElementById("root")

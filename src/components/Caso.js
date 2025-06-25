@@ -6,6 +6,7 @@ import Pregunta from "./Pregunta";
 import Auth from "../modules/Auth";
 import { useHistory } from 'react-router-dom';
 import { alertError } from "../services/AlertService";
+import Util from "../commons/Util";
 
 const Caso = (props) => {
   const { clinicCaseId } = props;
@@ -64,7 +65,7 @@ const Caso = (props) => {
     }
     ExamService.sendAnswers(playerAnswers)
       .then((response) => {
-        console.log("se guardaron las respuestas");
+        Util.showToast("se guardaron las respuestas");
       })
       .catch((error) => {
         alertError('Enarm simulator', 'Ocurrio un erro al guardar las respuestas');

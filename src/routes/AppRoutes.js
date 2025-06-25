@@ -4,8 +4,8 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import App from "../App";
 import Examen from "../components/Examen";
-import CasoTable from "../components/CasoTable";
-import CasoContainer from "../components/CasoContainer";
+import CasoTable from "../components/admin/CasoTable";
+import CasoContainer from "../components/admin/CasoContainer";
 import { Dashboard } from "../components/admin";
 import Login from "../components/Login";
 import FacebookLoginContainer from "../components/facebook/FacebookLoginContainer";
@@ -25,13 +25,16 @@ function DashboardCases(props) {
       <CasoTable {...props} />
       <CustomButton
           href="#/dashboard/new/caso"
-          className="red btn-large btn-floating fixed-action-btn direction-top active" // Ensured btn-large and btn-floating are here
-          node="a"
+          className="red" // Ensured btn-large and btn-floating are here
+          large
+          floating
+          fab
           // tooltipOptions prop is not standard, tooltip text is passed directly
           // For position, CustomButton would need a new prop e.g. tooltipPosition="top"
           // For now, CustomButton's default tooltip position will be used.
           icon="add"
-          tooltip="Agregar nuevo caso"
+          
+          tooltip={{html:"Agregar Caso", position: 'top'}}
           waves="light" // Adding default waves
          />
     </Dashboard>
@@ -60,11 +63,12 @@ function DashboardEspecialidades(props){
       <Especialidades {...props} />
       <CustomButton
                       href="#/dashboard/new/especialidad"
-                      className="red btn-large btn-floating fixed-action-btn direction-top active" // Ensured
+                      className="red btn-large btn-floating direction-top active" // Ensured
                       node="a"
+                      fab
                       // tooltipOptions={{position:'top'}} // See comment above
                       icon="add"
-                      tooltip="Agregar especialidad"
+                      tooltip={{html:"Agregar especialidad", position: 'top'}}
                       waves="light" // Adding default waves
                      />
     </Dashboard>
