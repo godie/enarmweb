@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "./index.css";
 import {GoogleTagManager, GTMRouteTracker} from './components/google/GoogleTagManager';
 import AppRoutes from "./routes/AppRoutes";
@@ -7,13 +7,16 @@ import { HashRouter as Router } from "react-router-dom";
 
 import * as serviceWorker from "./serviceWorker";
 
-ReactDOM.render(
-  <Router>
-    <GoogleTagManager gtmId="G-XH57C3M6CB" />
-    <GTMRouteTracker />
-    <AppRoutes />
-  </Router>,
-  document.getElementById("root")
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(
+  <React.StrictMode>
+    <Router>
+      <GoogleTagManager gtmId="G-XH57C3M6CB" />
+      <GTMRouteTracker />
+      <AppRoutes />
+    </Router>
+  </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change
