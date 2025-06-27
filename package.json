@@ -7,13 +7,13 @@
     "materialize-css": "^1.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-ga": "^3.3.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^5.0.1",
+    "setimmediate": "^1.0.5",
     "sweetalert2": "^11.22.0"
   },
   "scripts": {
-    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "start": "react-scripts start",
     "start-https": "HTTPS=true SSL_CRT_FILE=localhost.pem SSL_KEY_FILE=localhost-key.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -37,6 +37,6 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^12.1.5"
+    "@testing-library/react": "^16.3.0"
   }
 }

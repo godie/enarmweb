@@ -3,6 +3,7 @@ class BaseService {
 
   static getURL(url){
     var host = window.location.hostname;
+     return 'https://enarmapi.godieboy.com/'+url;
     //console.log(host);
     if(host === 'localhost'){
       return 'http://localhost:3000/'+url;

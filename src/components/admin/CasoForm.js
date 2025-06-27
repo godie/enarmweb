@@ -3,6 +3,19 @@ import PropTypes from "prop-types";
 // All react-materialize imports will be removed
 import { CustomCheckbox, CustomButton, CustomTextInput, CustomTextarea, CustomRow, CustomCol } from "../custom";
 
+// interface CasoProps {
+//   onSubmit?: fun,
+//   onChange: PropTypes.func.isRequired,
+//   onChangeAnswer: PropTypes.func.isRequired,
+//   onChangeQuestion: PropTypes.func.isRequired,
+//   deleteQuestion: PropTypes.func.isRequired,
+//   caso: PropTypes.object.isRequired,
+//   addQuestion: PropTypes.func,
+//   addAnswer: PropTypes.func,
+//   deleteAnswer: PropTypes.func,
+//   onCancel: PropTypes.func,
+// }
+
 const CasoForm = ({
   onSubmit,
   onChange,

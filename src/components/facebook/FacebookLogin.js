@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 export default function FacebookLogin({
   appId,
   onStatusChange,
-  locale,
-  version,
-  xfbml,
+  locale = 'en_US',
+  version = 'v23.0',
+  xfbml = true,
 }) {
   useEffect(() => {
     // Initialize Facebook SDK
@@ -23,6 +23,11 @@ export default function FacebookLogin({
       // Subscribe to status changes
       window.FB.Event.subscribe("auth.statusChange", onStatusChange);
     };
+
+    if(locale === undefined){
+      locale = 'en_US';
+    }
+    console.log(version);
 
     // Load the SDK script if not already present
     if (!document.getElementById("facebook-jssdk")) {
@@ -75,6 +80,6 @@ FacebookLogin.propTypes = {
 
 FacebookLogin.defaultProps = {
   locale: "en_US",
-  version: "v2.8",
+  version: "v23.0",
   xfbml: true,
 };
