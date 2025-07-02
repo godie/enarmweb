@@ -1,23 +1,10 @@
-import React from "react";
+import React, { useActionState } from "react"; // Added useActionState
 import PropTypes from "prop-types";
-// All react-materialize imports will be removed
 import { CustomCheckbox, CustomButton, CustomTextInput, CustomTextarea, CustomRow, CustomCol } from "../custom";
+import { alertError, alertSuccess } from "../../services/AlertService"; // For user feedback
 
-// interface CasoProps {
-//   onSubmit?: fun,
-//   onChange: PropTypes.func.isRequired,
-//   onChangeAnswer: PropTypes.func.isRequired,
-//   onChangeQuestion: PropTypes.func.isRequired,
-//   deleteQuestion: PropTypes.func.isRequired,
-//   caso: PropTypes.object.isRequired,
-//   addQuestion: PropTypes.func,
-//   addAnswer: PropTypes.func,
-//   deleteAnswer: PropTypes.func,
-//   onCancel: PropTypes.func,
-// }
-
+// Removed onSubmit from props as it will be handled by useActionState
 const CasoForm = ({
-  onSubmit,
   onChange,
   caso,
   onChangeAnswer,
@@ -27,85 +14,133 @@ const CasoForm = ({
   addAnswer,
   deleteAnswer,
   onCancel,
-}) => (
-  <div className="col s12 m12 l12 white">
-    <form className="col s12" onSubmit={onSubmit}>
-      <h3 className="center">Caso Clinico</h3>
+  saveCasoAction // This will be the action passed from the parent container
+}) => {
 
-      <CustomRow>
-        <CustomCol s={10} offset="s1">
-          <CustomTextarea
-            id="description"
-            label="Caso clinico"
-            value={caso.description}
-            onChange={onChange}
-            name="description" // Pass name for onChange handler in parent
-            textareaClassName="z-depth-1"
-            // s={10} and offset="s1" are handled by the wrapping CustomCol
-          />
-        </CustomCol>
-      </CustomRow>
-      <CustomRow>
-        <CustomRow> {/* This inner Row might be redundant if CustomCol handles margins correctly, but preserving structure for now */}
-          <CustomCol s={8}>
-            <h4 className="center">Preguntas:</h4>
-          </CustomCol>
-          <CustomCol s={4}>
-            <CustomButton
-              onClick={addQuestion}
-              type="button"
-              className="black" // Will be merged with btn classes
-              large
-              icon="add" // CustomButton handles icon string
-              iconPosition="left" // Default is left, but explicit
-            >
-              Agregar Pregunta
-            </CustomButton>
+  // useActionState will be used in the parent component (CasoContainer)
+  // For now, we assume saveCasoAction is the action ready to be used by the form
+  // and error/isPending would be passed as props if needed here, or handl sved in parent.
+  // This component will now expect `saveCasoAction` which is the `submitAction` from `useActionState`
+  // and potentially `error` and `isPending` if they need to affect UI within this form directly.
+
+  // The actual form submission logic (calling service, handling response)
+  // will be part of the action function defined in CasoContainer.
+  // Here, we just wire the form to it.
+
+  // If error display and pending state for the button are needed *within* this component,
+  // they would need to be passed as props from CasoContainer.
+  // For this example, let's assume they are passed:
+  // error: The error message from useActionState
+  // isPending: The pending state from useActionState
+
+  // However, to keep this component simpler and focused on rendering,
+  // let's assume error display and button state are managed by the parent
+  // or that the parent passes down a consolidated `isSubmitting` prop.
+  // For now, we'll just use `saveCasoAction` for the form.
+
+  // The `onSubmit` prop is removed. The form now uses the `action` prop.
+  // The parent component (`CasoContainer`) will be responsible for:
+  // 1. Defining the actual async action function.
+  // 2. Using `useActionState` with that function.
+  // 3. Passing the `submitAction` (returned by `useActionState`) to this component as `saveCasoAction`.
+  // 4. Optionally, passing `error` and `isPending` if needed for UI changes within `CasoForm`.
+
+  return (
+    <div className="col s12 m12 l12 white">
+      {/* The form now uses the `action` prop with `saveCasoAction` */}
+      {/* FormData will be automatically collected. Ensure input fields have `name` attributes. */}
+      <form className="col s12" action={saveCasoAction}>
+        <h3 className="center">Caso Clinico</h3>
+
+        <CustomRow>
+          <CustomCol s={10} offset="s1">
+            <CustomTextarea
+              id="description"
+              label="Caso clinico"
+              value={caso.description} // Still controlled by parent state for dynamic changes
+              onChange={onChange} // onChange still needed for parent to update its state
+              name="description" // Crucial for FormData
+              textareaClassName="z-depth-1"
+            />
           </CustomCol>
         </CustomRow>
-        {proccessQuestions( // This function also needs internal Row/Col/Button/Icon replaced
-          caso.questions,
-          onChangeAnswer,
-          onChangeQuestion,
-          deleteQuestion,
-          addAnswer,
-          deleteAnswer
-        )}
-      </CustomRow>
-
-
-      <div className="divider"></div>
-
-      <CustomRow>
-        <CustomCol s={12}>
-          <CustomRow> {/* Inner row for button alignment */}
-            <CustomCol s={6}>
-              <p className="left-align">
-                <CustomButton
-                  large
-                  type="button"
-                  waves="light"
-                  onClick={onCancel}
-                >
-                  Cancelar
-                </CustomButton>
-              </p>
+        <CustomRow>
+          <CustomRow>
+            <CustomCol s={8}>
+              <h4 className="center">Preguntas:</h4>
             </CustomCol>
-            <CustomCol s={6}>
-              <p className="right-align">
-                <CustomButton large type="submit" waves="light" tooltip="Guardar Caso">
-                  Guardar
-                </CustomButton>
-              </p>
+            <CustomCol s={4}>
+              <CustomButton
+                onClick={addQuestion} // These buttons do not submit the form
+                type="button"
+                className="black"
+                large
+                icon="add"
+                iconPosition="left"
+              >
+                Agregar Pregunta
+              </CustomButton>
             </CustomCol>
           </CustomRow>
-        </CustomCol>
-      </CustomRow>
-    </form>
-  </div>
-);
-//TODO Refactor.. v2
-let proccessQuestions = (
+          {/* processQuestions needs to be aware of `name` attributes if its inputs are part of the form submission */}
+          {/* For complex nested data like questions/answers, it's often better to serialize `caso` state manually in the action */}
+          {/* For this refactor, we assume `caso` state is up-to-date in parent, and action will use that. */}
+          {/* Inputs within `processQuestions` should ideally get `name` attributes if they are to be submitted via FormData */}
+          {/* However, given the dynamic nature, it's more robust if the action in CasoContainer stringifies `caso` object. */}
+          {/* Let's add a hidden input to carry the main `caso` data if not relying on FormData for everything. */}
+          <input type="hidden" name="casoData" value={JSON.stringify(caso)} />
+
+          {processQuestions(
+            caso.questions,
+            onChangeAnswer,
+            onChangeQuestion,
+            deleteQuestion,
+            addAnswer,
+            deleteAnswer
+          )}
+        </CustomRow>
+
+        <div className="divider"></div>
+
+        <CustomRow>
+          <CustomCol s={12}>
+            <CustomRow>
+              <CustomCol s={6}>
+                <p className="left-align">
+                  <CustomButton
+                    large
+                    type="button" // Important: not a submit button
+                    waves="light"
+                    onClick={onCancel}
+                  >
+                    Cancelar
+                  </CustomButton>
+                </p>
+              </CustomCol>
+              <CustomCol s={6}>
+                <p className="right-align">
+                  {/* This button will now trigger the form action */}
+                  <CustomButton large type="submit" waves="light" tooltip="Guardar Caso"
+                  // isPending prop would be used here if passed down
+                  // disabled={isPending}
+                  >
+                    {/* {isPending ? "Guardando..." : "Guardar"} */}
+                    Guardar
+                  </CustomButton>
+                </p>
+              </CustomCol>
+            </CustomRow>
+          </CustomCol>
+        </CustomRow>
+      </form>
+    </div>
+  );
+};
+
+// processQuestions remains largely a UI rendering function.
+// The `name` attributes for inputs within it become more critical if relying purely on FormData.
+// For complex/dynamic structures, sending the state object (`caso`) as JSON is often more straightforward.
+let processQuestions = (
   questions,
   onChangeAnswer,
   onChangeQuestion,
@@ -113,36 +148,39 @@ let proccessQuestions = (
   addAnswer,
   deleteAnswer
 ) => {
-  let theQuestions = questions.map((question, questionIndex) => {
-    //const last = question.answers.length;
+  return questions.map((question, questionIndex) => {
     let answers = question.answers.map((answer, answerIndex) => {
-      let keyName =
-        "questions[" + questionIndex + "][answers][" + answerIndex + "]";
+      let keyId = `${questionIndex}-${answerIndex}`;
+      let description = answer.description || "";
+      const showOrHide = (answer.is_correct ? "show" : "hide");
 
-      let keyId = questionIndex + "-" + answerIndex;
-      let description = answer.description;
-      if (description === null) {
-        description = "";
-      }
-      const showOrHide = (answer.is_correct && description && description.length > 0 ? "show" : "hide");
+      // For FormData to pick these up correctly, names need to be structured.
+      // e.g., questions[0][answers][0][text]
+      // This can get complex with dynamic additions/deletions.
+      // The hidden input `casoData` is a simpler way for the action to get the full state.
+      // If not using that, these names are essential:
+      const answerTextName = `questions[${questionIndex}][answers][${answerIndex}][text]`;
+      const answerIsCorrectName = `questions[${questionIndex}][answers][${answerIndex}][is_correct]`;
+      const answerDescriptionName = `questions[${questionIndex}][answers][${answerIndex}][description]`;
+
       return (
         <CustomRow key={keyId}>
           <CustomCol s={10} offset="s1">
-            <CustomRow> {/* Inner Row for layout */}
+            <CustomRow>
               <CustomCol s={8}>
                 <CustomTextInput
-                  id={"answer-" + keyId}
+                  id={`answer-text-${keyId}`}
                   value={answer.text}
-                  label="" // No label needed as per original
+                  label=""
                   onChange={(event) =>
                     onChangeAnswer(questionIndex, answerIndex, "text", event)
                   }
-                  // s={8} handled by wrapping CustomCol
+                  name={answerTextName} // Name for FormData
                 />
               </CustomCol>
               <CustomCol s={2}>
                 <CustomCheckbox
-                  id={keyName + "[is_correct]"}
+                  id={`answer-iscorrect-${keyId}`}
                   label="¿correcta?"
                   checked={answer.is_correct}
                   onChange={(event) => {
@@ -153,14 +191,15 @@ let proccessQuestions = (
                       event
                     );
                   }}
-                  value="is_correct" // HTML value attribute
+                  name={answerIsCorrectName} // Name for FormData
+                  value="true" // Checkbox needs a value when checked
                 />
               </CustomCol>
-              <CustomCol s={1} offset="s1" className="input-field"> {/* input-field might be redundant if button is only content */}
+              <CustomCol s={1} offset="s1" className="input-field">
                 <CustomButton
                   type="button"
                   floating
-                  className="red" // Will be merged
+                  className="red"
                   waves="light"
                   tooltip="Borrar respuesta"
                   aria-label="Borrar respuesta"
@@ -172,36 +211,36 @@ let proccessQuestions = (
               </CustomCol>
             </CustomRow>
           </CustomCol>
-          {/* Replacing raw textarea for answer description */}
-          <CustomCol s={8} offset="s1" className={showOrHide}>
-            {/* CustomTextarea handles the input-field wrapper itself */}
+          <CustomCol s={8} offset="s1" className={showOrHide} id={`answer-description-container-${keyId}`}>
             <CustomTextarea
               className={showOrHide}
-              id={"answer-description" + keyId}
+              id={`answer-description-${keyId}`}
               label="¿Por que es correcta?"
               value={description}
               onChange={(event) =>
                 onChangeAnswer(questionIndex, answerIndex, "description", event)
               }
-              textareaClassName="z-depth-1" // Pass specific class to textarea
-              name="description"
+              textareaClassName="z-depth-1"
+              name={answerDescriptionName} // Name for FormData
             />
           </CustomCol>
         </CustomRow>
       );
     });
+
+    const questionTextName = `questions[${questionIndex}][text]`;
     return (
       <CustomRow key={questionIndex}>
         <CustomCol s={8} offset="s1">
           <CustomTextarea
-            id={"question-" + questionIndex}
+            id={`question-text-${questionIndex}`}
             label={`Pregunta ${questionIndex + 1}`}
-            name={"questions[" + questionIndex + "][text]"}
+            name={questionTextName} // Name for FormData
             value={question.text}
             onChange={(event) => onChangeQuestion(questionIndex, event)}
           />
         </CustomCol>
-        <CustomCol offset="s1" s={1} className="input-field"> {/* input-field might be redundant */}
+        <CustomCol offset="s1" s={1} className="input-field">
           <CustomButton
             type="button"
             onClick={(event) => addAnswer(questionIndex, event)}
@@ -211,12 +250,12 @@ let proccessQuestions = (
             icon="playlist_add"
           />
         </CustomCol>
-        <CustomCol s={1} className="input-field">  {/* input-field might be redundant */}
+        <CustomCol s={1} className="input-field">
           <CustomButton
             type="button"
             onClick={(event) => deleteQuestion(questionIndex, event)}
             floating
-            className="red darken-1" // Will be merged
+            className="red darken-1"
             icon="delete"
             tooltip="Borrar Pregunta"
             aria-label="Borrar Pregunta"
@@ -226,12 +265,12 @@ let proccessQuestions = (
       </CustomRow>
     );
   });
-
-  return theQuestions;
 };
 
+
 CasoForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  // onSubmit is removed
+  saveCasoAction: PropTypes.func.isRequired, // This is the action from useActionState
   onChange: PropTypes.func.isRequired,
   onChangeAnswer: PropTypes.func.isRequired,
   onChangeQuestion: PropTypes.func.isRequired,
@@ -241,6 +280,8 @@ CasoForm.propTypes = {
   addAnswer: PropTypes.func,
   deleteAnswer: PropTypes.func,
   onCancel: PropTypes.func,
+  // error: PropTypes.string, // Optional: if displaying error messages inside form
+  // isPending: PropTypes.bool, // Optional: if disabling submit button from inside form
 };
 
 export default CasoForm;

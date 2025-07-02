@@ -16,7 +16,7 @@ global.M = {
 
 // Helper to provide default props and allow overriding
 const getDefaultProps = () => ({
-  onSubmit: jest.fn(e => e.preventDefault()), // Prevent default form submission for tests
+  saveCasoAction: jest.fn(),
   onChange: jest.fn(),
   onChangeAnswer: jest.fn(),
   onChangeQuestion: jest.fn(),
@@ -53,12 +53,12 @@ describe('CasoForm Component', () => {
     // expect(props.onChange).toHaveBeenCalledWith(expect.objectContaining({ target: { name: 'description', value: 'New description' } }));
   });
 
-  test('calls onSubmit when form is submitted', () => {
+  test('calls saveCasoAction when form is submitted', () => {
     const props = getDefaultProps();
     render(<CasoForm {...props} />);
     const submitButton = screen.getByRole('button', { name: /guardar/i });
     fireEvent.click(submitButton); // Or fireEvent.submit(formElement)
-    expect(props.onSubmit).toHaveBeenCalledTimes(1);
+    expect(props.saveCasoAction).toHaveBeenCalledTimes(1);
   });
 
   test('calls onCancel when cancel button is clicked', () => {
@@ -123,25 +123,15 @@ describe('CasoForm Component', () => {
 
     test('answer description textarea is hidden for incorrect answer', () => {
       render(<CasoForm {...propsWithQuestions} />);
-      // For Answer 1.2 (incorrect)
-      // The textarea for description might still be in DOM but hidden
-      // We need to find it uniquely. Let's assume it's the one after "Answer 1.2"
-      // This is fragile. We need better selectors in the component for this.
-      // For now, let's check its visibility based on the class.
-      // The component structure is: div > div > textarea (for answer text) ... then sibling div for description
       const answerText12 = screen.getByDisplayValue('Answer 1.2');
-      // Find the description textarea associated with Answer 1.2
-      // Assuming it's the next textarea in its answer block.
-      // The structure is: div.row (answer) > div.col.s10 > (TextInput for answer.text) & (Checkbox) & (Button)
-      //                     then sibling div.input-field (for description)
-      // This is hard to select precisely without better test IDs or structure.
-      // Let's find the description textarea related to "Answer 1.2" based on its ID if possible, or relative position.
-      // The component uses id={"answer-description" + keyId} where keyId is "questionIndex-answerIndex"
-      const answerDesc12Textarea = document.getElementById('answer-description0-1'); // for Q0, A1
-      expect(answerDesc12Textarea?.closest('div.input-field')?.classList.contains('hide')).toBe(true);
+      const answerDesc12Textarea = document.getElementById('answer-description-0-1'); // for Q0, A1
+      expect(answerDesc12Textarea).toBeInTheDocument();
+      const parentCol = answerDesc12Textarea.closest('div.col.s8');
+      expect(parentCol).toBeInTheDocument();
+      expect(parentCol).toHaveClass('hide');
     });
 
-    test('answer description textarea is hidden for correct answer if description is empty/null', () => {
+    test('answer description textarea is visible for correct answer if description is empty/null', () => {
       const props = {
         ...getDefaultProps(),
         caso: {
@@ -155,8 +145,8 @@ describe('CasoForm Component', () => {
         },
       };
       render(<CasoForm {...props} />);
-      const answerDescTextarea = document.getElementById('answer-description0-0');
-      expect(answerDescTextarea?.closest('div.input-field')?.classList.contains('hide')).toBe(true);
+      const answerDescTextarea = document.getElementById('answer-description-0-0');
+      expect(answerDescTextarea?.closest('div.input-field')?.classList.contains('show')).toBe(true);
     });
 
 

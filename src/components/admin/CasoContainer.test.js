@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import CasoContainer from './CasoContainer';
@@ -28,7 +28,6 @@ jest.mock('react-router-dom', () => ({
 // Mock services
 jest.mock('../../services/ExamService');
 
-
 jest.mock('../../services/AlertService', () => ({
   alertSuccess: jest.fn(),
   alertError: jest.fn(),
@@ -38,26 +37,17 @@ jest.mock('../../services/AlertService', () => ({
 // Mock child component CasoForm
 let passedCasoProp; // To capture the 'caso' prop passed to CasoForm
 let casoFormProps; // To capture all props
-
-const mockOnSubmit = jest.fn(e => e.preventDefault());
-const mockOnChange = jest.fn();
-const mockAddQuestion = jest.fn();
-const mockDeleteQuestion = jest.fn();
-const mockAddAnswer = jest.fn();
-const mockDeleteAnswer = jest.fn();
-const mockOnChangeQuestion = jest.fn();
-const mockOnChangeAnswer = jest.fn();
-const mockOnCancel = jest.fn();
-
+let casoFormSaveAction;
 
 jest.mock('./CasoForm', () => (props) => {
   passedCasoProp = props.caso; // Capture the caso prop
+  casoFormSaveAction = props.saveCasoAction; // Capture the saveCasoAction prop
   //props.onChange.mockImplementation(mockOnChange);
   casoFormProps = props; // Capture all props
   
   // Simulate form interaction by calling the passed functions
   return (
-    <form data-testid="mock-caso-form" onSubmit={props.onSubmit}>
+    <form data-testid="mock-caso-form" action={props.saveCasoAction}>
       <textarea
         data-testid="caso-description-input"
         name="description"
@@ -69,14 +59,14 @@ jest.mock('./CasoForm', () => (props) => {
       </button>
       {props.caso.questions.map((q, qIdx) => (
         <div key={`q-${qIdx}`}>
-          <input id={`question-${qIdx}`} data-testid={`question-text-${qIdx}`} value={q.text} onChange={(e) => props.onChangeQuestion(qIdx, e)} />
+          <input id={`question-text-${qIdx}`} name={`questions[${qIdx}][text]`} data-testid={`question-text-input-${qIdx}`} value={q.text} onChange={(e) => props.onChangeQuestion(qIdx, e)} />
           <button type="button" data-testid={`delete-question-${qIdx}`} onClick={() => props.deleteQuestion(qIdx)}>Eliminar Pregunta</button>
           <button type="button" data-testid={`add-answer-q${qIdx}`} onClick={() => props.addAnswer(qIdx)}>
             Agregar Respuesta
           </button>
           {q.answers.map((ans, ansIdx) => (
             <div key={`q-${qIdx}-a-${ansIdx}`}>
-              <input data-testid={`answer-text-${qIdx}-${ansIdx}`} value={ans.text} onChange={(e) => props.onChangeAnswer(qIdx, ansIdx, 'text', e)} />
+              <input id={`answer-text-${qIdx}-${ansIdx}`} data-testid={`answer-text-input-${qIdx}-${ansIdx}`} value={ans.text} onChange={(e) => props.onChangeAnswer(qIdx, ansIdx, 'text', e)} name={`questions[${qIdx}][answers][${ansIdx}][text]`} />
                <button type="button" data-testid={`delete-answer-${qIdx}-${ansIdx}`} onClick={() => props.deleteAnswer(qIdx, ansIdx)}>Eliminar Respuesta</button>
             </div>
           ))}
@@ -109,7 +99,7 @@ const mockCasoData = {
   id: '1',
   description: 'Loaded Case Description',
   questions: [
-    { id: 10, text: 'Loaded Question 1', answers: [{ id: 100, text: 'Loaded Answer 1.1' }] },
+    { id: 10, text: 'Loaded Question 1', answers: [{ id: 100, text: 'Loaded Answer 1.1', is_correct: false, description: '' }] },
   ],
 };
 
@@ -122,17 +112,25 @@ describe('CasoContainer Component', () => {
     AlertService.alertSuccess.mockImplementation(() => Promise.resolve({ isConfirmed: true }));
     AlertService.alertError.mockImplementation(() => Promise.resolve({ isConfirmed: true }));
     global.document.getElementById.mockImplementation((id) => {
-      if (id && (id.startsWith('question-') || id.startsWith('answer-'))) {
+      if (id && (id.startsWith('question-text-') || id.startsWith('answer-text-'))) {
         return { focus: mockFocus }
       }
       return null; 
     });
+    mockFocus.mockClear(); // Clear focus mock too
+
     mockParams = {}; 
     passedCasoProp = null; 
     casoFormProps = null;
 
     ExamService.getCaso.mockResolvedValue({ data: mockCasoData });
-    ExamService.saveCaso.mockResolvedValue({ data: { id: '1', ...mockCasoData } });
+     ExamService.saveCaso.mockImplementation((casoToSave) => {
+      if (casoToSave.id) {
+        return Promise.resolve({ data: { id: casoToSave.id, ...casoToSave } });
+      } else {
+        return Promise.resolve({ data: { id: 'newId', ...casoToSave } });
+      }
+    });
   });
 
   const renderContainer = () => render(<CasoContainer />);
@@ -169,7 +167,7 @@ describe('CasoContainer Component', () => {
     fireEvent.click(screen.getByTestId('add-question'));
     await waitFor(() => expect(passedCasoProp.questions.length).toBe(initialQuestionsCount + 1));
     expect(passedCasoProp.questions[initialQuestionsCount]).toEqual({ id: 0, text: "Pregunta", answers: [] });
-    expect(global.document.getElementById).toHaveBeenCalledWith(`question-${initialQuestionsCount}`);
+    expect(global.document.getElementById).toHaveBeenCalledWith(`question-text-${initialQuestionsCount}`);
     expect(mockFocus).toHaveBeenCalled();
   });
 
@@ -193,7 +191,7 @@ describe('CasoContainer Component', () => {
     expect(passedCasoProp.questions[questionIndex].answers[initialAnswersCount]).toEqual({
       id: 0, text: "Respuesta", is_correct: false, description: "",
     });
-    expect(global.document.getElementById).toHaveBeenCalledWith(`answer-${questionIndex}-${initialAnswersCount}`);
+    expect(global.document.getElementById).toHaveBeenCalledWith(`answer-text-${questionIndex}-${initialAnswersCount}`);
     expect(mockFocus).toHaveBeenCalled();
   });
   
@@ -221,12 +219,21 @@ describe('CasoContainer Component', () => {
   test('form submission success shows success alert', async () => {
     renderContainer();
     fireEvent.change(screen.getByTestId('caso-description-input'), { target: { name: 'description', value: 'Test Submit' } });
+    const formData = new FormData();
+    formData.append('description', 'Test Submit');
+    formData.append('casoData', JSON.stringify(passedCasoProp));
 
-    fireEvent.submit(screen.getByTestId('mock-caso-form'));
+    fireEvent.click(screen.getByTestId('submit-button'));
+   
+    // await act(async () => {
+    //   await casoFormSaveAction(null, formData);
+    // });
     
-    await waitFor(() => expect(ExamService.saveCaso).toHaveBeenCalled());
+    await waitFor(() => expect(ExamService.saveCaso).toHaveBeenCalledTimes(1));
     expect(ExamService.saveCaso).toHaveBeenCalledWith(expect.objectContaining({
-      description: 'Test Submit'
+      description: 'Test Submit',
+      // Ensure questions and answers are also correctly structured
+      questions_attributes: expect.any(Array)
     }));
 
     // NUEVO: Aserciones para AlertService.alertSuccess
@@ -240,9 +247,12 @@ describe('CasoContainer Component', () => {
     renderContainer();
     fireEvent.change(screen.getByTestId('caso-description-input'), { target: { name: 'description', value: 'Test Error Submit' } });
 
-    fireEvent.submit(screen.getByTestId('mock-caso-form'));
+    const formData = new FormData();
+    formData.append('description', 'Test Error Submit');
 
-    await waitFor(() => expect(ExamService.saveCaso).toHaveBeenCalled());
+    fireEvent.click(screen.getByTestId('submit-button'));
+
+    await waitFor(() => expect(ExamService.saveCaso).toHaveBeenCalledTimes(1));
     expect(ExamService.saveCaso).toHaveBeenCalledWith(expect.objectContaining({
       description: 'Test Error Submit'
     }));

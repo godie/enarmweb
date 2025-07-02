@@ -41,6 +41,7 @@ const Navi = () => {
       centerLogo // This prop is available in CustomNavbar
       alignLinks="left"
       sidenavTriggerId="mobile-nav-main" // Example ID, though SideNav isn't used in this specific file
+      userName={fbUserName?.name}
     >
       {navLinks}
     </CustomNavbar>
