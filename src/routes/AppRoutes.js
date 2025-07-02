@@ -18,6 +18,10 @@ import Especialidades from '../components/admin/Especialidades';
 import CustomButton from "../components/custom/CustomButton"; // Added
 // CustomIcon is not directly used here if CustomButton handles the icon prop
 import EspecialidadForm from "../components/admin/EspecialidadForm";
+import QuestionList from "../components/admin/QuestionList";
+import QuestionDetail from "../components/admin/QuestionDetail";
+import ExamList from "../components/admin/ExamList"; // Added for Exam routes
+import ExamCreator from "../components/admin/ExamCreator"; // Added for Exam routes
 
 function DashboardCases(props) {
   return (
@@ -113,8 +117,13 @@ export default function AppRoutes() {
         )}
       />
       <FacebookRoute
-        path="/caso/:identificador"
+        path="/caso/:identificador" // This route is for Clinical Cases
         component={AppExamen}
+      />
+      {/* New route for user-facing Exams */}
+      <FacebookRoute
+        path="/exam/:examId" // examId will be the parameter for general exams
+        component={AppExamen} // AppExamen will need to handle this new param
       />
       <FacebookRoute
         path="/profile"
@@ -148,6 +157,33 @@ export default function AppRoutes() {
       <PrivateRoute path="/dashboard/especialidades" component={DashboardEspecialidades} />
       <PrivateRoute path="/dashboard/new/especialidad" component={DashboardEditEspecialidades} />
       <PrivateRoute path="/dashboard/edit/especialidad/:identificador" component={DashboardEditEspecialidades} />
+
+      {/* New routes for questions */}
+      <PrivateRoute
+        path="/admin/questions"
+        exact
+        component={() => <Dashboard><QuestionList /></Dashboard>}
+      />
+      <PrivateRoute
+        path="/admin/question/:questionId"
+        component={() => <Dashboard><QuestionDetail /></Dashboard>}
+      />
+
+      {/* New routes for Exams */}
+      <PrivateRoute
+        path="/admin/exams"
+        exact
+        component={() => <Dashboard><ExamList /></Dashboard>}
+      />
+      <PrivateRoute
+        path="/admin/exams/new"
+        exact
+        component={() => <Dashboard><ExamCreator /></Dashboard>}
+      />
+      <PrivateRoute
+        path="/admin/exams/:id/edit"
+        component={() => <Dashboard><ExamCreator /></Dashboard>} // ExamCreator handles edit mode via param
+      />
 
       {/* — Fallback: cualquier otra ruta, redirige a “/” — */}
       <Route path="*">

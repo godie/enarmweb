@@ -5,14 +5,17 @@ import Auth from "../modules/Auth";
 axios.defaults.timeout = 10000;
 
 export default class ExamService {
-  static getExams(page) {
-    let token = `bearer ${Auth.getToken()}`;
-    let headers = { headers: { Authorization: token }, params: { page: page } };
-    //Todo exams are differentes :P
-    let url = "clinical_cases";
-    return axios.get(BaseService.getURL(url), headers);
-  }
+  // This method was originally for clinical_cases, renaming to avoid conflict
+  // static getExams(page) {
+  //   let token = `bearer ${Auth.getToken()}`;
+  //   let headers = { headers: { Authorization: token }, params: { page: page } };
+  //   //Todo exams are differentes :P
+  //   let url = "clinical_cases";
+  //   return axios.get(BaseService.getURL(url), headers);
+  // }
 
+  // Assuming this method is for questions related to a clinical case, keeping it as is.
+  // If it was meant for general questions, it's superseded by getAllQuestions.
   static getQuestions(clinicCaseId) {
     let headers = this.getHeaders();
     let url = `clinical_cases/${clinicCaseId}`;
@@ -78,5 +81,143 @@ export default class ExamService {
   static getHeaders(){
     let token = `bearer ${Auth.getToken()}`;
     return { headers: { Authorization: token } };
+  }
+
+  // New method to get all questions (simulated)
+  static getAllQuestions(page = 1) {
+    console.warn("ExamService.getAllQuestions is using simulated data and pagination.");
+    // Simulate API call returning paginated questions
+    // In a real scenario, this would fetch from an endpoint like /questions?page=page
+    const allQuestions = [
+      { id: 1, text: "Cual es la causa mas frecuente de hipertension arterial sistemica en el adulto?", clinicalCaseId: 1, clinicalCaseName: "Caso Hipertension Adulto", answers: [{id:1, text:"Respuesta A"},{id:2, text:"Respuesta B"}] },
+      { id: 2, text: "Paciente masculino de 34 anios de edad, con diagnostico de VIH hace 5 anios...", clinicalCaseId: 2, clinicalCaseName: "Caso VIH", answers: [{id:3, text:"Respuesta X"},{id:4, text:"Respuesta Y"}] },
+      { id: 3, text: "Cual es el tratamiento de eleccion para la crisis hipertensiva tipo urgencia?", clinicalCaseId: null, clinicalCaseName: null, answers: [{id:5, text:"Respuesta 1"},{id:6, text:"Respuesta 2"}] },
+      { id: 4, text: "Definicion de Preeclampsia", clinicalCaseId: 3, clinicalCaseName: "Caso Obstetricia", answers: [{id:7, text:"Definicion A"},{id:8, text:"Definicion B"}] },
+      { id: 5, text: "Cual es el tumor oseo maligno mas frecuente en ninos?", clinicalCaseId: null, clinicalCaseName: null, answers: [{id:9, text:"Osteosarcoma"},{id:10, text:"Sarcoma de Ewing"}] },
+      // Add more questions as needed for pagination testing
+    ];
+    const itemsPerPage = 10; // Or whatever your backend uses
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedQuestions = allQuestions.slice(startIndex, endIndex);
+
+    return Promise.resolve({
+      data: {
+        questions: paginatedQuestions,
+        totalPages: Math.ceil(allQuestions.length / itemsPerPage),
+        currentPage: page,
+      }
+    });
+    // Real implementation:
+    // let headers = this.getHeaders();
+    // headers.params = { page: page };
+    // let url = "questions"; // Assuming a new endpoint for all questions
+    // return axios.get(BaseService.getURL(url), headers);
+  }
+
+  // New method to get a single question's details (simulated)
+  static getQuestionDetail(questionId) {
+    console.warn(`ExamService.getQuestionDetail for ID ${questionId} is using simulated data.`);
+    // Simulate API call
+    const allQuestionsWithDetails = {
+        1: {
+          id: 1,
+          text: "Cual es la causa mas frecuente de hipertension arterial sistemica en el adulto?",
+          clinicalCaseId: 1,
+          clinicalCaseName: "Caso Hipertension Adulto",
+          answers: [
+            { id: 1, text: "Idiopática o esencial (Correcta)", is_correct: true, description: "En más del 90-95% de los casos, la HTA es idiopática o esencial, lo que significa que no tiene una causa secundaria identificable." },
+            { id: 2, text: "Enfermedad renal crónica", is_correct: false, description: "Si bien es una causa importante de HTA secundaria, no es la más frecuente en la población general adulta." },
+            { id: 3, text: "Hiperaldosteronismo primario", is_correct: false, description: "Es una causa endocrina de HTA, pero menos común que la esencial." },
+          ]
+        },
+        2: {
+          id: 2,
+          text: "Paciente masculino de 34 anios de edad, con diagnostico de VIH hace 5 anios, acude por presentar lesiones papulares, umbilicadas, brillantes, localizadas en cara y cuello. Cual es el diagnostico mas probable?",
+          clinicalCaseId: 2,
+          clinicalCaseName: "Caso VIH",
+          answers: [
+            { id: 4, text: "Molusco contagioso (Correcta)", is_correct: true, description: "Las lesiones descritas son características del molusco contagioso, una infección viral cutánea común en pacientes con VIH." },
+            { id: 5, text: "Sarcoma de Kaposi", is_correct: false, description: "Puede presentar lesiones cutáneas en VIH, pero típicamente son violáceas y pueden ser nodulares o en placa." },
+            { id: 6, text: "Dermatitis seborreica", is_correct: false, description: "Común en VIH, pero se manifiesta como eritema y descamación, no pápulas umbilicadas brillantes." },
+          ]
+        },
+        3: {
+          id: 3,
+          text: "Cual es el tratamiento de eleccion para la crisis hipertensiva tipo urgencia?",
+          clinicalCaseId: null,
+          clinicalCaseName: null,
+          answers: [
+            { id: 7, text: "Captopril oral (Correcta)", is_correct: true, description: "En las urgencias hipertensivas, se busca disminuir la PA gradualmente en 24-48h, y los antihipertensivos orales como IECA (Captopril) son de elección." },
+            { id: 8, text: "Nifedipino sublingual", is_correct: false, description: "El nifedipino sublingual no se recomienda por el riesgo de hipotensión brusca e isquemia." },
+            { id: 9, text: "Labetalol IV", is_correct: false, description: "Los medicamentos IV se reservan para emergencias hipertensivas (con daño a órgano diana)." },
+          ]
+        },
+         4: {
+          id: 4,
+          text: "Segun la GPC, cual es la definicion de Preeclampsia?",
+          clinicalCaseId: 3,
+          clinicalCaseName: "Caso Obstetricia",
+          answers: [
+            { id: 10, text: "Hipertension arterial >140/90 mmHg despues de las 20 SDG + proteinuria >300mg/24h (Correcta)", is_correct: true, description: "Esta es la definición clásica de preeclampsia." },
+            { id: 11, text: "Hipertension arterial >160/110 mmHg antes de las 20 SDG", is_correct: false, description: "La hipertensión antes de las 20 SDG sugiere hipertensión crónica." },
+          ]
+        },
+        5: {
+          id: 5,
+          text: "Cual es el tumor oseo maligno mas frecuente en ninos?",
+          clinicalCaseId: null,
+          clinicalCaseName: null,
+          answers: [
+            { id: 12, text: "Osteosarcoma (Correcta)", is_correct: true, description: "El osteosarcoma es el tumor óseo maligno primario más frecuente en niños y adolescentes." },
+            { id: 13, text: "Sarcoma de Ewing", is_correct: false, description: "Es el segundo tumor óseo maligno más frecuente en este grupo de edad." },
+          ]
+        }
+      };
+    const question = allQuestionsWithDetails[questionId];
+    if (question) {
+      return Promise.resolve({ data: question });
+    } else {
+      return Promise.reject({ message: "Question not found" });
+    }
+    // Real implementation:
+    // let headers = this.getHeaders();
+    // let url = `questions/${questionId}`; // Assuming an endpoint for single question details
+    // return axios.get(BaseService.getURL(url), headers);
+  }
+
+  // == Methods for Exams ==
+
+  static getExams(page = 1) { // Renamed from getExams(page) which was for clinical_cases
+    const headers = this.getHeaders();
+    headers.params = { page: page };
+    const url = "exams"; // Endpoint for exams
+    return axios.get(BaseService.getURL(url), headers);
+  }
+
+  static getExam(examId) {
+    const headers = this.getHeaders();
+    const url = `exams/${examId}`;
+    return axios.get(BaseService.getURL(url), headers);
+  }
+
+  static createExam(examData) {
+    const headers = this.getHeaders();
+    const url = "exams";
+    // Backend expects exam: { ... }
+    return axios.post(BaseService.getURL(url), { exam: examData }, headers);
+  }
+
+  static updateExam(examId, examData) {
+    const headers = this.getHeaders();
+    const url = `exams/${examId}`;
+    // Backend expects exam: { ... }
+    return axios.put(BaseService.getURL(url), { exam: examData }, headers);
+  }
+
+  static deleteExam(examId) {
+    const headers = this.getHeaders();
+    const url = `exams/${examId}`;
+    return axios.delete(BaseService.getURL(url), headers);
   }
 }

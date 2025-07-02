@@ -14,6 +14,8 @@ const sidenavId = "admin-dashboard-sidenav";
             </CustomSideNavItem>
             <CustomSideNavItem divider />
             <CustomSideNavItem href="#/dashboard/casos/1" className="white-text">Casos clinicos</CustomSideNavItem>
+            <CustomSideNavItem href="#/admin/questions" className="white-text">Preguntas</CustomSideNavItem>
+            <CustomSideNavItem href="#/admin/exams" className="white-text">Exámenes</CustomSideNavItem>
             <CustomSideNavItem href="#/dashboard/especialidades" className="white-text">Especialidades</CustomSideNavItem>
             <CustomSideNavItem divider />
             <CustomSideNavItem href="#/dashboard/logout" className="white-text">Salir</CustomSideNavItem>
