@@ -107,15 +107,30 @@ const Caso = (props) => {
   }, [clinicCaseId]); // Runs on mount and when clinicCaseId changes
 
   var preguntas = data.map((pregunta, index) => {
+    // The Pregunta component's props have changed.
+    // It now expects: pregunta (object), question_id, onAnswerSelected, selectedAnswer (ID), showFeedback, isExamMode
     return (
       <Pregunta
-        key={index}
-        index={index}
-        description={pregunta.text}
-        answers={pregunta.answers}
-        selectedAnswer={selectedAnswers[index]}
-        handleSelectOption={handleSelectOption}
-        showCorrectAnswer={showAnswers}
+        key={pregunta.id || index} // Use pregunta.id if available for a more stable key
+        pregunta={pregunta} // Pass the whole question object
+        question_id={pregunta.id} // Actual question ID
+        // selectedAnswer needs to be the ID of the answer
+        selectedAnswer={selectedAnswers[index] ? selectedAnswers[index].id : null}
+        onAnswerSelected={(questionId, answerId, isCorrect) => {
+          // Find the question and answer objects to maintain the existing structure of selectedAnswers
+          const question = data.find(q => q.id === questionId);
+          const answer = question.answers.find(a => a.id === answerId);
+          // Find the index of the question in the 'data' array
+          const qIndex = data.findIndex(q => q.id === questionId);
+          if (qIndex !== -1 && answer) {
+             // Create a new array for selectedAnswers to trigger re-render
+            const newSelectedAnswers = [...selectedAnswers];
+            newSelectedAnswers[qIndex] = answer; // Store the full answer object as before
+            setSelectedAnswers(newSelectedAnswers);
+          }
+        }}
+        showFeedback={showAnswers} // Prop renamed from showCorrectAnswer
+        isExamMode={false} // This is a clinical case, not a general exam in this context
       />
     );
   });
