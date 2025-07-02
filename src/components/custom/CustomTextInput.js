@@ -1,34 +1,34 @@
+// CustomTextInput.js
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 const CustomTextInput = ({
   id,
   label,
-  value = '', // Controlled component should have a default value
-  onChange,
+  value, // Remove default value here
+  onChange, // Make onChange optional
   disabled = false,
-  className = '', // Class for the wrapping div.input-field
-  inputClassName = '', // Class for the input element itself
+  className = '',
+  inputClassName = '',
   icon,
   iconClassName = '',
   type = 'text',
-  validate = false, // For materialize validation class
-  ...props
+  validate = false,
+  ...props // This will capture 'name', 'defaultValue' etc.
 }) => {
   const inputRef = useRef(null);
   const labelRef = useRef(null);
 
   useEffect(() => {
-    // Update text fields for label positioning
-    // This is important for initial render and when value changes programmatically
     if (window.M && window.M.updateTextFields) {
       window.M.updateTextFields();
     }
-     // Ensure label is active if there's a value or placeholder, even on first render
-    if ((value || (inputRef.current && inputRef.current.placeholder)) && labelRef.current) {
+    // Activate label if there's a value, defaultValue, or placeholder
+    const hasContent = value !== undefined ? value : (inputRef.current && (inputRef.current.value || inputRef.current.placeholder));
+    if (hasContent && labelRef.current) {
         labelRef.current.classList.add('active');
     }
-  }, [value]); // Re-run when value changes to keep labels correct
+  }, [value, props.defaultValue]); // React to changes in value or defaultValue
 
   let wrapperClasses = 'input-field';
   if (className) {
@@ -40,6 +40,9 @@ const CustomTextInput = ({
     finalInputClassName += ' validate';
   }
 
+  // Determine if it's controlled or uncontrolled
+  const isControlled = value !== undefined && onChange !== undefined; // Check if both are provided
+
   return (
     <div className={wrapperClasses.trim()}>
       {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
@@ -48,10 +51,10 @@ const CustomTextInput = ({
         id={id}
         type={type}
         className={finalInputClassName.trim()}
-        value={value}
-        onChange={onChange}
         disabled={disabled}
-        {...props} // Other props like 'name', 'placeholder'
+        // Conditionally apply value/onChange for controlled, or pass all props for uncontrolled
+        {...(isControlled ? { value, onChange } : {})} // Apply value/onChange only if controlled
+        {...props} // Other props like 'name', 'placeholder', 'defaultValue'
       />
       {label && <label ref={labelRef} htmlFor={id}>{label}</label>}
     </div>
@@ -61,11 +64,11 @@ const CustomTextInput = ({
 CustomTextInput.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
+  value: PropTypes.string, // No longer required, can be undefined
+  onChange: PropTypes.func, // No longer required, can be undefined
   disabled: PropTypes.bool,
-  className: PropTypes.string, // For the wrapper div.input-field
-  inputClassName: PropTypes.string, // For the <input> element
+  className: PropTypes.string,
+  inputClassName: PropTypes.string,
   icon: PropTypes.string,
   iconClassName: PropTypes.string,
   type: PropTypes.string,

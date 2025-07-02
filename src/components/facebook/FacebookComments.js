@@ -18,7 +18,7 @@ export default function FacebookComments({
   numPosts,
   width,
   locale,
-  version
+  version = 'v23.0'
 }) {
   useEffect(() => {
     // Insert fb-root div if not present

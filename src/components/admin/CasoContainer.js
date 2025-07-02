@@ -1,38 +1,62 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useActionState } from "react"; // Added useActionState
 import CasoForm from "./CasoForm";
 import ExamService from "../../services/ExamService";
 import Materialize from "materialize-css";
-import { useHistory, useParams } from 'react-router-dom'; // Added withRouter for now, can be removed if props are not used from it directly.
+import { useHistory, useParams } from 'react-router-dom';
 import { alertError, alertSuccess } from "../../services/AlertService";
 
-
-const CasoContainer = (props) => { // props might still be needed if withRouter provides something essential not covered by hooks
+const CasoContainer = () => {
   const history = useHistory();
   const { identificador } = useParams();
   const currentIdRef = useRef(null);
 
-  // State initialization
   const [caso, setCaso] = useState({
     description: "Un caso clinico nuevo",
     questions: [],
   });
 
-  // Removed getCategory, logic incorporated into useEffect
+  // Action function for saving the caso
+  const handleSaveCaso = async (previousState, formData) => {
+    // The `caso` state is the most up-to-date source of truth for questions/answers
+    // as they are managed by complex interactions (add/delete question/answer).
+    // FormData might contain 'description', but nested questions/answers are tricky with FormData directly for dynamic lists.
+    // So, we rely on the `caso` state object.
+    // The `casoData` hidden field in form can pass this if needed, or we can just use the `caso` state from closure.
+    
+    // Option 1: Parse from hidden field (if used)
+    // const casoFromFormData = JSON.parse(formData.get('casoData'));
+    // let clinicalCaseToSave = prepareClinicalCase(casoFromFormData);
+    
+    // Option 2: Use `caso` state directly (simpler if `prepareClinicalCase` can access it)
+    // Ensure `prepareClinicalCase` uses the most current `caso` state.
+    // For useActionState, the action should ideally get all it needs from formData or be pure.
+    // To make it work cleanly with useActionState, it's better if `prepareClinicalCase`
+    // can be called with the current `caso` state from this component's scope.
+    // The `formData` argument in an action is typically for simple form fields.
+    // Since our `caso` state is complex and managed interactively,
+    // we will use the `caso` state directly from the `CasoContainer`'s scope.
+    // The `formData` will primarily be used by React to trigger the action.
+    // We can still extract top-level fields like 'description' from formData if desired,
+    // but the core logic will use the `caso` state.
 
-  const processForm = (event) => {
-    event.preventDefault();
-    let clinicalCaseToSave = prepareClinicalCase(caso);
-    ExamService.saveCaso(clinicalCaseToSave)
-      .then((response) => {
-        alertSuccess('Caso Clinico', 'Se ha guardado correctamente').then(() => history.goBack());
-      })
-      .catch((error) => {
-        console.error("ocurrio un erro", error);
-        alertError('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
-      });
+    let clinicalCaseToSave = prepareClinicalCase(caso); // Uses `caso` state from component scope
+
+    try {
+      await ExamService.saveCaso(clinicalCaseToSave);
+      alertSuccess('Caso Clinico', 'Se ha guardado correctamente').then(() => history.goBack());
+      return null; // Success
+    } catch (error) {
+      console.error("ocurrio un error", error);
+      alertError('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
+      return 'Ha ocurrido un error, no se pudo guardar'; // Error message
+    }
   };
 
+  const [error, submitCasoAction, isPending] = useActionState(handleSaveCaso, null);
+
+
   const prepareClinicalCase = (currentCaso) => {
+    // This function now correctly uses the `currentCaso` argument passed to it
     let questions = currentCaso.questions;
     let questions_attributes = [];
 
@@ -42,7 +66,7 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
         text: question.text,
         answers_attributes: processedAnswers,
       };
-      if (question.id === 0) {
+      if (!question.id || question.id === 0) { // Check for undefined or 0
         questions_attributes.push(preparedQuestion);
       } else {
         questions_attributes.push(
@@ -52,8 +76,9 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
     }
     let clinicalCaseToSave = {
       id: currentCaso.id,
-      description: currentCaso.description,
-      category_id: 1, // Assuming category_id is static or handled elsewhere
+      description: currentCaso.description, // This should ideally come from formData if it's a direct input
+                                          // or ensure `caso.description` is updated by `changeCaso`
+      category_id: 1, 
       questions_attributes: questions_attributes,
     };
     return clinicalCaseToSave;
@@ -67,7 +92,7 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
         is_correct: answer.is_correct,
         description: answer.description,
       };
-      if (answer.id > 0) {
+      if (answer.id && answer.id > 0) { // Check for defined and > 0
         answers_attributes.push(
           Object.assign({}, { id: answer.id }, preparedAnswer)
         );
@@ -80,7 +105,9 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
 
   const addQuestion = () => {
     let newQuestion = { id: 0, text: "Pregunta", answers: [] };
-    currentIdRef.current = "question-" + caso.questions.length;
+    // currentIdRef.current = "question-" + caso.questions.length; // Id for focus, ensure it's unique
+    // The id for focus should be on the input itself, e.g., `question-text-${caso.questions.length}`
+    currentIdRef.current = `question-text-${caso.questions.length}`;
     setCaso(prevCaso => ({
       ...prevCaso,
       questions: [...prevCaso.questions, newQuestion]
@@ -101,7 +128,9 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
       is_correct: false,
       description: "",
     };
-    currentIdRef.current = "answer-" + questionIndex + "-" + caso.questions[questionIndex].answers.length;
+    // currentIdRef.current = "answer-" + questionIndex + "-" + caso.questions[questionIndex].answers.length;
+    // The id for focus should be on the input itself, e.g., `answer-text-${questionIndex}-${caso.questions[questionIndex].answers.length}`
+    currentIdRef.current = `answer-text-${questionIndex}-${caso.questions[questionIndex].answers.length}`;
     setCaso(prevCaso => {
       const newQuestions = prevCaso.questions.map((q, i) => {
         if (i === questionIndex) {
@@ -136,7 +165,7 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
     const value = event.target.value;
     setCaso(prevCaso => ({
       ...prevCaso,
-      [field]: value
+      [field]: value // This updates description directly from its input field
     }));
   };
 
@@ -184,13 +213,11 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
     if (identificador && !isNaN(parseInt(identificador))) {
       idFromParams = parseInt(identificador);
     }
-    // setClinicCaseId(idFromParams); // This line is not strictly necessary as clinicCaseId state is not used elsewhere directly for now.
 
     if (idFromParams > 0) {
       ExamService.getCaso(idFromParams)
         .then((response) => {
           setCaso(response.data);
-          // Ensure Materialize updates fields after data is loaded
           setTimeout(() => Materialize.updateTextFields(), 10);
         })
         .catch((error) => {
@@ -198,11 +225,10 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
           alertError('Error','No se pudo cargar el caso clínico.' );
         });
     } else {
-      // Reset form for new case
       setCaso({ description: "Un caso clinico nuevo", questions: [] });
        setTimeout(() => Materialize.updateTextFields(), 10);
     }
-  }, [identificador]); // Depends on the route parameter
+  }, [identificador]);
 
   useEffect(() => {
     if (currentIdRef.current) {
@@ -210,17 +236,25 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
       if (elementToFocus) {
         elementToFocus.focus();
       }
-      currentIdRef.current = null; // Reset after focusing
+      currentIdRef.current = null; 
     }
-    // This effect should run whenever 'caso' state might have changed in a way that requires focusing.
-    // Specifically, after adding a question or an answer.
-  }, [caso]);
+  }, [caso.questions]); // Trigger when questions array changes (add/delete)
+                        // For answers, we might need a more granular dependency if focus is needed there.
+                        // A simple way is to depend on `caso` but that might run too often.
+                        // For now, focusing on new questions and answers should be covered if `currentIdRef.current` has the right ID.
 
+  // Display error from useActionState if it exists
+  useEffect(() => {
+    if (error) {
+      // alertError('Error al Guardar', error); // Already handled in the action
+    }
+  }, [error]);
 
   return (
     <div>
       <CasoForm
-        onSubmit={processForm}
+        // onSubmit is removed, saveCasoAction is passed
+        saveCasoAction={submitCasoAction}
         onChange={changeCaso}
         caso={caso}
         addQuestion={addQuestion}
@@ -230,10 +264,14 @@ const CasoContainer = (props) => { // props might still be needed if withRouter 
         addAnswer={addAnswer}
         deleteAnswer={deleteAnswer}
         onCancel={onCancel}
+        // Pass error and isPending if CasoForm needs to react to them (e.g., disable button, show message)
+        // error={error}
+        // isPending={isPending}
       />
+      {/* Example of displaying form-level error here, if not handled in CasoForm */}
+      {/* {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>} */}
     </div>
   );
 };
 
-export default CasoContainer; // Keep withRouter if props like location or match are used by CasoForm or needed for some other HOC interaction.
-// If not, it can be removed and props drilling can be managed or Context API used.
+export default CasoContainer;

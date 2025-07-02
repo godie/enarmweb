@@ -30,13 +30,6 @@ describe("ExamService", () => {
     headers: { Authorization: `bearer ${mockToken}` },
   };
 
-  describe("getHeaders", () => {
-    it("should return correct authorization headers", () => {
-      const headers = ExamService.getHeaders();
-      expect(Auth.getToken).toHaveBeenCalled();
-      expect(headers).toEqual(expectedHeaders);
-    });
-  });
 
   describe("getExams", () => {
     it("should call axios.get with correct URL, headers, and params", async () => {

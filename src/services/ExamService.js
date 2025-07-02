@@ -4,7 +4,7 @@ import Auth from "../modules/Auth";
 
 axios.defaults.timeout = 10000;
 
-export default class ExamService {
+export default class ExamService extends BaseService {
   static getExams(page) {
     let token = `bearer ${Auth.getToken()}`;
     let headers = { headers: { Authorization: token }, params: { page: page } };
@@ -75,8 +75,4 @@ export default class ExamService {
     return axios.get(BaseService.getURL(url), headers);
   }
 
-  static getHeaders(){
-    let token = `bearer ${Auth.getToken()}`;
-    return { headers: { Authorization: token } };
-  }
 }

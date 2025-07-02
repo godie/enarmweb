@@ -2,7 +2,7 @@ import axios from "axios";
 //import Auth from '../modules/Auth';
 import BaseService from "./BaseService";
 
-class UserService {
+class UserService extends BaseService{
   static login(user) {
     return axios.post(BaseService.getURL("auth_user"), {
       email: user.email,
@@ -12,6 +12,11 @@ class UserService {
 
   static createPlayer(params) {
     return axios.post(BaseService.getURL("players"), { player: params });
+  }
+
+  static getAchievements(playerId) {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL(`players/${playerId}/achievements`), headers);
   }
 }
 

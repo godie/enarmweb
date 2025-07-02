@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 
 const CustomNavbar = ({
   brand,
@@ -8,6 +9,7 @@ const CustomNavbar = ({
   children, // Should be <li> elements or components that render to <li>
   className = '',
   fixed = false,
+  userName = '',
   sidenavTriggerId = 'mobile-nav', // Default ID for the sidenav this navbar might trigger
   centerLogo = false, // For centering logo, especially on mobile
   ...props
@@ -41,6 +43,9 @@ const CustomNavbar = ({
         </a>
         <ul id="nav-mobile" className={`${alignLinks === 'left' ? 'left' : 'right'} hide-on-med-and-down`}>
           {children}
+        </ul>
+        <ul id="nav-mobile-r" className='right hide-on-med-and-down'>
+           {userName !== '' ? <Link to="/profile" role="link">{userName}</Link>: ''}
         </ul>
       </div>
     </nav>
