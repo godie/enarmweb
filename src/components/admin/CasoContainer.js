@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useActionState } from "react"; // Added useActionState
 import CasoForm from "./CasoForm";
 import ExamService from "../../services/ExamService";
-import Materialize from "materialize-css";
 import { useHistory, useParams } from 'react-router-dom';
 import { alertError, alertSuccess } from "../../services/AlertService";
 
