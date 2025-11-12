@@ -4,7 +4,7 @@ import "materialize-css/dist/css/materialize.min.css";
 import "materialize-css/dist/js/materialize.min.js";
 import "./index.css";
 import {GoogleTagManager, GTMRouteTracker} from './components/google/GoogleTagManager';
-import AppRoutes from "./routes/AppRoutes";
+import AppRoutes from "./routes/AppRoutes.jsx";
 import { HashRouter as Router } from "react-router-dom";
 
 import * as serviceWorker from "./serviceWorker";
