@@ -218,7 +218,6 @@ const CasoContainer = () => {
       ExamService.getCaso(idFromParams)
         .then((response) => {
           setCaso(response.data);
-          setTimeout(() => Materialize.updateTextFields(), 10);
         })
         .catch((error) => {
           console.log("OCurrio un error loading caso", error);
@@ -226,7 +225,6 @@ const CasoContainer = () => {
         });
     } else {
       setCaso({ description: "Un caso clinico nuevo", questions: [] });
-       setTimeout(() => Materialize.updateTextFields(), 10);
     }
   }, [identificador]);
 
