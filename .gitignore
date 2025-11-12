@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+serve.log
+npm_output.log
+serve_output.log
+lighthouse-report*.json

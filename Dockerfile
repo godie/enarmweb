@@ -1,20 +1,14 @@
-# Use the latest LTS version of Node.js
-FROM node:20-alpine
- 
-# Set the working directory inside the container
+# Stage 1: Build the React app
+FROM node:20-alpine AS build
 WORKDIR /app
- 
-# Copy package.json and package-lock.json
 COPY package*.json ./
- 
-# Install dependencies
 RUN npm install
- 
-# Copy the rest of your application files
 COPY . .
- 
-# Expose the port your app runs on
-EXPOSE 3000
- 
-# Define the command to run your app
-CMD ["npm", "start"]
+RUN npm run build
+
+# Stage 2: Serve the static files with Nginx
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

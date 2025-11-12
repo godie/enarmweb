@@ -37,6 +37,8 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0"
+    "@testing-library/react": "^16.3.0",
+    "lighthouse": "^13.0.1",
+    "serve": "^14.2.5"
   }
 }
