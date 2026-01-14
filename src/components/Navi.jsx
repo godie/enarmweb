@@ -2,28 +2,24 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Auth from "../modules/Auth";
 // import { Navbar } from "react-materialize"; // Removed
-import {CustomNavbar} from "./custom"; // Added
+import { CustomNavbar, CustomSideNav } from "./custom";
 
-const Navi = () => {
+const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
   let logoutLink = null;
-  var fbUserName = { name: "" }; // Kept var for direct translation
+  var fbUserName = { name: "" };
 
-  if (Auth.isUserAuthenticated()) {
-    logoutLink = <Link to="/logout" role="link">Salir</Link>;
+  if (Auth.isUserAuthenticated() || Auth.isPlayerAuthenticated()) {
+    logoutLink = (
+      <Link to="/logout" role="link">
+        Salir
+      </Link>
+    );
   }
 
-  if (Auth.isFacebookUser()) {
-    // This block seems to attempt to get user info, but fbUserName is not used in JSX.
-    // The side effect of reloading page is preserved.
-    fbUserName = JSON.parse(Auth.getFacebookUser());
-    if (fbUserName && fbUserName.email === undefined) {
-      Auth.removeFacebookUser();
-      window.location.reload(); // This is generally an anti-pattern in React.
-    }
-    logoutLink = <Link to="/logout" role="link">Salir</Link>;
+  if (Auth.isPlayerAuthenticated()) {
+    fbUserName = Auth.getPlayerInfo() || { name: "" };
   }
 
-  // For CustomNavbar, links should be wrapped in <li>
   const navLinks = (
     <>
       <li><Link role="link" to="/">Home</Link></li>
@@ -34,17 +30,26 @@ const Navi = () => {
   );
 
   return (
-    <CustomNavbar
-      className="green darken-1"
-      brand={<span>Enarm Simulator</span>}
-      brandClassName='center'
-      centerLogo // This prop is available in CustomNavbar
-      alignLinks="left"
-      sidenavTriggerId="mobile-nav-main" // Example ID, though SideNav isn't used in this specific file
-      userName={fbUserName?.name}
-    >
-      {navLinks}
-    </CustomNavbar>
+    <>
+      <CustomNavbar
+        className="green darken-1 white-text"
+        brand={<span className="white-text">Enarm</span>}
+        brandClassName='center'
+        centerLogo
+        alignLinks="right"
+        sidenavTriggerId={sidenavTriggerId}
+        userName={fbUserName?.name}
+      >
+        {navLinks}
+      </CustomNavbar>
+
+      {/* Mobile SideNav for main site (non-admin) */}
+      {sidenavTriggerId === "mobile-nav-main" && (
+        <CustomSideNav id="mobile-nav-main">
+          {navLinks}
+        </CustomSideNav>
+      )}
+    </>
   );
 };
 

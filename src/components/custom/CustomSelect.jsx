@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormSelect } from "@materializecss/materialize";
 
 const CustomSelect = ({
   id,
@@ -33,7 +34,7 @@ const CustomSelect = ({
         instanceRef.current.destroy();
       }
       // Initialize new instance
-      instanceRef.current = window.M.FormSelect.init(selectRef.current, {
+      instanceRef.current = FormSelect.init(selectRef.current, {
         ...options,
         // dropdownOptions: options.dropdownOptions || {} // Default if not provided
       });
@@ -52,16 +53,16 @@ const CustomSelect = ({
   // This effect tries to handle programmatic value changes after initialization
   useEffect(() => {
     if (selectRef.current && instanceRef.current) {
-        // If the props.value changes, update the internal state and select's value
-        // Then, re-initialize Materialize select to make it pick up the new value visually.
-        // This is a common workaround for Materialize select not being fully reactive.
-        selectRef.current.value = value; // Set the raw select value
+      // If the props.value changes, update the internal state and select's value
+      // Then, re-initialize Materialize select to make it pick up the new value visually.
+      // This is a common workaround for Materialize select not being fully reactive.
+      selectRef.current.value = value; // Set the raw select value
 
-        // Destroy previous instance before re-initializing
-        if (instanceRef.current && instanceRef.current.destroy) {
-            instanceRef.current.destroy();
-        }
-        instanceRef.current = window.M.FormSelect.init(selectRef.current, options);
+      // Destroy previous instance before re-initializing
+      if (instanceRef.current && instanceRef.current.destroy) {
+        instanceRef.current.destroy();
+      }
+      instanceRef.current = FormSelect.init(selectRef.current, options);
     }
   }, [value, options]); // Dependency on `value` is crucial here
 

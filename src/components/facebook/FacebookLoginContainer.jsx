@@ -20,10 +20,15 @@ export default function FacebookLoginContainer() {
           };
 
           // Persist in localStorage and backend
-          Auth.saveFacebookUser(JSON.stringify(params));
+          Auth.saveFacebookUser(params);
           UserService.createPlayer(params)
             .then((response) => {
               Auth.authenticatePlayer(response.data.token);
+              Auth.savePlayerInfo({
+                name: params.name,
+                email: params.email,
+                id: response.data.id
+              });
               history.replace("/");
             })
             .catch((err) => console.error("UserService error:", err));
@@ -51,8 +56,6 @@ export default function FacebookLoginContainer() {
   }, [onStatusChange]);
 
   return (
-    <div>
-      <FacebookLogin appId="401225480247747" onStatusChange={onStatusChange} />
-    </div>
+    <FacebookLogin appId="401225480247747" onStatusChange={onStatusChange} ></FacebookLogin>
   );
 }

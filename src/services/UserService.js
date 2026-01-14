@@ -2,7 +2,7 @@ import axios from "axios";
 //import Auth from '../modules/Auth';
 import BaseService from "./BaseService";
 
-class UserService extends BaseService{
+class UserService extends BaseService {
   static login(user) {
     return axios.post(BaseService.getURL("auth_user"), {
       email: user.email,
@@ -12,6 +12,14 @@ class UserService extends BaseService{
 
   static createPlayer(params) {
     return axios.post(BaseService.getURL("players"), { player: params });
+  }
+
+  static loginPlayer(params) {
+    return axios.post(BaseService.getURL("players/login"), params);
+  }
+
+  static googleLogin(params) {
+    return axios.post(BaseService.getURL("players/google_login"), params);
   }
 
   static getAchievements(playerId) {

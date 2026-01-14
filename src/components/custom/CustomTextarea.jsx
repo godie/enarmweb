@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { Forms, CharacterCounter } from '@materializecss/materialize';
 
 const CustomTextarea = ({
   id,
@@ -11,42 +12,50 @@ const CustomTextarea = ({
   textareaClassName = '', // Class for the textarea element itself
   icon,
   iconClassName = '',
-  s, m, l, xl, // Grid size props, to be applied if needed, or handled by CustomCol
+  s, m, l, xl, // Grid size props
   ...props
 }) => {
   const textareaRef = useRef(null);
-  const labelRef = useRef(null);
+  const counterInstance = useRef(null);
 
   useEffect(() => {
-    // Initialize textarea auto-resize
-    if (textareaRef.current && window.M && window.M.textareaAutoResize && !disabled) {
-      window.M.textareaAutoResize(textareaRef.current);
+    // Initialize/Update textarea auto-resize on value or disabled change
+    if (textareaRef.current && Forms.textareaAutoResize && !disabled) {
+      Forms.textareaAutoResize(textareaRef.current);
     }
-  }, [disabled]); // Re-run if disabled state changes
+  }, [value, disabled]);
 
   useEffect(() => {
-    // Update text fields for label positioning
-    // This is important for initial render and when value changes programmatically
-    if (window.M && window.M.updateTextFields) {
-      window.M.updateTextFields();
+    // Initialize Character Counter if maxLength is present
+    if (textareaRef.current && CharacterCounter && (props.maxLength || props['data-length'])) {
+      if (counterInstance.current) {
+        counterInstance.current.destroy();
+      }
+      counterInstance.current = CharacterCounter.init(textareaRef.current);
     }
-    // Ensure label is active if there's a value, even on first render
-    if (value && labelRef.current) {
-        labelRef.current.classList.add('active');
-    }
+    return () => {
+      if (counterInstance.current) {
+        counterInstance.current.destroy();
+        counterInstance.current = null;
+      }
+    };
+  }, [props.maxLength, props['data-length']]);
 
-  }, [value]); // Re-run when value changes to keep labels correct
+  useEffect(() => {
+    if (Forms && Forms.updateTextFields) {
+      Forms.updateTextFields();
+    }
+  }, [value]);
 
   let wrapperClasses = 'input-field';
   if (className) {
     wrapperClasses += ` ${className}`;
   }
-  // Apply grid classes if provided (though typically CustomCol would handle this)
+  // Apply grid classes if provided
   if (s) wrapperClasses += ` col s${s}`;
   if (m) wrapperClasses += ` col m${m}`;
   if (l) wrapperClasses += ` col l${l}`;
   if (xl) wrapperClasses += ` col xl${xl}`;
-
 
   return (
     <div className={wrapperClasses.trim()}>
@@ -58,9 +67,10 @@ const CustomTextarea = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        {...props} // Other props like 'name', 'placeholder'
+        placeholder=" "
+        {...props} // Other props like 'maxLength', 'placeholder'
       />
-      {label && <label ref={labelRef} htmlFor={id}>{label}</label>}
+      {label && <label htmlFor={id}>{label}</label>}
     </div>
   );
 };
@@ -71,8 +81,8 @@ CustomTextarea.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
   disabled: PropTypes.bool,
-  className: PropTypes.string, // For the wrapper div.input-field
-  textareaClassName: PropTypes.string, // For the <textarea> element
+  className: PropTypes.string,
+  textareaClassName: PropTypes.string,
   icon: PropTypes.string,
   iconClassName: PropTypes.string,
   s: PropTypes.number,

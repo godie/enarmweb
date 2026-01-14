@@ -121,9 +121,10 @@ const CasoTable = () => {
               label="Especialidad"
               value={caso.category_id?.toString() || "0"}
               onChange={(newValue) => changeCategory(caso, idx, newValue)}
-              // id prop could be useful for label association: e.g., `select-especialidad-${caso.id}`
+              id={`select-especialidad-${caso.id}`}
+              className="black-text"
             >
-              <option value="0" disabled={ (caso.category_id?.toString() || "0") !== "0" }>Sin Especialidad</option>
+              <option value="0" disabled={(caso.category_id?.toString() || "0") !== "0"}>Sin Especialidad</option>
               {especialidadesOptions}
             </CustomSelect>
           </CustomCol>
@@ -145,31 +146,31 @@ const CasoTable = () => {
 
   if (casesData === null && !loadingError) {
     return (<div style={{ textAlign: 'center', marginTop: '20px' }} role="progressbar">
-              <CustomPreloader size="big" active />
-            </div>);
+      <CustomPreloader size="big" active />
+    </div>);
   }
 
-  if(loadingError){
+  if (loadingError) {
     return (<CustomCollectionItem className="center-align red-text text-darken-4">
-          Error al cargar los casos. Intente de nuevo más tarde.
-        </CustomCollectionItem>)
+      Error al cargar los casos. Intente de nuevo más tarde.
+    </CustomCollectionItem>)
     // Note: This lonely CollectionItem should ideally be wrapped in a CustomCollection
     // for proper styling if it's the only thing rendered.
     // However, preserving original structure for now.
   }
 
   return (
-    <CustomCollection header={`Casos Clinicos (${totalCases})`}>
+    <CustomCollection header={`Casos Clinicos (${totalCases})`} className="text-darken-1">
       <CustomPagination
         activePage={currentPage}
         items={numPages}
         // leftBtn and rightBtn props omitted to use CustomPagination's defaults
         maxButtons={8}
         onSelect={handlePageClick}
-        className="white"
+        className="green-text text-darken-1"
       />
       {casesData !== null && !loadingError && casesData.length === 0 && (
-        <CustomCollectionItem className="center-align grey-text text-darken-1">
+        <CustomCollectionItem className="center-align text-darken-1">
           No se encontraron casos clínicos.
         </CustomCollectionItem>
       )}
@@ -180,7 +181,7 @@ const CasoTable = () => {
         // leftBtn and rightBtn props omitted to use CustomPagination's defaults
         maxButtons={8}
         onSelect={handlePageClick}
-        className="white"
+        className="green-text text-darken-1"
       />
     </CustomCollection>
   );

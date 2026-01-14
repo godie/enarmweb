@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 const CustomCheckbox = ({
@@ -13,6 +13,14 @@ const CustomCheckbox = ({
   value, // HTML value attribute, not for checked state
   ...props
 }) => {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.indeterminate = indeterminate;
+    }
+  }, [indeterminate]);
+
   let inputClasses = className;
   if (indeterminate) {
     inputClasses += ' indeterminate-checkbox';
@@ -22,6 +30,7 @@ const CustomCheckbox = ({
   return (
     <label htmlFor={id} className={labelClassName} {...props}>
       <input
+        ref={inputRef}
         type="checkbox"
         id={id}
         checked={checked}

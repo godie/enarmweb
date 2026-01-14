@@ -7,6 +7,7 @@ const CustomSideNavItem = ({
   className = '', // Added to the <a> tag if it's a link, or <li> if not a link/divider/subheader
   divider = false,
   subheader = false,
+  icon,
   onClick, // For items that are not links but perform actions
   // waves prop can be added if desired for link items
   ...props
@@ -23,9 +24,15 @@ const CustomSideNavItem = ({
   // If href is not provided, it can be a non-link item with an onClick
   const linkClassName = `waves-effect ${className}`.trim(); // Add waves-effect by default for clickable items
 
+  // Renderizar icono si existe
+  const iconElement = icon ? (
+    <i className="material-icons">{icon}</i>
+  ) : null;
+
   return (
     <li {...props}>
       <a href={href || '#!'} className={linkClassName} onClick={onClick}>
+        {iconElement}
         {children}
       </a>
     </li>
@@ -39,6 +46,7 @@ CustomSideNavItem.propTypes = {
   divider: PropTypes.bool,
   subheader: PropTypes.bool,
   onClick: PropTypes.func,
+  icon: PropTypes.string
 };
 
 export default CustomSideNavItem;

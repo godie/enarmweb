@@ -1,18 +1,17 @@
-// src/components/FacebookRoute.js
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import Auth from "../../modules/Auth"; // ajusta la ruta si tu Auth está en otro sitio
+import Auth from "../modules/Auth";
 
-const FacebookRoute = ({ component: Component, ...rest }) => (
+const PlayerRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
-      Auth.isFacebookUser() ? (
+      Auth.isPlayerAuthenticated() ? (
         <Component {...props} />
       ) : (
         <Redirect
           to={{
-            pathname: "/loginfb",
+            pathname: "/login",
             state: { from: props.location },
           }}
         />
@@ -21,4 +20,4 @@ const FacebookRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-export default FacebookRoute;
+export default PlayerRoute;

@@ -1,12 +1,12 @@
-// CustomTextInput.js
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { Forms, CharacterCounter } from '@materializecss/materialize';
 
 const CustomTextInput = ({
   id,
   label,
-  value, // Remove default value here
-  onChange, // Make onChange optional
+  value,
+  onChange,
   disabled = false,
   className = '',
   inputClassName = '',
@@ -14,21 +14,34 @@ const CustomTextInput = ({
   iconClassName = '',
   type = 'text',
   validate = false,
-  ...props // This will capture 'name', 'defaultValue' etc.
+  autocomplete = 'off',
+  placeholder = ' ',
+  ...props
 }) => {
   const inputRef = useRef(null);
-  const labelRef = useRef(null);
+  const counterInstance = useRef(null);
 
   useEffect(() => {
-    if (window.M && window.M.updateTextFields) {
-      window.M.updateTextFields();
+    // Initialize Character Counter if maxLength is present
+    if (inputRef.current && CharacterCounter && (props.maxLength || props['data-length'])) {
+      if (counterInstance.current) {
+        counterInstance.current.destroy();
+      }
+      counterInstance.current = CharacterCounter.init(inputRef.current);
     }
-    // Activate label if there's a value, defaultValue, or placeholder
-    const hasContent = value !== undefined ? value : (inputRef.current && (inputRef.current.value || inputRef.current.placeholder));
-    if (hasContent && labelRef.current) {
-        labelRef.current.classList.add('active');
+    return () => {
+      if (counterInstance.current) {
+        counterInstance.current.destroy();
+        counterInstance.current = null;
+      }
+    };
+  }, [props.maxLength, props['data-length']]);
+
+  useEffect(() => {
+    if (Forms && Forms.updateTextFields) {
+      Forms.updateTextFields();
     }
-  }, [value, props.defaultValue]); // React to changes in value or defaultValue
+  }, [value, props.defaultValue]);
 
   let wrapperClasses = 'input-field';
   if (className) {
@@ -41,7 +54,7 @@ const CustomTextInput = ({
   }
 
   // Determine if it's controlled or uncontrolled
-  const isControlled = value !== undefined && onChange !== undefined; // Check if both are provided
+  const isControlled = value !== undefined && onChange !== undefined;
 
   return (
     <div className={wrapperClasses.trim()}>
@@ -52,11 +65,13 @@ const CustomTextInput = ({
         type={type}
         className={finalInputClassName.trim()}
         disabled={disabled}
+        autoComplete={autocomplete}
+        placeholder={placeholder}
         // Conditionally apply value/onChange for controlled, or pass all props for uncontrolled
-        {...(isControlled ? { value, onChange } : {})} // Apply value/onChange only if controlled
-        {...props} // Other props like 'name', 'placeholder', 'defaultValue'
+        {...(isControlled ? { value, onChange } : {})}
+        {...props}
       />
-      {label && <label ref={labelRef} htmlFor={id}>{label}</label>}
+      {label && <label htmlFor={id}>{label}</label>}
     </div>
   );
 };
@@ -64,8 +79,8 @@ const CustomTextInput = ({
 CustomTextInput.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
-  value: PropTypes.string, // No longer required, can be undefined
-  onChange: PropTypes.func, // No longer required, can be undefined
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
   disabled: PropTypes.bool,
   className: PropTypes.string,
   inputClassName: PropTypes.string,
@@ -73,6 +88,7 @@ CustomTextInput.propTypes = {
   iconClassName: PropTypes.string,
   type: PropTypes.string,
   validate: PropTypes.bool,
+  autocomplete: PropTypes.string,
 };
 
 export default CustomTextInput;

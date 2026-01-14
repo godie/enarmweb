@@ -34,18 +34,25 @@ const CustomNavbar = ({
     return <a href="#!" className={brandLogoClasses}>{brand}</a>;
   };
 
+  const navbarClasses = `nav navbar ${className}`.trim();
+
   const mainNav = (
-    <nav {...props} className={className}> {/* Main nav classes like color go here */}
+    <nav {...props} className={navbarClasses}> {/* Main nav classes like color go here */}
       <div className={navWrapperClasses}>
         {renderBrand()}
-        <a href="#!" data-target={sidenavTriggerId} className="sidenav-trigger">
+        <a
+          href="#"
+          onClick={(e) => e.preventDefault()}
+          data-target={sidenavTriggerId}
+          className="sidenav-trigger"
+        >
           <i className="material-icons">menu</i>
         </a>
         <ul id="nav-mobile" className={`${alignLinks === 'left' ? 'left' : 'right'} hide-on-med-and-down`}>
           {children}
         </ul>
         <ul id="nav-mobile-r" className='right hide-on-med-and-down'>
-           {userName !== '' ? <Link to="/profile" role="link">{userName}</Link>: ''}
+          {userName !== '' ? <Link to="/profile" role="link">{userName}</Link> : ''}
         </ul>
       </div>
     </nav>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { Sidenav } from "@materializecss/materialize";
 
 const CustomSideNav = ({
   id,
@@ -12,8 +13,8 @@ const CustomSideNav = ({
 
   useEffect(() => {
     let instance = null;
-    if (sidenavRef.current && window.M && window.M.Sidenav) {
-      instance = window.M.Sidenav.init(sidenavRef.current, options);
+    if (sidenavRef.current && Sidenav && Sidenav.init) {
+      instance = Sidenav.init(sidenavRef.current, options);
     }
     return () => {
       if (instance && instance.destroy) {

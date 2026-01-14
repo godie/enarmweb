@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import "./theme.css";
 import Navi from "./components/Navi";
 
 class App extends React.Component {

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 export default function FacebookLogin({
   appId,
   onStatusChange,
-  locale = 'en_US',
+  locale = 'es_LA',
   version = 'v23.0',
   xfbml = true,
 }) {
@@ -24,10 +24,9 @@ export default function FacebookLogin({
       window.FB.Event.subscribe("auth.statusChange", onStatusChange);
     };
 
-    if(locale === undefined){
-      locale = 'en_US';
+    if (locale === undefined) {
+      locale = 'es_LA';
     }
-    console.log(version);
 
     // Load the SDK script if not already present
     if (!document.getElementById("facebook-jssdk")) {
@@ -53,8 +52,8 @@ export default function FacebookLogin({
   }, [appId, locale, version, xfbml, onStatusChange]);
 
   return (
-    <div className="s12 m8 l8 offset-l2 offset-m2">
-      <div className="section center">
+    <div className="col s12 m10 l8 offset-m1 l2">
+      <div className="section center" style={{ maxWidth: '400px', margin: '0 auto' }}>
         <div
           className="fb-login-button"
           data-max-rows="1"
@@ -64,6 +63,7 @@ export default function FacebookLogin({
           data-auto-logout-link="true"
           data-use-continue-as="false"
           data-scope="public_profile,email"
+          data-width="400"
         />
       </div>
     </div>
@@ -79,7 +79,7 @@ FacebookLogin.propTypes = {
 };
 
 FacebookLogin.defaultProps = {
-  locale: "en_US",
+  locale: "es_LA",
   version: "v23.0",
   xfbml: true,
 };

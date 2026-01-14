@@ -1,10 +1,64 @@
+:root {
+  --medical-green: #43a047;
+  /* green darken-1 */
+  --medical-bg: #f4f7f6;
+  --medical-text: #424242;
+  /* grey darken-3 */
+  --medical-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /*background-color: var(--medical-bg) !important;*/
+  color: var(--medical-text);
+}
+
+/* Materialize Overrides for Clinical Look */
+.card-panel {
+  border-radius: 8px !important;
+  box-shadow: var(--medical-card-shadow) !important;
+  border: 1px solid #e0e6e4;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--medical-text);
+  font-weight: 500;
+}
+
+.btn,
+.btn-large,
+.btn-small {
+  text-transform: none;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+/* Layout adjusting for Fixed SideNav */
+header,
+main,
+footer,
+.navbar-fixed nav {
+  padding-left: 300px;
+}
+
+@media only screen and (max-width : 992px) {
+
+  header,
+  main,
+  footer,
+  .navbar-fixed nav {
+    padding-left: 0;
+  }
 }
 
 code {

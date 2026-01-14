@@ -6,13 +6,14 @@ import App from "../App";
 import Examen from "../components/Examen";
 import CasoTable from "../components/admin/CasoTable";
 import CasoContainer from "../components/admin/CasoContainer";
-import { Dashboard } from "../components/admin";
+import { Dashboard, CasoNuevo, Summary } from "../components/admin";
 import Login from "../components/Login";
+import PlayerLogin from "../components/PlayerLogin";
 import FacebookLoginContainer from "../components/facebook/FacebookLoginContainer";
 import Profile from "../components/Profile";
 import PrivateRoute from './PrivateRoute';
-import FacebookRoute from "../components/facebook/FacebookRoute";
-import Logout, {AdminLogout} from "../components/Logout";
+import PlayerRoute from "../components/PlayerRoute";
+import Logout, { AdminLogout } from "../components/Logout";
 import Especialidades from '../components/admin/Especialidades';
 // import { Button, Icon } from "react-materialize"; // Removed
 import CustomButton from "../components/custom/CustomButton"; // Added
@@ -24,19 +25,27 @@ function DashboardCases(props) {
     <Dashboard>
       <CasoTable {...props} />
       <CustomButton
-          href="#/dashboard/new/caso"
-          className="red" // Ensured btn-large and btn-floating are here
-          large
-          floating
-          fab
-          // tooltipOptions prop is not standard, tooltip text is passed directly
-          // For position, CustomButton would need a new prop e.g. tooltipPosition="top"
-          // For now, CustomButton's default tooltip position will be used.
-          icon="add"
-          
-          tooltip={{html:"Agregar Caso", position: 'top'}}
-          waves="light" // Adding default waves
-         />
+        href="#/dashboard/add/caso"
+        className="red" // Ensured btn-large and btn-floating are here
+        large
+        floating
+        fab
+        // tooltipOptions prop is not standard, tooltip text is passed directly
+        // For position, CustomButton would need a new prop e.g. tooltipPosition="top"
+        // For now, CustomButton's default tooltip position will be used.
+        icon="add"
+
+        tooltip={{ html: "Agregar Caso", position: 'top' }}
+        waves="light" // Adding default waves
+      />
+    </Dashboard>
+  );
+}
+
+function DashBoardSummary(props) {
+  return (
+    <Dashboard>
+      <Summary {...props} />
     </Dashboard>
   );
 }
@@ -49,36 +58,44 @@ function DashboardEditCaso(props) {
   );
 }
 
-function DashboardEditEspecialidades(props){
-  return(
+function DashboardEditEspecialidades(props) {
+  return (
     <Dashboard>
       <EspecialidadForm {...props} />
     </Dashboard>
   )
 }
 
-function DashboardEspecialidades(props){
+function DashboardEspecialidades(props) {
   return (
     <Dashboard>
       <Especialidades {...props} />
       <CustomButton
-                      href="#/dashboard/new/especialidad"
-                      className="red btn-large btn-floating direction-top active" // Ensured
-                      node="a"
-                      fab
-                      // tooltipOptions={{position:'top'}} // See comment above
-                      icon="add"
-                      tooltip={{html:"Agregar especialidad", position: 'top'}}
-                      waves="light" // Adding default waves
-                     />
+        href="#/dashboard/new/especialidad"
+        className="red btn-large btn-floating direction-top active" // Ensured
+        node="a"
+        fab
+        // tooltipOptions={{position:'top'}} // See comment above
+        icon="add"
+        tooltip={{ html: "Agregar especialidad", position: 'top' }}
+        waves="light" // Adding default waves
+      />
     </Dashboard>
   );
 }
 
-function AppExamen(props){
-  return(
+function DashboardNuevoCaso(props) {
+  return (
+    <Dashboard>
+      <CasoNuevo {...props} />
+    </Dashboard>
+  );
+}
+
+function AppExamen(props) {
+  return (
     <App>
-      <Examen {... props} />
+      <Examen {...props} />
     </App>
   )
 }
@@ -86,14 +103,21 @@ function AppExamen(props){
 export default function AppRoutes() {
   return (
     <Switch>
-      {/* — Facebook login flow — */}
+      {/* — Player login flow — */}
+      <Route
+        path="/login"
+        exact
+        component={() => (
+          <App>
+            <PlayerLogin />
+          </App>
+        )}
+      />
       <Route
         path="/loginfb"
         exact
         component={() => (
-          <App>
-            <FacebookLoginContainer />
-          </App>
+          <Redirect to="/login" />
         )}
       />
 
@@ -102,8 +126,8 @@ export default function AppRoutes() {
       <Route path="/logout" exact component={Logout} />
       <Route path="/dashboard/logout" exact component={AdminLogout} />
 
-      {/* — Routes protected by Facebook “loginfb” — */}
-      <FacebookRoute
+      {/* — Routes protected by PlayerRoute — */}
+      <PlayerRoute
         path="/"
         exact
         component={() => (
@@ -112,11 +136,11 @@ export default function AppRoutes() {
           </App>
         )}
       />
-      <FacebookRoute
+      <PlayerRoute
         path="/caso/:identificador"
         component={AppExamen}
       />
-      <FacebookRoute
+      <PlayerRoute
         path="/profile"
         component={() => (
           <App>
@@ -129,7 +153,7 @@ export default function AppRoutes() {
       <PrivateRoute
         path="/dashboard"
         exact
-        component={DashboardCases}
+        component={DashBoardSummary}
       />
       <PrivateRoute
         path="/dashboard/casos/:page"
@@ -143,6 +167,10 @@ export default function AppRoutes() {
       <PrivateRoute
         path="/dashboard/new/caso"
         component={DashboardEditCaso}
+      />
+      <PrivateRoute
+        path="/dashboard/add/caso"
+        component={DashboardNuevoCaso}
       />
 
       <PrivateRoute path="/dashboard/especialidades" component={DashboardEspecialidades} />

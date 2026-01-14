@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, Children } from 'react';
 import PropTypes from 'prop-types';
+import { Tooltip, FloatingActionButton } from '@materializecss/materialize';
 
 const CustomButton = ({
   children,
@@ -28,9 +29,9 @@ const CustomButton = ({
   // Tooltip initialization
   useEffect(() => {
     let tooltipInstance = null;
-    if (tooltip && elementRef.current && window.M && window.M.Tooltip) {
+    if (tooltip && elementRef.current && Tooltip) {
       const tooltipOptions = typeof tooltip === 'object' ? tooltip : { html: tooltip };
-      tooltipInstance = window.M.Tooltip.init(elementRef.current, tooltipOptions);
+      tooltipInstance = Tooltip.init(elementRef.current, tooltipOptions);
     }
     return () => {
       if (tooltipInstance) {
@@ -41,9 +42,9 @@ const CustomButton = ({
 
   // FAB initialization
   useEffect(() => {
-    if (fab && fabRef.current && window.M && window.M.FloatingActionButton) {
+    if (fab && fabRef.current && FloatingActionButton) {
       const fabOptions = typeof fab === 'object' ? fab : {};
-      const instance = window.M.FloatingActionButton.init(fabRef.current, fabOptions);
+      const instance = FloatingActionButton.init(fabRef.current, fabOptions);
       return () => {
         if (instance) {
           instance.destroy();
@@ -55,9 +56,9 @@ const CustomButton = ({
   // FAB tooltip initialization
   useEffect(() => {
     let tooltipInstance = null;
-    if (fab && tooltip && fabButtonRef.current && window.M && window.M.Tooltip) {
+    if (fab && tooltip && fabButtonRef.current && Tooltip) {
       const tooltipOptions = typeof tooltip === 'object' ? tooltip : { html: tooltip };
-      tooltipInstance = window.M.Tooltip.init(fabButtonRef.current, tooltipOptions);
+      tooltipInstance = Tooltip.init(fabButtonRef.current, tooltipOptions);
     }
     return () => {
       if (tooltipInstance) {
@@ -68,11 +69,11 @@ const CustomButton = ({
 
   // Construir clases dinámicamente
   let combinedClassName = `btn waves-effect waves-${waves} ${className}`;
-  
+
   if (disabled) {
     combinedClassName = `btn disabled ${className}`;
   }
-  
+
   // Aplicar modificadores de estilo
   if (floating) combinedClassName += ' btn-floating';
   if (large) combinedClassName += ' btn-large';
@@ -103,7 +104,7 @@ const CustomButton = ({
       fabButtonProps['data-tooltip'] = tooltip;
       fabButtonProps['data-position'] = 'top'; // default position for FAB
     }
-    
+
     return (
       <div
         ref={fabRef}

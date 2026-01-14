@@ -21,11 +21,11 @@ const CasoContainer = () => {
     // FormData might contain 'description', but nested questions/answers are tricky with FormData directly for dynamic lists.
     // So, we rely on the `caso` state object.
     // The `casoData` hidden field in form can pass this if needed, or we can just use the `caso` state from closure.
-    
+
     // Option 1: Parse from hidden field (if used)
     // const casoFromFormData = JSON.parse(formData.get('casoData'));
     // let clinicalCaseToSave = prepareClinicalCase(casoFromFormData);
-    
+
     // Option 2: Use `caso` state directly (simpler if `prepareClinicalCase` can access it)
     // Ensure `prepareClinicalCase` uses the most current `caso` state.
     // For useActionState, the action should ideally get all it needs from formData or be pure.
@@ -76,8 +76,8 @@ const CasoContainer = () => {
     let clinicalCaseToSave = {
       id: currentCaso.id,
       description: currentCaso.description, // This should ideally come from formData if it's a direct input
-                                          // or ensure `caso.description` is updated by `changeCaso`
-      category_id: 1, 
+      // or ensure `caso.description` is updated by `changeCaso`
+      category_id: 1,
       questions_attributes: questions_attributes,
     };
     return clinicalCaseToSave;
@@ -220,7 +220,7 @@ const CasoContainer = () => {
         })
         .catch((error) => {
           console.log("OCurrio un error loading caso", error);
-          alertError('Error','No se pudo cargar el caso clínico.' );
+          alertError('Error', 'No se pudo cargar el caso clínico.');
         });
     } else {
       setCaso({ description: "Un caso clinico nuevo", questions: [] });
@@ -233,12 +233,12 @@ const CasoContainer = () => {
       if (elementToFocus) {
         elementToFocus.focus();
       }
-      currentIdRef.current = null; 
+      currentIdRef.current = null;
     }
   }, [caso.questions]); // Trigger when questions array changes (add/delete)
-                        // For answers, we might need a more granular dependency if focus is needed there.
-                        // A simple way is to depend on `caso` but that might run too often.
-                        // For now, focusing on new questions and answers should be covered if `currentIdRef.current` has the right ID.
+  // For answers, we might need a more granular dependency if focus is needed there.
+  // A simple way is to depend on `caso` but that might run too often.
+  // For now, focusing on new questions and answers should be covered if `currentIdRef.current` has the right ID.
 
   // Display error from useActionState if it exists
   useEffect(() => {
@@ -248,7 +248,7 @@ const CasoContainer = () => {
   }, [error]);
 
   return (
-    <div>
+    <div style={{ padding: '2rem' }}>
       <CasoForm
         // onSubmit is removed, saveCasoAction is passed
         saveCasoAction={submitCasoAction}
@@ -261,9 +261,9 @@ const CasoContainer = () => {
         addAnswer={addAnswer}
         deleteAnswer={deleteAnswer}
         onCancel={onCancel}
-        // Pass error and isPending if CasoForm needs to react to them (e.g., disable button, show message)
-        // error={error}
-        // isPending={isPending}
+      // Pass error and isPending if CasoForm needs to react to them (e.g., disable button, show message)
+      // error={error}
+      // isPending={isPending}
       />
       {/* Example of displaying form-level error here, if not handled in CasoForm */}
       {/* {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>} */}

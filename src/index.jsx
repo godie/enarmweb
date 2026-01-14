@@ -1,9 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import "materialize-css/dist/css/materialize.min.css";
-import "materialize-css/dist/js/materialize.min.js";
+import "@materializecss-css";
+import "@materializecss/materialize";
 import "./index.css";
-import {GoogleTagManager, GTMRouteTracker} from './components/google/GoogleTagManager';
+import { GoogleTagManager, GTMRouteTracker } from './components/google/GoogleTagManager';
 import AppRoutes from "./routes/AppRoutes.jsx";
 import { HashRouter as Router } from "react-router-dom";
 
