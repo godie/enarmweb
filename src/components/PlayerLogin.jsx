@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
@@ -17,11 +17,12 @@ export default function PlayerLogin() {
         const email = formData.get("email");
         const password = formData.get("password");
         const name = formData.get("name");
+        const username = formData.get("username");
 
         try {
             let response;
             if (isSignup) {
-                response = await UserService.createPlayer({ email, password, name });
+                response = await UserService.createUser({ email, password, name, username });
             } else {
                 response = await UserService.loginPlayer({ email, password });
             }
@@ -30,7 +31,9 @@ export default function PlayerLogin() {
             Auth.savePlayerInfo({
                 name: response.data.name || name,
                 email: response.data.email || email,
-                id: response.data.id
+                id: response.data.id,
+                role: response.data.role,
+                preferences: response.data.preferences
             });
 
             history.replace(from);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Forms, CharacterCounter } from '@materializecss/materialize';
 
@@ -16,6 +16,8 @@ const CustomTextInput = ({
   validate = false,
   autocomplete = 'off',
   placeholder = ' ',
+  maxLength,
+  'data-length': dataLength,
   ...props
 }) => {
   const inputRef = useRef(null);
@@ -23,7 +25,8 @@ const CustomTextInput = ({
 
   useEffect(() => {
     // Initialize Character Counter if maxLength is present
-    if (inputRef.current && CharacterCounter && (props.maxLength || props['data-length'])) {
+    const hasLengthLimit = maxLength || dataLength;
+    if (inputRef.current && CharacterCounter && hasLengthLimit) {
       if (counterInstance.current) {
         counterInstance.current.destroy();
       }
@@ -35,7 +38,7 @@ const CustomTextInput = ({
         counterInstance.current = null;
       }
     };
-  }, [props.maxLength, props['data-length']]);
+  }, [maxLength, dataLength]);
 
   useEffect(() => {
     if (Forms && Forms.updateTextFields) {
@@ -55,6 +58,7 @@ const CustomTextInput = ({
 
   // Determine if it's controlled or uncontrolled
   const isControlled = value !== undefined && onChange !== undefined;
+
 
   return (
     <div className={wrapperClasses.trim()}>

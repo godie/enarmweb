@@ -1,5 +1,5 @@
 // src/components/CasoTable.js
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import ExamService from "../../services/ExamService";
 import EnarmUtil from "../../modules/EnarmUtil";
@@ -30,35 +30,35 @@ const CasoTable = () => {
 
   const [casesData, setCasesData] = useState(null);
   const [totalCases, setTotalCases] = useState(0);
-  const [categories, setCategories] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loadingError, setLoadingError] = useState(false);
-  const [perPage, setPerpage] = useState(ITEMS_PER_PAGE);
 
-  useEffect(() => {
+  const currentPage = (() => {
     const pageNum = parseInt(pageParam, 10);
-    setCurrentPage(!isNaN(pageNum) && pageNum > 0 ? pageNum : 1);
-  }, [pageParam]);
+    return !isNaN(pageNum) && pageNum > 0 ? pageNum : 1;
+  })();
+
+  const [categories, setCategories] = useState(() => {
+    const cached = EnarmUtil.getCategories();
+    return cached ? JSON.parse(cached) : [];
+  });
+
+  const [loadingError, setLoadingError] = useState(false);
+  const perPage = ITEMS_PER_PAGE;
 
   useEffect(() => {
     // Load categories
-    const cachedCategories = EnarmUtil.getCategories();
-    if (cachedCategories === null) {
+    if (categories.length === 0) {
       ExamService.loadCategories()
         .then((response) => {
           EnarmUtil.setCategories(JSON.stringify(response.data));
           setCategories(response.data);
         })
         .catch((error) => console.error("Error loading categories", error));
-    } else {
-      setCategories(JSON.parse(cachedCategories));
     }
-  }, []); // Runs once on mount
+  }, [categories.length]); // Runs once on mount
 
   useEffect(() => {
     // Load cases data
-    setCasesData(null); // Show Preloader
-    ExamService.getExams(currentPage)
+    ExamService.getClinicalCases(currentPage)
       .then((response) => {
         setCasesData(response.data.clinical_cases);
         setTotalCases(response.data.total_entries);
@@ -101,7 +101,7 @@ const CasoTable = () => {
 
   // Moved casosRows definition inside the component so it has access to component scope like casesData
   // This is a structural change that might be needed for the code to be correct after refactor.
-  const CasosRowsComponent = () => {
+  const renderCasesRows = () => {
     if (!casesData) return null;
 
     // Define especialidadesOptions here if it's used by CasosRowsComponent consistently
@@ -120,7 +120,7 @@ const CasoTable = () => {
             <CustomSelect
               label="Especialidad"
               value={caso.category_id?.toString() || "0"}
-              onChange={(newValue) => changeCategory(caso, idx, newValue)}
+              onChange={(e) => changeCategory(caso, idx, e.target.value)}
               id={`select-especialidad-${caso.id}`}
               className="black-text"
             >
@@ -174,7 +174,7 @@ const CasoTable = () => {
           No se encontraron casos clínicos.
         </CustomCollectionItem>
       )}
-      <CasosRowsComponent /> {/* Call the component here */}
+      {renderCasesRows()}
       <CustomPagination
         activePage={currentPage}
         items={numPages}

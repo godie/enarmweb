@@ -1,4 +1,4 @@
-import React from 'react';
+
 import PropTypes from 'prop-types';
 
 const CustomRow = ({ children, className = '', ...props }) => {

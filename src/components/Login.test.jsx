@@ -1,5 +1,6 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
+
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "./Login";
 import UserService from "../services/UserService";
@@ -8,38 +9,41 @@ import { MemoryRouter } from "react-router-dom"; // Removed useHistory, useLocat
 import { alertError } from "../services/AlertService";
 
 // Mock services and modules
-jest.mock("../services/UserService");
-jest.mock("../modules/Auth");
-jest.mock('../services/AlertService');
+vi.mock("../services/UserService");
+vi.mock("../modules/Auth");
+vi.mock('../services/AlertService');
 
 // Mock react-router-dom hooks
-let mockHistoryReplace = jest.fn();
-const mockableUseLocationLogic = jest.fn(() => ({ state: { from: { pathname: "/dashboard" } } }));
+let mockHistoryReplace = vi.fn();
+const mockableUseLocationLogic = vi.fn(() => ({ state: { from: { pathname: "/dashboard" } } }));
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-  useLocation: (...args) => mockableUseLocationLogic(...args),
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useHistory: () => ({
+      replace: mockHistoryReplace,
+    }),
+    useLocation: (...args) => mockableUseLocationLogic(...args),
+  };
+});
 
 // Suppress console.error for expected error messages during tests
 let consoleErrorSpy;
 
 beforeEach(() => {
-  consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
   global.M.updateTextFields.mockClear();
   global.M.Modal.init.mockClear();
   global.M.validate_field.mockClear();
   // Reset mockableUseLocationLogic to its default implementation before each test
   mockableUseLocationLogic.mockImplementation(() => ({ state: { from: { pathname: "/dashboard" } } }));
   mockHistoryReplace.mockClear();
-  alertError.mockImplementation(() => {}); 
+  vi.mocked(alertError).mockImplementation(() => { });
 });
 
 afterEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   consoleErrorSpy.mockRestore();
 });
 
@@ -61,8 +65,8 @@ describe("Login Component", () => {
 
   it("should call UserService.login and Auth.authenticateUser on successful login, then redirect", async () => {
     const mockToken = "fake_token";
-    UserService.login.mockResolvedValue({ data: { token: mockToken } });
-    Auth.authenticateUser.mockImplementation(() => {});
+    vi.mocked(UserService.login).mockResolvedValue({ data: { token: mockToken } });
+    vi.mocked(Auth.authenticateUser).mockImplementation(() => { });
 
     renderLogin();
 
@@ -86,7 +90,7 @@ describe("Login Component", () => {
 
   it("should show an error (and not redirect) on failed login", async () => {
     const errorMessage = "Invalid credentials";
-    UserService.login.mockRejectedValue(new Error(errorMessage));
+    vi.mocked(UserService.login).mockRejectedValue(new Error(errorMessage));
 
     renderLogin();
 
@@ -115,8 +119,8 @@ describe("Login Component", () => {
 
   it("should use 'from' location from router state if available", async () => {
     const mockToken = "another_fake_token";
-    UserService.login.mockResolvedValue({ data: { token: mockToken } });
-    Auth.authenticateUser.mockImplementation(() => {});
+    vi.mocked(UserService.login).mockResolvedValue({ data: { token: mockToken } });
+    vi.mocked(Auth.authenticateUser).mockImplementation(() => { });
 
     // Key change here: using mockImplementation instead of mockImplementationOnce
     mockableUseLocationLogic.mockImplementation(() => ({
@@ -124,10 +128,10 @@ describe("Login Component", () => {
     }));
 
     render(
-        <MemoryRouter initialEntries={["/login"]}>
-          <Login />
-        </MemoryRouter>
-      );
+      <MemoryRouter initialEntries={["/login"]}>
+        <Login />
+      </MemoryRouter>
+    );
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "test@example.com" } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "password" } });

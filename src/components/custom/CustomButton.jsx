@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, Children } from 'react';
+import { useEffect, useRef, Children } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip, FloatingActionButton } from '@materializecss/materialize';
 
@@ -16,6 +16,7 @@ const CustomButton = ({
   floating,
   large,
   small,
+  medium,
   flat,
   onClick,
   fab,
@@ -30,7 +31,9 @@ const CustomButton = ({
   useEffect(() => {
     let tooltipInstance = null;
     if (tooltip && elementRef.current && Tooltip) {
-      const tooltipOptions = typeof tooltip === 'object' ? tooltip : { html: tooltip };
+      const tooltipOptions = typeof tooltip === 'object'
+        ? { ...tooltip, text: tooltip.text || tooltip.html }
+        : { text: tooltip };
       tooltipInstance = Tooltip.init(elementRef.current, tooltipOptions);
     }
     return () => {
@@ -57,7 +60,9 @@ const CustomButton = ({
   useEffect(() => {
     let tooltipInstance = null;
     if (fab && tooltip && fabButtonRef.current && Tooltip) {
-      const tooltipOptions = typeof tooltip === 'object' ? tooltip : { html: tooltip };
+      const tooltipOptions = typeof tooltip === 'object'
+        ? { ...tooltip, text: tooltip.text || tooltip.html }
+        : { text: tooltip };
       tooltipInstance = Tooltip.init(fabButtonRef.current, tooltipOptions);
     }
     return () => {
@@ -77,6 +82,7 @@ const CustomButton = ({
   // Aplicar modificadores de estilo
   if (floating) combinedClassName += ' btn-floating';
   if (large) combinedClassName += ' btn-large';
+  if (medium) combinedClassName += ' btn-medium';
   if (small) combinedClassName += ' btn-small';
   if (flat) combinedClassName = `btn-flat waves-effect waves-${waves} ${className}`;
 
@@ -95,14 +101,18 @@ const CustomButton = ({
     const fabToolbar = typeof fab === 'object' && fab.toolbarEnabled;
 
     const fabButtonProps = {
-      ref: fabButtonRef,
       className: classes,
       href: href || '#!'
     };
 
-    if (tooltip && typeof tooltip === 'string') {
-      fabButtonProps['data-tooltip'] = tooltip;
-      fabButtonProps['data-position'] = 'top'; // default position for FAB
+    if (tooltip) {
+      if (typeof tooltip === 'string') {
+        fabButtonProps['data-tooltip'] = tooltip;
+        fabButtonProps['data-position'] = 'top';
+      } else {
+        fabButtonProps['data-tooltip'] = tooltip.text || tooltip.html || '';
+        fabButtonProps['data-position'] = tooltip.position || 'top';
+      }
     }
 
     return (
@@ -111,7 +121,7 @@ const CustomButton = ({
         className={`fixed-action-btn${fabToolbar ? ' toolbar' : ''}`}
         {...props}
       >
-        <a {...fabButtonProps}>
+        <a {...fabButtonProps} ref={fabButtonRef}>
           {iconElement || <i className="material-icons">edit</i>}
         </a>
         <ul>
@@ -142,22 +152,27 @@ const CustomButton = ({
 
   // Props comunes para ambos elementos
   const commonProps = {
-    ref: elementRef,
     className: combinedClassName,
     disabled,
     onClick,
     ...props // Solo las props restantes que no hemos destructurado
   };
 
-  if (tooltip && typeof tooltip === 'string') {
-    commonProps['data-tooltip'] = tooltip;
-    commonProps['data-position'] = 'bottom'; // default position
+  if (tooltip) {
+    if (typeof tooltip === 'string') {
+      commonProps['data-tooltip'] = tooltip;
+      commonProps['data-position'] = 'bottom';
+    } else {
+      commonProps['data-tooltip'] = tooltip.text || tooltip.html || '';
+      commonProps['data-position'] = tooltip.position || 'bottom';
+    }
   }
 
   if (Component === 'a') {
     return (
       <Component
         {...commonProps}
+        ref={elementRef}
         href={href || '#!'}
       >
         {content}
@@ -167,6 +182,7 @@ const CustomButton = ({
 
   return (
     <Component
+      ref={elementRef}
       {...commonProps}
       type={type}
     >
@@ -211,6 +227,7 @@ CustomButton.propTypes = {
   floating: PropTypes.bool,
   large: PropTypes.bool,
   small: PropTypes.bool,
+  medium: PropTypes.bool,
   flat: PropTypes.bool,
   /**
    * Fixed action button

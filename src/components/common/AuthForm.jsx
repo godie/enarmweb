@@ -1,4 +1,4 @@
-import React, { useActionState, startTransition } from "react";
+import { useActionState, startTransition } from "react";
 import CustomButton from "../custom/CustomButton";
 import CustomRow from "../custom/CustomRow";
 import CustomCol from "../custom/CustomCol";
@@ -24,30 +24,42 @@ const AuthForm = ({
     };
 
     return (
-        <div className="container section">
-            <CustomRow className="z-depth-2 green darken-4">
+        <div className="section green darken-1 ">
+            <CustomRow className="z-depth-3 green container">
                 <form onSubmit={handleSubmit} className="col s12 m12">
                     <h2 className="center white-text hide-on-small-only">{title}</h2>
                     <h4 className="center white-text hide-on-med-and-up">{title}</h4>
                     <CustomRow>
                         {isSignup && (
-                            <CustomCol s={10} offset="s2">
-                                <CustomTextInput
-                                    label="Nombre"
-                                    id="name"
-                                    name="name"
-                                    inputClassName="white-text"
-                                    validate
-                                    required
-                                />
-                            </CustomCol>
+                            <>
+                                <CustomCol s={12} m={10} l={8} offset="m1 l2">
+                                    <CustomTextInput
+                                        label="Nombre Completo"
+                                        id="name"
+                                        name="name"
+                                        inputClassName="white-text"
+                                        validate
+                                        required
+                                    />
+                                </CustomCol>
+                                <CustomCol s={12} m={10} l={8} offset="m1 l2">
+                                    <CustomTextInput
+                                        label="Usuario"
+                                        id="username"
+                                        name="username"
+                                        inputClassName="white-text"
+                                        validate
+                                        required
+                                    />
+                                </CustomCol>
+                            </>
                         )}
                         <CustomCol s={12} m={10} l={8} offset="m1 l2">
                             <CustomTextInput
-                                label="email"
+                                label={isSignup ? "Email" : "Email o Usuario"}
                                 id="email"
                                 name="email"
-                                type="email"
+                                type={isSignup ? "email" : "text"}
                                 inputClassName="white-text"
                                 validate
                                 required

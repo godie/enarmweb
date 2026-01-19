@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import PropTypes from "prop-types";
 
 export default function GoogleLogin({ onGoogleResponse, clientId }) {
@@ -35,8 +35,8 @@ export default function GoogleLogin({ onGoogleResponse, clientId }) {
     }, [clientId, onGoogleResponse]);
 
     return (
-        <div className="col s12 m10 l8 offset-m1 l2">
-            <div className="section center" style={{ maxWidth: '400px', margin: '0 auto' }}>
+        <div className="col s12 m10 l8 offset-m1 offset-l2">
+            <div className="section center" style={{ maxWidth: '270px', margin: '0 auto' }}>
                 <div id="google-signin-button" style={{ width: '100%' }}></div>
             </div>
         </div>

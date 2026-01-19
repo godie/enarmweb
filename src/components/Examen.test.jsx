@@ -1,4 +1,5 @@
-import React from 'react';
+import { vi, describe, beforeEach, expect, afterEach, test } from "vitest";
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
@@ -7,28 +8,37 @@ import EnarmUtil from '../modules/EnarmUtil';
 
 // Mock react-router-dom
 let mockRouterParams = {};
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => mockRouterParams,
-}));
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useParams: () => mockRouterParams,
+  };
+});
 
 // Mock EnarmUtil.getCategory
-jest.mock('../modules/EnarmUtil', () => ({
-  getCategory: jest.fn(),
+vi.mock('../modules/EnarmUtil', () => ({
+  default: {
+    getCategory: vi.fn(),
+  },
 }));
 
 // Mock child components
-jest.mock('./Caso', () => (props) => (
-  <div data-testid="mock-caso" data-cliniccaseid={props.clinicCaseId}>
-    Mocked Caso Component
-  </div>
-));
+vi.mock('./Caso', () => ({
+  default: (props) => (
+    <div data-testid="mock-caso" data-cliniccaseid={props.clinicCaseId}>
+      Mocked Caso Component
+    </div>
+  )
+}));
 
-jest.mock('./facebook/FacebookComments', () => (props) => (
-  <div data-testid="mock-fb-comments" data-href={props.href} data-width={props.width}>
-    Mocked FacebookComments Component
-  </div>
-));
+vi.mock('./facebook/FacebookComments', () => ({
+  default: (props) => (
+    <div data-testid="mock-fb-comments" data-href={props.href} data-width={props.width}>
+      Mocked FacebookComments Component
+    </div>
+  )
+}));
 
 // Helper function to render
 const renderExamen = () => {
@@ -39,18 +49,17 @@ describe('Examen Component', () => {
   const originalInnerWidth = global.innerWidth;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    mockRouterParams = { identificador: '1' };
     // Default mock implementations
     EnarmUtil.getCategory.mockImplementation((propsWithMatch) => {
-      // propsWithMatch is { match: { params: actualRouterParams } }
-      if (propsWithMatch && propsWithMatch.match && propsWithMatch.match.params && propsWithMatch.match.params.identificador) {
+      if (propsWithMatch?.match?.params?.identificador) {
         return propsWithMatch.match.params.identificador;
       }
-      return 'defaultMockId'; // Default if no identificador
+      return 'defaultMockId';
     });
-    mockRouterParams = { identificador: '1' }; // Default params for most tests
     global.innerWidth = 1024; // Default large screen
-    fireEvent(window, new Event('resize')); // Ensure initial width is processed by effect
+    window.dispatchEvent(new Event('resize'));
   });
 
   afterEach(() => {
@@ -63,7 +72,7 @@ describe('Examen Component', () => {
     // Verify EnarmUtil.getCategory call structure
     // It's called twice initially due to useState initializer + useEffect in Examen
     expect(EnarmUtil.getCategory).toHaveBeenCalledWith({ match: { params: { identificador: '1' } } });
-    
+
     await waitFor(() => {
       const casoComponent = screen.getByTestId('mock-caso');
       expect(casoComponent).toBeInTheDocument();
@@ -79,9 +88,9 @@ describe('Examen Component', () => {
 
   test('updates FacebookComments width on window resize (large to small)', async () => {
     renderExamen();
-    
+
     await waitFor(() => {
-        expect(screen.getByTestId('mock-fb-comments')).toHaveAttribute('data-width', '524');
+      expect(screen.getByTestId('mock-fb-comments')).toHaveAttribute('data-width', '524');
     });
 
     // Simulate small screen
@@ -106,7 +115,7 @@ describe('Examen Component', () => {
     // Simulate large screen
     global.innerWidth = 1200;
     fireEvent(window, new Event('resize'));
-    
+
     await waitFor(() => {
       const fbCommentsComponent = screen.getByTestId('mock-fb-comments');
       // 1200 - 500 = 700
@@ -123,13 +132,13 @@ describe('Examen Component', () => {
       expect(screen.getByTestId('mock-caso')).toHaveAttribute('data-cliniccaseid', '1');
       expect(screen.getByTestId('mock-fb-comments')).toHaveAttribute('data-href', 'http://enarm.godieboy.com/#/caso/1');
     });
-    
+
     EnarmUtil.getCategory.mockClear(); // Clear previous calls to check the new one
 
     // Change params and rerender
     mockRouterParams = { identificador: 'alpha99' };
     rerender(<Examen />);
-    
+
     // Verify EnarmUtil.getCategory was called with new params
     // It will be called by the useEffect hook that depends on `params`
     expect(EnarmUtil.getCategory).toHaveBeenCalledWith({ match: { params: { identificador: 'alpha99' } } });
@@ -142,7 +151,7 @@ describe('Examen Component', () => {
       expect(fbCommentsComponent).toHaveAttribute('data-href', 'http://enarm.godieboy.com/#/caso/alpha99');
     });
   });
-  
+
   test('EnarmUtil.getCategory correctly uses default if params are missing', async () => {
     EnarmUtil.getCategory.mockImplementation((propsWithMatch) => {
       if (propsWithMatch && propsWithMatch.match && propsWithMatch.match.params && propsWithMatch.match.params.identificador) {

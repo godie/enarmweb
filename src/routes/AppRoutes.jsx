@@ -1,16 +1,14 @@
 // src/routes/AppRoutes.js
-import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import App from "../App";
 import Examen from "../components/Examen";
 import CasoTable from "../components/admin/CasoTable";
-import CasoContainer from "../components/admin/CasoContainer";
-import { Dashboard, CasoNuevo, Summary } from "../components/admin";
+import { Dashboard, CasoContainer, Summary } from "../components/admin";
 import Login from "../components/Login";
 import PlayerLogin from "../components/PlayerLogin";
-import FacebookLoginContainer from "../components/facebook/FacebookLoginContainer";
 import Profile from "../components/Profile";
+import PlayerCasoContainer from "../components/PlayerCasoContainer";
 import PrivateRoute from './PrivateRoute';
 import PlayerRoute from "../components/PlayerRoute";
 import Logout, { AdminLogout } from "../components/Logout";
@@ -19,6 +17,12 @@ import Especialidades from '../components/admin/Especialidades';
 import CustomButton from "../components/custom/CustomButton"; // Added
 // CustomIcon is not directly used here if CustomButton handles the icon prop
 import EspecialidadForm from "../components/admin/EspecialidadForm";
+import UserTable from "../components/admin/UserTable";
+import ExamenTable from "../components/admin/ExamenTable";
+import ExamenForm from "../components/admin/ExamenForm";
+import Onboarding from "../components/Onboarding";
+
+import PlayerDashboard from "../components/PlayerDashboard";
 
 function DashboardCases(props) {
   return (
@@ -35,7 +39,7 @@ function DashboardCases(props) {
         // For now, CustomButton's default tooltip position will be used.
         icon="add"
 
-        tooltip={{ html: "Agregar Caso", position: 'top' }}
+        tooltip={{ text: "Agregar Caso", position: 'top' }}
         waves="light" // Adding default waves
       />
     </Dashboard>
@@ -58,10 +62,10 @@ function DashboardEditCaso(props) {
   );
 }
 
-function DashboardEditEspecialidades(props) {
+function DashboardEditEspecialidades() {
   return (
     <Dashboard>
-      <EspecialidadForm {...props} />
+      <EspecialidadForm />
     </Dashboard>
   )
 }
@@ -77,20 +81,46 @@ function DashboardEspecialidades(props) {
         fab
         // tooltipOptions={{position:'top'}} // See comment above
         icon="add"
-        tooltip={{ html: "Agregar especialidad", position: 'top' }}
+        tooltip={{ text: "Agregar especialidad", position: 'top' }}
         waves="light" // Adding default waves
       />
     </Dashboard>
   );
 }
 
-function DashboardNuevoCaso(props) {
+function DashboardUsers(props) {
   return (
     <Dashboard>
-      <CasoNuevo {...props} />
+      <UserTable {...props} />
     </Dashboard>
   );
 }
+
+function DashboardExams(props) {
+  return (
+    <Dashboard>
+      <ExamenTable {...props} />
+      <CustomButton
+        href="#/dashboard/new/exam"
+        className="red btn-large btn-floating direction-top active"
+        node="a"
+        fab
+        icon="add"
+        tooltip={{ text: "Agregar examen", position: 'top' }}
+        waves="light"
+      />
+    </Dashboard>
+  );
+}
+
+function DashboardEditExamen(props) {
+  return (
+    <Dashboard>
+      <ExamenForm {...props} />
+    </Dashboard>
+  );
+}
+
 
 function AppExamen(props) {
   return (
@@ -132,13 +162,29 @@ export default function AppRoutes() {
         exact
         component={() => (
           <App>
-            <Examen />
+            <PlayerDashboard />
           </App>
         )}
       />
       <PlayerRoute
         path="/caso/:identificador"
         component={AppExamen}
+      />
+      <PlayerRoute
+        path="/contribuir"
+        component={() => (
+          <App>
+            <PlayerCasoContainer />
+          </App>
+        )}
+      />
+      <PlayerRoute
+        path="/onboarding"
+        component={() => (
+          <App>
+            <Onboarding />
+          </App>
+        )}
       />
       <PlayerRoute
         path="/profile"
@@ -170,12 +216,17 @@ export default function AppRoutes() {
       />
       <PrivateRoute
         path="/dashboard/add/caso"
-        component={DashboardNuevoCaso}
+        component={DashboardEditCaso}
       />
 
       <PrivateRoute path="/dashboard/especialidades" component={DashboardEspecialidades} />
       <PrivateRoute path="/dashboard/new/especialidad" component={DashboardEditEspecialidades} />
       <PrivateRoute path="/dashboard/edit/especialidad/:identificador" component={DashboardEditEspecialidades} />
+
+      <PrivateRoute path="/dashboard/players" component={DashboardUsers} />
+      <PrivateRoute path="/dashboard/examenes" component={DashboardExams} />
+      <PrivateRoute path="/dashboard/new/exam" component={DashboardEditExamen} />
+      <PrivateRoute path="/dashboard/edit/exam/:identificador" component={DashboardEditExamen} />
 
       {/* — Fallback: cualquier otra ruta, redirige a “/” — */}
       <Route path="*">

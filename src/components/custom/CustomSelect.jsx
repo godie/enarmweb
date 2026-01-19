@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormSelect } from "@materializecss/materialize";
 
@@ -79,7 +79,7 @@ const CustomSelect = ({
     }
     setInternalValue(newValue); // Update internal state
     if (onChange) {
-      onChange(newValue); // Pass the extracted value(s) to the parent
+      onChange(event); // Pass the event to the parent for Consistency
     }
   };
 

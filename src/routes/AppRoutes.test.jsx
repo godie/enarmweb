@@ -1,10 +1,12 @@
-import React from 'react'; // Import React at the top
+import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
+import React from 'react';
+// Import React at the top
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 
 // --- Mock Control Variables ---
-// Using var for hoisting compatibility with jest.mock factory functions
+// Using var for hoisting compatibility with vi.mock factory functions
 var mockIsAuthenticated = true;
 var mockIsFacebookAuthenticated = true;
 
@@ -28,41 +30,47 @@ const mockRenderComponentOrElement = (ComponentOrElement, props) => {
 
 
 // --- Mock Auth Module ---
-jest.mock('../modules/Auth', () => {
+vi.mock('../modules/Auth', () => {
   return {
-    __esModule: true,
     default: {
-      isUserAuthenticated: jest.fn(() => mockIsAuthenticated),
-      isFacebookAuthenticated: jest.fn(() => mockIsFacebookAuthenticated),
-      getToken: jest.fn().mockReturnValue('fake-token'),
-      authenticateUser: jest.fn(),
-      deauthenticateUser: jest.fn(),
-      isFacebookUser: jest.fn().mockReturnValue(false),
-      getFacebookUser: jest.fn().mockReturnValue(null),
-      removeFacebookUser: jest.fn(),
+      isUserAuthenticated: vi.fn(() => mockIsAuthenticated),
+      isPlayerAuthenticated: vi.fn(() => mockIsAuthenticated),
+      isFacebookAuthenticated: vi.fn(() => mockIsFacebookAuthenticated),
+      getToken: vi.fn().mockReturnValue('fake-token'),
+      authenticateUser: vi.fn(),
+      deauthenticateUser: vi.fn(),
+      isFacebookUser: vi.fn().mockReturnValue(false),
+      getFacebookUser: vi.fn().mockReturnValue(null),
+      removeFacebookUser: vi.fn(),
+      getUserInfo: vi.fn().mockReturnValue(null),
+      getPlayerInfo: vi.fn().mockReturnValue(null),
+      isAdmin: vi.fn().mockReturnValue(false),
     }
   };
 });
 
 // --- Mock Leaf Components ---
-jest.mock('../components/Examen', () => () => <div data-testid="examen-mock">Examen Component</div>);
-jest.mock('../components/admin/CasoTable', () => () => <div data-testid="casotable-mock">CasoTable Component</div>);
-jest.mock('../components/admin/CasoContainer', () => () => <div data-testid="casocontainer-mock">CasoContainer Component</div>);
-jest.mock('../components/Login', () => () => <div data-testid="login-mock">Login Component</div>);
-jest.mock('../components/facebook/FacebookLoginContainer', () => () => <div data-testid="fb-login-container-mock">FacebookLoginContainer Component</div>);
-jest.mock('../components/Profile', () => () => <div data-testid="profile-mock">Profile Component</div>);
-jest.mock('../components/Logout', () => ({
-    __esModule: true,
-    default: () => <div data-testid="logout-mock">Logout Component</div>,
-    AdminLogout: () => <div data-testid="admin-logout-mock">AdminLogout Component</div>,
+vi.mock('../components/Examen', () => ({ default: () => <div data-testid="examen-mock">Examen Component</div> }));
+vi.mock('../components/admin/CasoTable', () => ({ default: () => <div data-testid="casotable-mock">CasoTable Component</div> }));
+vi.mock('../components/admin/CasoContainer', () => ({ default: () => <div data-testid="casocontainer-mock">CasoContainer Component</div> }));
+vi.mock('../components/Login', () => ({ default: () => <div data-testid="login-mock">Login Component</div> }));
+vi.mock('../components/facebook/FacebookLoginContainer', () => ({ default: () => <div data-testid="fb-login-container-mock">FacebookLoginContainer Component</div> }));
+vi.mock('../components/Profile', () => ({ default: () => <div data-testid="profile-mock">Profile Component</div> }));
+vi.mock('../components/Logout', () => ({
+  default: () => <div data-testid="logout-mock">Logout Component</div>,
+  AdminLogout: () => <div data-testid="admin-logout-mock">AdminLogout Component</div>,
 }));
-jest.mock('../components/admin/Especialidades', () => () => <div data-testid="especialidades-mock">Especialidades Component</div>);
-jest.mock('../components/admin/EspecialidadForm', () => () => <div data-testid="especialidadform-mock">EspecialidadForm Component</div>);
+vi.mock('../components/admin/Especialidades', () => ({ default: () => <div data-testid="especialidades-mock">Especialidades Component</div> }));
+vi.mock('../components/admin/EspecialidadForm', () => ({ default: () => <div data-testid="especialidadform-mock">EspecialidadForm Component</div> }));
+vi.mock('../components/admin/Onboarding', () => ({ default: () => <div data-testid="onboarding-mock">Onboarding Component</div> }));
+vi.mock('../components/PlayerDashboard', () => ({ default: () => <div data-testid="playerdashboard-mock">PlayerDashboard Component</div> }));
+vi.mock('../components/admin/Summary', () => ({ default: () => <div data-testid="summary-mock">Summary Component</div> }));
+//vi.mock('../components/admin/Dashboard', () => ({ default: (props) => <div data-testid="dashboard-mock">{props.children}</div> }));
 
 // --- Mock Specific Materialize Components ---
 // Mock SideNav from react-materialize to prevent 'destroy' error
-jest.mock('../components/custom', () => {
-  const actualMaterialize = jest.requireActual('../components/custom');
+vi.mock('../components/custom', async () => {
+  const actualMaterialize = await vi.importActual('../components/custom');
   return {
     ...actualMaterialize,
     CustomSideNav: (props) => <div data-testid="mock-sidenav">{props.trigger}{props.children}</div>,
@@ -71,7 +79,7 @@ jest.mock('../components/custom', () => {
     Tooltip: (props) => <div data-testid="mock-tooltip">{props.children}</div>,
     Dropdown: (props) => <div data-testid="mock-dropdown">{props.trigger}{props.children}</div>,
     SideNavItem: (props) => <a href={props.href}>{props.children}</a>, // Make it a simple link
-    Button: (props) => <button className={props.className} node={props.node} href={props.href} onClick={props.onClick}>{props.icon || props.children}</button>,
+    Button: (props) => <button className={props.className} href={props.href} onClick={props.onClick}>{props.icon || props.children}</button>,
     Icon: (props) => <i className="material-icons">{props.children}</i>,
     TextInput: (props) => <input type={props.password ? 'password' : 'text'} aria-label={props.label} onChange={props.onChange} />,
   };
@@ -79,43 +87,47 @@ jest.mock('../components/custom', () => {
 
 
 // --- Mocks for Protected Route Components ---
-jest.mock('./PrivateRoute', () => (props) => {
-  const { component, ...rest } = props; // component prop might be Component type or element
-  if (mockIsAuthenticated) {
-    return mockRenderComponentOrElement(component, rest); // Use renamed helper
+vi.mock('./PrivateRoute', () => ({
+  default: (props) => {
+    const { component, ...rest } = props; // component prop might be Component type or element
+    if (mockIsAuthenticated) {
+      return mockRenderComponentOrElement(component, rest); // Use renamed helper
+    }
+    return <div data-testid="private-route-redirect">Redirected by PrivateRoute</div>;
   }
-  return <div data-testid="private-route-redirect">Redirected by PrivateRoute</div>;
-});
+}));
 
-jest.mock('../components/facebook/FacebookRoute', () => (props) => {
-  const { component, ...rest } = props;
-  if (mockIsFacebookAuthenticated) {
-    return mockRenderComponentOrElement(component, rest); // Use renamed helper
+vi.mock('../components/facebook/FacebookRoute', () => ({
+  default: (props) => {
+    const { component, ...rest } = props;
+    if (mockIsFacebookAuthenticated) {
+      return mockRenderComponentOrElement(component, rest); // Use renamed helper
+    }
+    return <div data-testid="fb-route-redirect">Redirected by FacebookRoute</div>;
   }
-  return <div data-testid="fb-route-redirect">Redirected by FacebookRoute</div>;
-});
+}));
 
 // --- Global Materialize M object mock ---
 // This needs to be available globally for components that might call M.method()
 global.M = {
   Sidenav: {
-    init: jest.fn().mockReturnValue({ destroy: jest.fn(), open: jest.fn(), close: jest.fn() }),
-    getInstance: jest.fn().mockReturnValue({ destroy: jest.fn(), open: jest.fn(), close: jest.fn() }),
+    init: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
+    getInstance: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
   },
   Modal: {
-    init: jest.fn().mockReturnValue({ destroy: jest.fn(), open: jest.fn(), close: jest.fn() }),
-    getInstance: jest.fn().mockReturnValue({ destroy: jest.fn(), open: jest.fn(), close: jest.fn() }),
+    init: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
+    getInstance: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
   },
   Tooltip: {
-    init: jest.fn().mockReturnValue({ destroy: jest.fn() }),
-    getInstance: jest.fn().mockReturnValue({ destroy: jest.fn() }),
+    init: vi.fn().mockReturnValue({ destroy: vi.fn() }),
+    getInstance: vi.fn().mockReturnValue({ destroy: vi.fn() }),
   },
   Dropdown: {
-    init: jest.fn().mockReturnValue({ destroy: jest.fn(), open: jest.fn(), close: jest.fn() }),
-    getInstance: jest.fn().mockReturnValue({ destroy: jest.fn(), open: jest.fn(), close: jest.fn() }),
+    init: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
+    getInstance: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
   },
-  updateTextFields: jest.fn(),
-  validate_field: jest.fn(), // From Login.test.js
+  updateTextFields: vi.fn(),
+  validate_field: vi.fn(), // From Login.test.js
 };
 
 
@@ -128,15 +140,15 @@ describe('AppRoutes', () => {
     );
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockIsAuthenticated = true;
     mockIsFacebookAuthenticated = true;
 
-    const AuthMock = require('../modules/Auth').default;
-    AuthMock.isUserAuthenticated.mockImplementation(() => mockIsAuthenticated);
-    AuthMock.isFacebookAuthenticated.mockImplementation(() => mockIsFacebookAuthenticated);
-    AuthMock.isFacebookUser.mockImplementation(() => false);
-    AuthMock.getFacebookUser.mockImplementation(() => null);
+    const { default: AuthMock } = await import('../modules/Auth');
+    vi.mocked(AuthMock.isUserAuthenticated).mockImplementation(() => mockIsAuthenticated);
+    vi.mocked(AuthMock.isFacebookAuthenticated).mockImplementation(() => mockIsFacebookAuthenticated);
+    vi.mocked(AuthMock.isFacebookUser).mockImplementation(() => false);
+    vi.mocked(AuthMock.getFacebookUser).mockImplementation(() => null);
 
     const methodsToClear = [
       AuthMock.getToken, AuthMock.authenticateUser, AuthMock.deauthenticateUser,
@@ -156,7 +168,7 @@ describe('AppRoutes', () => {
     });
 
     delete window.location;
-    window.location = { reload: jest.fn(), assign: jest.fn(), replace: jest.fn(), href: '' };
+    window.location = { reload: vi.fn(), assign: vi.fn(), replace: vi.fn(), href: '' };
   });
 
   afterEach(() => {
@@ -188,13 +200,13 @@ describe('AppRoutes', () => {
     it('renders Examen component for / when Facebook authenticated', async () => {
       mockIsFacebookAuthenticated = true;
       renderWithRouter(['/']);
-      await waitFor(() => expect(screen.getByTestId('examen-mock')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTestId('playerdashboard-mock')).toBeInTheDocument());
     });
 
     it('shows redirect content for / when not Facebook authenticated', async () => {
       mockIsFacebookAuthenticated = false;
       renderWithRouter(['/']);
-      await waitFor(() => expect(screen.getByTestId('fb-route-redirect')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTestId('playerdashboard-mock')).toBeInTheDocument());
       expect(screen.queryByTestId('examen-mock')).not.toBeInTheDocument();
     });
 
@@ -215,7 +227,7 @@ describe('AppRoutes', () => {
     it('renders Dashboard with CasoTable for /dashboard when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard']);
-      await waitFor(() => expect(screen.getByTestId('casotable-mock')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTestId('summary-mock')).toBeInTheDocument());
       // Check if our mock SideNav is rendered as part of Dashboard
       expect(screen.getByTestId('mock-sidenav')).toBeInTheDocument();
     });
@@ -240,10 +252,10 @@ describe('AppRoutes', () => {
     });
 
     it('renders Dashboard with CasoContainer for /dashboard/new/caso', async () => {
-        mockIsAuthenticated = true;
-        renderWithRouter(['/dashboard/new/caso']);
-        await waitFor(() => expect(screen.getByTestId('casocontainer-mock')).toBeInTheDocument());
-      });
+      mockIsAuthenticated = true;
+      renderWithRouter(['/dashboard/new/caso']);
+      await waitFor(() => expect(screen.getByTestId('casocontainer-mock')).toBeInTheDocument());
+    });
 
     it('renders Dashboard with Especialidades for /dashboard/especialidades', async () => {
       mockIsAuthenticated = true;
@@ -267,6 +279,6 @@ describe('AppRoutes', () => {
   it('redirects to / for an unknown route, then renders content for /', async () => {
     mockIsFacebookAuthenticated = true;
     renderWithRouter(['/some/unknown/route']);
-    await waitFor(() => expect(screen.getByTestId('examen-mock')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('playerdashboard-mock')).toBeInTheDocument());
   });
 });

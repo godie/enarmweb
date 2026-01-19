@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Auth from "../../modules/Auth";
 import FacebookLogin from "../facebook/FacebookLogin";
@@ -27,7 +27,8 @@ export default function FacebookLoginContainer() {
               Auth.savePlayerInfo({
                 name: params.name,
                 email: params.email,
-                id: response.data.id
+                id: response.data.id,
+                role: response.data.role
               });
               history.replace("/");
             })

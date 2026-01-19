@@ -1,9 +1,7 @@
 :root {
-  --medical-green: #43a047;
-  /* green darken-1 */
-  --medical-bg: #f4f7f6;
-  --medical-text: #424242;
-  /* grey darken-3 */
+  --medical-green: var(--md-sys-color-primary, #43a047);
+  --medical-bg: var(--md-sys-color-background, #f4f7f6);
+  --medical-text: var(--md-sys-color-on-background, #424242);
   --medical-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -14,8 +12,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /*background-color: var(--medical-bg) !important;*/
   color: var(--medical-text);
+  background-color: var(--medical-bg);
 }
 
 /* Materialize Overrides for Clinical Look */

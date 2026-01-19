@@ -1,4 +1,4 @@
-import React from 'react';
+
 import PropTypes from 'prop-types';
 
 const CustomPreloader = ({
@@ -36,8 +36,8 @@ const CustomPreloader = ({
     // like spinner-blue, spinner-red, spinner-yellow, spinner-green for the default one.
     // If no color, it defaults to this multi-color behavior.
     spinnerLayerClassName += ' spinner-blue'; // Default to one color if no specific color is given for single-color mode
-                                          // OR rely on multiple layers for multi-color effect.
-                                          // The standard multi-color has 4 spinner layers.
+    // OR rely on multiple layers for multi-color effect.
+    // The standard multi-color has 4 spinner layers.
   }
 
 

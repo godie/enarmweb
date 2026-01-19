@@ -1,7 +1,7 @@
-import React, { useActionState } from "react"; // Added useActionState
+import { useEffect, useState } from "react"; // Added useActionState
 import PropTypes from "prop-types";
-import { CustomCheckbox, CustomButton, CustomTextInput, CustomTextarea, CustomRow, CustomCol } from "../custom";
-import { alertError, alertSuccess } from "../../services/AlertService"; // For user feedback
+import { CustomCheckbox, CustomButton, CustomTextInput, CustomTextarea, CustomRow, CustomCol, CustomSelect } from "../custom";
+import ExamService from "../../services/ExamService";
 
 // Removed onSubmit from props as it will be handled by useActionState
 const CasoForm = ({
@@ -14,9 +14,11 @@ const CasoForm = ({
   addAnswer,
   deleteAnswer,
   onCancel,
-  saveCasoAction // This will be the action passed from the parent container
+  saveCasoAction, // This will be the action passed from the parent container
+  isAdmin = false // Default to false
 }) => {
 
+  const [categories, setCategories] = useState([]);
   // useActionState will be used in the parent component (CasoContainer)
   // For now, we assume saveCasoAction is the action ready to be used by the form
   // and error/isPending would be passed as props if needed here, or handl sved in parent.
@@ -45,18 +47,61 @@ const CasoForm = ({
   // 3. Passing the `submitAction` (returned by `useActionState`) to this component as `saveCasoAction`.
   // 4. Optionally, passing `error` and `isPending` if needed for UI changes within `CasoForm`.
 
+  useEffect(() => {
+    ExamService.loadCategories().then(res => {
+      setCategories(res.data);
+    }).catch(err => console.error("Error loading categories", err));
+  }, []);
   return (
     <div className="col s12 m12 l12">
       {/* The form now uses the `action` prop with `saveCasoAction` */}
       {/* FormData will be automatically collected. Ensure input fields have `name` attributes. */}
       <form className="" action={saveCasoAction}>
         <h3 className="center">Caso Clinico</h3>
+        <CustomCol s={12} m={6}>
+          <CustomTextInput
+            id="name"
+            label="Nombre Identificador del Caso *"
+            value={caso.name}
+            name="name"
+            onChange={onChange}
+          />
+        </CustomCol>
+        <CustomCol s={12} m={6}>
+          <CustomSelect
+            id="category_id"
+            label="Especialidad / Categoría *"
+            name="category_id"
+            value={caso.category_id}
+            onChange={onChange}
+          >
+            <option value="" disabled>Selecciona Especialidad</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </CustomSelect>
+        </CustomCol>
+        {isAdmin && (
+          <CustomCol s={12} m={12}>
+            <CustomSelect
+              id="status"
+              label="Estado del Caso *"
+              name="status"
+              value={caso.status}
+              onChange={onChange}
+            >
+              <option value="pending">Pendiente de Revisión</option>
+              <option value="published">Publicado</option>
+              <option value="rejected">Rechazado</option>
+            </CustomSelect>
+          </CustomCol>
+        )}
 
         <CustomRow>
           <CustomCol s={12}>
             <CustomTextarea
               id="description"
-              label="Caso clinico"
+              label="Caso clinico(descripción del caso)"
               value={caso.description} // Still controlled by parent state for dynamic changes
               onChange={onChange} // onChange still needed for parent to update its state
               name="description" // Crucial for FormData
@@ -68,12 +113,13 @@ const CasoForm = ({
           <CustomCol s={12}>
             <h4 className="center">Preguntas:</h4>
           </CustomCol>
-          <CustomCol s={12}>
+          <CustomCol s={12} className="center">
             <CustomButton
               onClick={addQuestion} // These buttons do not submit the form
               type="button"
               className=""
-              large
+              medium
+              flat={true}
               icon="add"
               iconPosition="right"
               waves="light"
@@ -97,6 +143,22 @@ const CasoForm = ({
             addAnswer,
             deleteAnswer
           )}
+          {caso.questions.length > 0 && (
+            <CustomCol s={12} className="mb-4 center">
+              <CustomButton
+                onClick={addQuestion} // These buttons do not submit the form
+                type="button"
+                className=""
+                flat={true}
+                medium
+                icon="add"
+                iconPosition="right"
+                waves="light"
+              >
+                Agregar Pregunta
+              </CustomButton>
+            </CustomCol>
+          )}
         </CustomRow>
 
         <div className="divider"></div>
@@ -106,24 +168,30 @@ const CasoForm = ({
             <CustomCol s={6}>
               <p className="left-align">
                 <CustomButton
-                  large
+                  flat={true}
                   type="button" // Important: not a submit button
                   waves="light"
                   onClick={onCancel}
                 >
-                  Cancelar
+                  CANCELAR
                 </CustomButton>
               </p>
             </CustomCol>
             <CustomCol s={6}>
               <p className="right-align">
                 {/* This button will now trigger the form action */}
-                <CustomButton large type="submit" waves="light" tooltip="Guardar Caso"
+                <CustomButton
+                  type="submit"
+                  waves="light"
+                  tooltip="Guardar Caso"
+                  icon="save"
+                  iconPosition="right"
+                  className="green darken-1"
                 // isPending prop would be used here if passed down
                 // disabled={isPending}
                 >
                   {/* {isPending ? "Guardando..." : "Guardar"} */}
-                  Guardar
+                  GUARDAR CASO CLINICO
                 </CustomButton>
               </p>
             </CustomCol>
@@ -156,18 +224,7 @@ let processQuestions = (
 
       return (
         <CustomRow key={keyId} className="answer-wrapper" style={{ marginBottom: '15px', alignItems: 'center' }}>
-          <CustomCol s={7}>
-            <CustomTextInput
-              id={`answer-text-${keyId}`}
-              value={answer.text}
-              label={`Respuesta ${answerIndex + 1}`}
-              onChange={(event) =>
-                onChangeAnswer(questionIndex, answerIndex, "text", event)
-              }
-              name={answerTextName}
-            />
-          </CustomCol>
-          <CustomCol s={3}>
+          <CustomCol s={3} m={2}>
             <div style={{ marginTop: '20px' }}>
               <CustomCheckbox
                 id={`answer-iscorrect-${keyId}`}
@@ -186,7 +243,18 @@ let processQuestions = (
               />
             </div>
           </CustomCol>
-          <CustomCol s={2} className="right-align" style={{ marginTop: '10px' }}>
+          <CustomCol s={8} m={9}>
+            <CustomTextInput
+              id={`answer-text-${keyId}`}
+              value={answer.text}
+              label={`Respuesta ${answerIndex + 1}`}
+              onChange={(event) =>
+                onChangeAnswer(questionIndex, answerIndex, "text", event)
+              }
+              name={answerTextName}
+            />
+          </CustomCol>
+          <CustomCol s={1} className="right-align" style={{ marginTop: '10px' }}>
             <CustomButton
               type="button"
               floating
@@ -196,12 +264,14 @@ let processQuestions = (
               onClick={(event) =>
                 deleteAnswer(questionIndex, answerIndex, event)
               }
-              icon="delete"
+              icon="close"
+              aria-label="Borrar respuesta"
+              tooltip="Borrar respuesta"
             />
           </CustomCol>
 
           {answer.is_correct && (
-            <CustomCol s={10} offset="s1">
+            <CustomCol s={8} offset="s3">
               <CustomTextarea
                 id={`answer-description-${keyId}`}
                 label="Justificación de la respuesta correcta"
@@ -220,24 +290,21 @@ let processQuestions = (
 
     const questionTextName = `questions[${questionIndex}][text]`;
     return (
-      <CustomCol key={questionIndex} s={12} className="question-block" style={{
-        marginBottom: '30px',
-        padding: '25px',
-        border: '1px solid #e0e0e0',
-        borderRadius: '4px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-      }}>
-        <CustomRow style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '10px', marginBottom: '20px' }}>
+      <CustomCol key={questionIndex} s={12} className="question-container">
+        <CustomRow style={{ paddingBottom: '10px' }}>
           <CustomCol s={10}>
-            <h5 style={{ margin: '0', color: '#2e7d32' }}>Pregunta {questionIndex + 1}</h5>
+            <span className="badge green white-text left" style={{ borderRadius: '4px', float: 'none', marginLeft: '0' }}>Pregunta {questionIndex + 1}</span>
+
+
           </CustomCol>
           <CustomCol s={2} className="right-align">
             <CustomButton
               type="button"
               onClick={(event) => deleteQuestion(questionIndex, event)}
               className="red-text btn-flat"
-              icon="delete"
-              tooltip="Eliminar pregunta"
+              icon="close"
+              tooltip="Borrar pregunta"
+              aria-label="Borrar pregunta"
             />
           </CustomCol>
         </CustomRow>
@@ -268,6 +335,7 @@ let processQuestions = (
               iconPosition="left"
               small
               flat
+              aria-label="Agregar una respuesta"
             >
               Agregar Opción
             </CustomButton>

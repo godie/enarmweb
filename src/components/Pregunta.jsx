@@ -1,4 +1,4 @@
-import React from "react";
+
 import PropTypes from "prop-types";
 
 const Pregunta = ({
@@ -9,9 +9,18 @@ const Pregunta = ({
   selectedAnswer,
   showCorrectAnswer = false, // Default for showCorrectAnswer
 }) => {
+  const isMultiple = answerList.filter(a => a.is_correct).length > 1;
+
   const answerItems = answerList.map((answer, ansIndex) => {
     let extraClass = "";
-    let checked = !!(selectedAnswer && selectedAnswer.id === answer.id);; // Ensure selectedAnswer exists
+    let isSelected = false;
+
+    if (isMultiple) {
+      isSelected = Array.isArray(selectedAnswer) && selectedAnswer.some(a => a.id === answer.id);
+    } else {
+      isSelected = !!(selectedAnswer && selectedAnswer.id === answer.id);
+    }
+
     let answerIcon = "";
     let answerFeedbackDescription = ""; // Renamed to avoid conflict with questionDescription
 
@@ -23,25 +32,25 @@ const Pregunta = ({
         }
       }
 
-        if (checked &&!answer.is_correct) {
-          extraClass = "red lighten-4"; // Lighter red
-          answerIcon = (
-            <a href="#!" className="secondary-content black-text">
-              <i className="material-icons">highlight_off</i>
-            </a>
-          );
-        }  
-        if(checked && answer.is_correct){
-          // If checked and correct, extraClass would already be green
-          // Ensure green class takes precedence or combine if needed
-          extraClass = "green lighten-4";
-          answerIcon = (
-            <a href="#!" className="secondary-content black-text">
-              <i className="material-icons">check_circle</i>
-            </a>
-          );
-        }
-      
+      if (isSelected && !answer.is_correct) {
+        extraClass = "red lighten-4"; // Lighter red
+        answerIcon = (
+          <a href="#!" className="secondary-content black-text">
+            <i className="material-icons">highlight_off</i>
+          </a>
+        );
+      }
+      if (isSelected && answer.is_correct) {
+        // If checked and correct, extraClass would already be green
+        // Ensure green class takes precedence or combine if needed
+        extraClass = "green lighten-4";
+        answerIcon = (
+          <a href="#!" className="secondary-content black-text">
+            <i className="material-icons">check_circle</i>
+          </a>
+        );
+      }
+
     }
 
     return (
@@ -49,12 +58,12 @@ const Pregunta = ({
         <label htmlFor={`${questionDescription}-${answer.id}`} className="black-text">
           <input
             aria-label={answer.text}
-            type="radio"
+            type={isMultiple ? "checkbox" : "radio"}
             value={answer.id} // Corrected: use answer.id for value
             name={questionDescription} // Group radio buttons by question description
             id={`${questionDescription}-${answer.id}`} // Make ID more unique combining question and answer
-            className="with-gap"
-            checked={checked}
+            className={isMultiple ? "filled-in" : "with-gap"}
+            checked={isSelected}
             onChange={(event) =>
               handleSelectOption(questionIndex, ansIndex, event)
             }

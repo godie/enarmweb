@@ -1,21 +1,28 @@
-import React from "react";
+import { useEffect } from "react";
 import "./App.css";
 import "./theme.css";
 import Navi from "./components/Navi";
+import Auth from "./modules/Auth";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { data: [] };
-  }
+const App = ({ children }) => {
+  useEffect(() => {
+    const user = Auth.getUserInfo();
+    const savedTheme = localStorage.getItem('theme');
+    const prefTheme = user?.preferences?.theme;
 
-  render() {
-    return (
-      <div className="App container">
-        <Navi />
-        {this.props.children}
-      </div>
-    );
-  }
-}
+    const themeToApply = prefTheme || savedTheme;
+    if (themeToApply) {
+      document.documentElement.setAttribute('theme', themeToApply);
+      if (!savedTheme) localStorage.setItem('theme', themeToApply);
+    }
+  }, []);
+
+  return (
+    <div className="App container">
+      <Navi />
+      {children}
+    </div>
+  );
+};
+
 export default App;

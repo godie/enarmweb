@@ -1,4 +1,4 @@
-import React from "react";
+
 import Navi from "../Navi";
 import SideNavAdmin from './SideNavAdmin';
 
@@ -16,13 +16,15 @@ export default function Dashboard(props) {
         </div>
         <SideNavAdmin />
       </header>
-      <div className="main-content">
-        <div className="row">
-          <div className="col s12">
-            {props.children}
+      <main className="main-content">
+        <div className="dashboard-content">
+          <div className="row">
+            <div className="col s12">
+              {props.children}
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

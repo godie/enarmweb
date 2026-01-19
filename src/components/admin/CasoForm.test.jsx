@@ -1,30 +1,20 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { vi, describe, test, expect } from 'vitest';
 import CasoForm from './CasoForm';
-
-// Mock Materialize global M object
-global.M = {
-  textareaAutoResize: jest.fn(),
-  updateTextFields: jest.fn(),
-  Tooltip: {
-    init: jest.fn(),
-  },
-  validate_field: jest.fn(), // Added this line
-  // Add other M functions if needed by other components used within CasoForm
-};
 
 // Helper to provide default props and allow overriding
 const getDefaultProps = () => ({
-  saveCasoAction: jest.fn(),
-  onChange: jest.fn(),
-  onChangeAnswer: jest.fn(),
-  onChangeQuestion: jest.fn(),
-  addQuestion: jest.fn(),
-  deleteQuestion: jest.fn(),
-  addAnswer: jest.fn(),
-  deleteAnswer: jest.fn(),
-  onCancel: jest.fn(),
+  saveCasoAction: vi.fn(),
+  onChange: vi.fn(),
+  onChangeAnswer: vi.fn(),
+  onChangeQuestion: vi.fn(),
+  addQuestion: vi.fn(),
+  deleteQuestion: vi.fn(),
+  addAnswer: vi.fn(),
+  deleteAnswer: vi.fn(),
+  onCancel: vi.fn(),
   caso: {
     description: 'Initial Case Description',
     questions: [],
@@ -36,7 +26,7 @@ describe('CasoForm Component', () => {
     const props = getDefaultProps();
     render(<CasoForm {...props} />);
 
-    expect(screen.getByLabelText('Caso clinico')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Caso clinico/i)).toBeInTheDocument();
     expect(screen.getByDisplayValue('Initial Case Description')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /agregar pregunta/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
@@ -46,7 +36,7 @@ describe('CasoForm Component', () => {
   test('calls onChange when description is changed', () => {
     const props = getDefaultProps();
     render(<CasoForm {...props} />);
-    const descriptionTextarea = screen.getByLabelText('Caso clinico');
+    const descriptionTextarea = screen.getByLabelText(/Caso clinico/i);
     fireEvent.change(descriptionTextarea, { target: { name: 'description', value: 'New description' } });
     expect(props.onChange).toHaveBeenCalledTimes(1);
     // More specific check if needed:
@@ -116,19 +106,14 @@ describe('CasoForm Component', () => {
       // For Answer 1.1 (correct, with description)
       const answerDesc11 = screen.getByDisplayValue('Reason 1.1');
       expect(answerDesc11).toBeInTheDocument();
-      // Check if its parent div is shown (has class 'show')
-      // This requires a more specific selector or inspecting classList
-      expect(answerDesc11.closest('div.input-field')?.classList.contains('show')).toBe(true);
+      // In the new implementation, it's conditionally rendered, so if it's there at all, it's "shown"
     });
 
-    test('answer description textarea is hidden for incorrect answer', () => {
+    test('answer description textarea is not rendered for incorrect answer', () => {
       render(<CasoForm {...propsWithQuestions} />);
-      const answerText12 = screen.getByDisplayValue('Answer 1.2');
+      // Q0, A1 is incorrect, so description input shouldn't be rendered
       const answerDesc12Textarea = document.getElementById('answer-description-0-1'); // for Q0, A1
-      expect(answerDesc12Textarea).toBeInTheDocument();
-      const parentCol = answerDesc12Textarea.closest('div.col.s8');
-      expect(parentCol).toBeInTheDocument();
-      expect(parentCol).toHaveClass('hide');
+      expect(answerDesc12Textarea).toBeNull();
     });
 
     test('answer description textarea is visible for correct answer if description is empty/null', () => {
@@ -146,7 +131,7 @@ describe('CasoForm Component', () => {
       };
       render(<CasoForm {...props} />);
       const answerDescTextarea = document.getElementById('answer-description-0-0');
-      expect(answerDescTextarea?.closest('div.input-field')?.classList.contains('show')).toBe(true);
+      expect(answerDescTextarea).toBeInTheDocument();
     });
 
 

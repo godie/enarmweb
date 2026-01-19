@@ -1,4 +1,4 @@
-import React from 'react';
+
 import PropTypes from 'prop-types';
 
 const CustomTable = ({
@@ -37,7 +37,7 @@ const CustomTable = ({
   // Let's assume Materialize components don't strictly need the 'table' class if others are present.
   // So, if tableClassName is just 'table' after this, make it empty.
   if (tableClassName === 'table' && !className) { // Only if no other classes were added
-      // tableClassName = ''; // Optional: decide if base 'table' class is needed if no other style
+    // tableClassName = ''; // Optional: decide if base 'table' class is needed if no other style
   }
 
 

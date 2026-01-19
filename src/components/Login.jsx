@@ -1,4 +1,4 @@
-import React from "react";
+
 import { useHistory, useLocation } from "react-router-dom";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
@@ -15,6 +15,7 @@ export default function Login() {
     try {
       const { data } = await UserService.login({ email, password });
       Auth.authenticateUser(data.token);
+      Auth.saveUserInfo(data);
       history.replace(from);
       return null;
     } catch (err) {

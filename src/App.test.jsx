@@ -1,7 +1,8 @@
-import React from 'react';
+
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { MemoryRouter } from 'react-router-dom'; 
+import { MemoryRouter } from 'react-router-dom';
+import { it } from 'vitest';
 
 
 it('renders without crashing', () => {

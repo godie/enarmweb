@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Forms, CharacterCounter } from '@materializecss/materialize';
 
@@ -13,6 +13,8 @@ const CustomTextarea = ({
   icon,
   iconClassName = '',
   s, m, l, xl, // Grid size props
+  maxLength,
+  'data-length': dataLength,
   ...props
 }) => {
   const textareaRef = useRef(null);
@@ -26,8 +28,9 @@ const CustomTextarea = ({
   }, [value, disabled]);
 
   useEffect(() => {
+    const hasLengthLimit = maxLength || dataLength;
     // Initialize Character Counter if maxLength is present
-    if (textareaRef.current && CharacterCounter && (props.maxLength || props['data-length'])) {
+    if (textareaRef.current && CharacterCounter && hasLengthLimit) {
       if (counterInstance.current) {
         counterInstance.current.destroy();
       }
@@ -39,7 +42,7 @@ const CustomTextarea = ({
         counterInstance.current = null;
       }
     };
-  }, [props.maxLength, props['data-length']]);
+  }, [maxLength, dataLength]);
 
   useEffect(() => {
     if (Forms && Forms.updateTextFields) {

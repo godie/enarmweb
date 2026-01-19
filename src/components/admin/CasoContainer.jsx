@@ -1,48 +1,63 @@
-import React, { useState, useEffect, useRef, useActionState } from "react"; // Added useActionState
+import { useState, useEffect, useRef, useActionState } from "react"; // Added useActionState
 import CasoForm from "./CasoForm";
 import ExamService from "../../services/ExamService";
 import { useHistory, useParams } from 'react-router-dom';
 import { alertError, alertSuccess } from "../../services/AlertService";
+
+const INITIAL_CASO_STATE = {
+  name: "",
+  description: "Un caso clinico nuevo",
+  status: "pending",
+  category_id: "",
+  questions: [
+    {
+      answers: [
+        { id: 0, text: "Respuesta 1", is_correct: false, description: "" },
+        { id: 0, text: "Respuesta 2", is_correct: false, description: "" },
+        { id: 0, text: "Respuesta 3", is_correct: false, description: "" },
+        { id: 0, text: "Respuesta 4", is_correct: false, description: "" },
+      ]
+    }
+  ]
+};
 
 const CasoContainer = () => {
   const history = useHistory();
   const { identificador } = useParams();
   const currentIdRef = useRef(null);
 
-  const [caso, setCaso] = useState({
-    description: "Un caso clinico nuevo",
-    questions: [],
-  });
+  const [caso, setCaso] = useState(() => INITIAL_CASO_STATE);
 
   // Action function for saving the caso
-  const handleSaveCaso = async (previousState, formData) => {
-    // The `caso` state is the most up-to-date source of truth for questions/answers
-    // as they are managed by complex interactions (add/delete question/answer).
-    // FormData might contain 'description', but nested questions/answers are tricky with FormData directly for dynamic lists.
-    // So, we rely on the `caso` state object.
-    // The `casoData` hidden field in form can pass this if needed, or we can just use the `caso` state from closure.
+  const handleSaveCaso = async () => {
+    const prepareClinicalCase = (currentCaso) => {
+      const processAnswers = (answers) => answers.map(ans => ({
+        text: ans.text,
+        is_correct: ans.is_correct,
+        description: ans.description,
+        ...(ans.id > 0 ? { id: ans.id } : {})
+      }));
 
-    // Option 1: Parse from hidden field (if used)
-    // const casoFromFormData = JSON.parse(formData.get('casoData'));
-    // let clinicalCaseToSave = prepareClinicalCase(casoFromFormData);
-
-    // Option 2: Use `caso` state directly (simpler if `prepareClinicalCase` can access it)
-    // Ensure `prepareClinicalCase` uses the most current `caso` state.
-    // For useActionState, the action should ideally get all it needs from formData or be pure.
-    // To make it work cleanly with useActionState, it's better if `prepareClinicalCase`
-    // can be called with the current `caso` state from this component's scope.
-    // The `formData` argument in an action is typically for simple form fields.
-    // Since our `caso` state is complex and managed interactively,
-    // we will use the `caso` state directly from the `CasoContainer`'s scope.
-    // The `formData` will primarily be used by React to trigger the action.
-    // We can still extract top-level fields like 'description' from formData if desired,
-    // but the core logic will use the `caso` state.
+      return {
+        id: currentCaso.id,
+        name: currentCaso.name,
+        description: currentCaso.description,
+        status: currentCaso.status,
+        category_id: currentCaso.category_id,
+        questions_attributes: currentCaso.questions.map(q => ({
+          text: q.text,
+          answers_attributes: processAnswers(q.answers),
+          ...(q.id > 0 ? { id: q.id } : {})
+        }))
+      };
+    };
 
     let clinicalCaseToSave = prepareClinicalCase(caso); // Uses `caso` state from component scope
-
+    console.log(clinicalCaseToSave);
     try {
       await ExamService.saveCaso(clinicalCaseToSave);
-      alertSuccess('Caso Clinico', 'Se ha guardado correctamente').then(() => history.goBack());
+      await alertSuccess('Caso Clinico', 'Se ha guardado correctamente');
+      history.goBack()
       return null; // Success
     } catch (error) {
       console.error("ocurrio un error", error);
@@ -51,59 +66,49 @@ const CasoContainer = () => {
     }
   };
 
-  const [error, submitCasoAction, isPending] = useActionState(handleSaveCaso, null);
+  const [error, submitCasoAction] = useActionState(handleSaveCaso, null);
 
+  useEffect(() => {
+    let isMounted = true; // Para evitar actualizar estado si el componente se desmonta
+    const idNum = parseInt(identificador, 10);
 
-  const prepareClinicalCase = (currentCaso) => {
-    // This function now correctly uses the `currentCaso` argument passed to it
-    let questions = currentCaso.questions;
-    let questions_attributes = [];
-
-    for (var question of questions) {
-      let processedAnswers = processAnswers(question.answers);
-      let preparedQuestion = {
-        text: question.text,
-        answers_attributes: processedAnswers,
-      };
-      if (!question.id || question.id === 0) { // Check for undefined or 0
-        questions_attributes.push(preparedQuestion);
-      } else {
-        questions_attributes.push(
-          Object.assign({}, { id: question.id }, preparedQuestion)
-        );
-      }
+    if (idNum > 0) {
+      ExamService.getCaso(idNum)
+        .then(response => {
+          if (isMounted) {
+            setCaso(response.data);
+          }
+        })
+        .catch(error => {
+          console.error("Error loading caso", error);
+          alertError('Error', 'No se pudo cargar el caso clínico.');
+        });
     }
-    let clinicalCaseToSave = {
-      id: currentCaso.id,
-      description: currentCaso.description, // This should ideally come from formData if it's a direct input
-      // or ensure `caso.description` is updated by `changeCaso`
-      category_id: 1,
-      questions_attributes: questions_attributes,
+    else {
+      Promise.resolve().then(() => {
+        if (isMounted) {
+          setCaso(prev => {
+            if (prev.id) return INITIAL_CASO_STATE;
+            return prev;
+          });
+        }
+      });
+    }
+
+    return () => {
+      isMounted = false; // Cleanup
     };
-    return clinicalCaseToSave;
-  };
-
-  const processAnswers = (answersToProcess) => {
-    let answers_attributes = [];
-    for (var answer of answersToProcess) {
-      let preparedAnswer = {
-        text: answer.text,
-        is_correct: answer.is_correct,
-        description: answer.description,
-      };
-      if (answer.id && answer.id > 0) { // Check for defined and > 0
-        answers_attributes.push(
-          Object.assign({}, { id: answer.id }, preparedAnswer)
-        );
-      } else {
-        answers_attributes.push(preparedAnswer);
-      }
-    }
-    return answers_attributes;
-  };
+  }, [identificador]);
 
   const addQuestion = () => {
-    let newQuestion = { id: 0, text: "Pregunta", answers: [] };
+    let newQuestion = {
+      id: 0, text: "Pregunta", answers: [
+        { id: 0, text: "Respuesta", is_correct: false, description: "" },
+        { id: 0, text: "Respuesta", is_correct: false, description: "" },
+        { id: 0, text: "Respuesta", is_correct: false, description: "" },
+        { id: 0, text: "Respuesta", is_correct: false, description: "" },
+      ]
+    };
     // currentIdRef.current = "question-" + caso.questions.length; // Id for focus, ensure it's unique
     // The id for focus should be on the input itself, e.g., `question-text-${caso.questions.length}`
     currentIdRef.current = `question-text-${caso.questions.length}`;
@@ -208,26 +213,6 @@ const CasoContainer = () => {
   };
 
   useEffect(() => {
-    let idFromParams = 0;
-    if (identificador && !isNaN(parseInt(identificador))) {
-      idFromParams = parseInt(identificador);
-    }
-
-    if (idFromParams > 0) {
-      ExamService.getCaso(idFromParams)
-        .then((response) => {
-          setCaso(response.data);
-        })
-        .catch((error) => {
-          console.log("OCurrio un error loading caso", error);
-          alertError('Error', 'No se pudo cargar el caso clínico.');
-        });
-    } else {
-      setCaso({ description: "Un caso clinico nuevo", questions: [] });
-    }
-  }, [identificador]);
-
-  useEffect(() => {
     if (currentIdRef.current) {
       const elementToFocus = document.getElementById(currentIdRef.current);
       if (elementToFocus) {
@@ -261,6 +246,7 @@ const CasoContainer = () => {
         addAnswer={addAnswer}
         deleteAnswer={deleteAnswer}
         onCancel={onCancel}
+        isAdmin={true}
       // Pass error and isPending if CasoForm needs to react to them (e.g., disable button, show message)
       // error={error}
       // isPending={isPending}

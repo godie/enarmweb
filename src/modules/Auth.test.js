@@ -1,4 +1,5 @@
 import Auth from './Auth';
+import { describe, beforeEach, it, expect } from 'vitest';
 
 describe('Auth', () => {
   beforeEach(() => {
@@ -25,19 +26,32 @@ describe('Auth', () => {
     });
   });
 
-  describe('deauthenticateUser', () => {
-    it('should remove the token from localStorage', () => {
-      const token = 'test-token';
-      localStorage.setItem('token', token);
-      Auth.deauthenticateUser();
-      expect(localStorage.getItem('token')).toBeNull();
+  describe('isAdmin', () => {
+    it('should return true if user info has admin role', () => {
+      const info = { role: 'admin' };
+      localStorage.setItem('userInfo', JSON.stringify(info));
+      expect(Auth.isAdmin()).toBe(true);
     });
 
-    it('should return false from isUserAuthenticated after deauthenticating', () => {
+    it('should return false if user info has player role', () => {
+      const info = { role: 'player' };
+      localStorage.setItem('userInfo', JSON.stringify(info));
+      expect(Auth.isAdmin()).toBe(false);
+    });
+
+    it('should return false if no user info exists', () => {
+      expect(Auth.isAdmin()).toBe(false);
+    });
+  });
+
+  describe('deauthenticateUser', () => {
+    it('should remove the token and user info from localStorage', () => {
       const token = 'test-token';
       localStorage.setItem('token', token);
+      localStorage.setItem('userInfo', JSON.stringify({ name: 'Test' }));
       Auth.deauthenticateUser();
-      expect(Auth.isUserAuthenticated()).toBe(false);
+      expect(localStorage.getItem('token')).toBeNull();
+      expect(localStorage.getItem('userInfo')).toBeNull();
     });
   });
 
@@ -53,51 +67,36 @@ describe('Auth', () => {
     });
   });
 
-  describe('saveFacebookUser', () => {
-    it('should save the Facebook user data to localStorage', () => {
-      const fbUser = { id: 'fb-123', name: 'Facebook User' };
-      Auth.saveFacebookUser(fbUser);
-      expect(localStorage.getItem('fbUser')).toBe(JSON.stringify(fbUser));
+  describe('saveUserInfo', () => {
+    it('should save the user data to localStorage', () => {
+      const user = { id: 1, name: 'User' };
+      Auth.saveUserInfo(user);
+      expect(localStorage.getItem('userInfo')).toBe(JSON.stringify(user));
     });
   });
 
-  describe('isFacebookUser', () => {
-    it('should return true if Facebook user data exists in localStorage', () => {
-      const fbUser = { id: 'fb-123', name: 'Facebook User' };
-      localStorage.setItem('fbUser', JSON.stringify(fbUser));
-      expect(Auth.isFacebookUser()).toBe(true);
+  describe('getUserInfo', () => {
+    it('should return the user data if it exists in localStorage', () => {
+      const user = { id: 1, name: 'User' };
+      localStorage.setItem('userInfo', JSON.stringify(user));
+      expect(Auth.getUserInfo()).toEqual(user);
     });
 
-    it('should return false if no Facebook user data exists in localStorage', () => {
-      expect(Auth.isFacebookUser()).toBe(false);
-    });
-  });
-
-  describe('getFacebookUser', () => {
-    it('should return the Facebook user data if it exists in localStorage', () => {
-      const fbUser = { id: 'fb-123', name: 'Facebook User' };
-      localStorage.setItem('fbUser', JSON.stringify(fbUser));
-      expect(Auth.getFacebookUser()).toEqual(fbUser);
-    });
-
-    it('should return null if no Facebook user data exists in localStorage', () => {
-      expect(Auth.getFacebookUser()).toBeNull();
+    it('should return null if no user data exists in localStorage', () => {
+      expect(Auth.getUserInfo()).toBeNull();
     });
   });
 
-  describe('removeFacebookUser', () => {
-    it('should remove the Facebook user data from localStorage', () => {
-      const fbUser = { id: 'fb-123', name: 'Facebook User' };
-      localStorage.setItem('fbUser', JSON.stringify(fbUser));
-      Auth.removeFacebookUser();
-      expect(localStorage.getItem('fbUser')).toBeNull();
+  describe('Legacy Aliases', () => {
+    it('isPlayerAuthenticated should match isUserAuthenticated', () => {
+      localStorage.setItem('token', 'abc');
+      expect(Auth.isPlayerAuthenticated()).toBe(true);
     });
 
-    it('should result in isFacebookUser returning false', () => {
-      const fbUser = { id: 'fb-123', name: 'Facebook User' };
-      localStorage.setItem('fbUser', JSON.stringify(fbUser));
-      Auth.removeFacebookUser();
-      expect(Auth.isFacebookUser()).toBe(false);
+    it('getFacebookUser should return stringified user info', () => {
+      const user = { facebook_id: '123' };
+      Auth.saveUserInfo(user);
+      expect(JSON.parse(Auth.getFacebookUser())).toEqual(user);
     });
   });
 });

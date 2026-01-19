@@ -8,8 +8,10 @@ export { default as CustomPagination } from './CustomPagination'
 export { default as CustomPreloader } from './CustomPreloader'
 export { default as CustomRow } from './CustomRow';
 export { default as CustomSelect } from './CustomSelect'
-export { default as CustomSideNav} from './CustomSideNav'
-export { default as CustomSideNavItem} from './CustomSideNavItem'
+export { default as CustomSideNav } from './CustomSideNav'
+export { default as CustomSideNavItem } from './CustomSideNavItem'
 export { default as CustomTable } from './CustomTable'
 export { default as CustomTextarea } from './CustomTextarea'
 export { default as CustomTextInput } from './CustomTextInput'
+export { CustomCard, StatCard } from './CustomCards'
+

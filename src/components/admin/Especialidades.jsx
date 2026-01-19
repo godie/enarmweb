@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 // import { Col, Row } from "react-materialize"; // Removed
 import CustomButton from "../custom/CustomButton";
@@ -53,7 +53,7 @@ export default function Expecialidades({ title }) {
 
     return (
         <div className="section no-padding">
-            <div className="card-panel white">
+            <div className="card-panel">
                 <CustomRow className="valign-wrapper">
                     <CustomCol s={12} m={8}>
                         <h5 className="grey-text text-darken-3" style={{ margin: '0' }}>{title}</h5>

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import Auth from "../../modules/Auth";
 import GoogleLogin from "./GoogleLogin";
@@ -10,7 +10,6 @@ export default function GoogleLoginContainer() {
 
     const handleGoogleResponse = useCallback(
         (response) => {
-            console.log("Google response:", response);
             // The response includes a credential field which is the ID Token
             const idToken = response.credential;
 
@@ -36,7 +35,8 @@ export default function GoogleLoginContainer() {
                     Auth.savePlayerInfo({
                         name: googleUser.name,
                         email: googleUser.email,
-                        id: res.data.id
+                        id: res.data.id,
+                        role: res.data.role
                     });
                     history.replace("/");
                 })
@@ -50,7 +50,7 @@ export default function GoogleLoginContainer() {
 
     return (
         <GoogleLogin
-            clientId="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com" // User should replace this
+            clientId="32979180819-lob8rj66qsjukuq9dnjgqckv04nv5tof.apps.googleusercontent.com"
             onGoogleResponse={handleGoogleResponse}
         ></GoogleLogin>
     );

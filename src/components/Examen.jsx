@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Assuming EnarmUtil.getCategory uses route params
 import Caso from "./Caso";
 import EnarmUtil from "../modules/EnarmUtil";
@@ -9,25 +9,16 @@ const Examen = () => {
 
   // Initial state calculation using params directly, similar to constructor
   // This requires EnarmUtil.getCategory to be callable with a structure mimicking props
-  const initialClinicCaseId = EnarmUtil.getCategory({ match: { params: params } });
-  const initialCommentUrl = `http://enarm.godieboy.com/#/caso/${initialClinicCaseId}`;
+  const clinicCaseId = EnarmUtil.getCategory({ match: { params: params } });
+  const commentUrl = `http://enarm.godieboy.com/#/caso/${clinicCaseId}`;
 
-  const [clinicCaseId, setClinicCaseId] = useState(initialClinicCaseId);
-  const [commentUrl, setCommentUrl] = useState(initialCommentUrl);
-  const [width, setWidth] = useState(300); // Default width
-
-  // Effect for updating clinicCaseId and commentUrl when route params change
-  useEffect(() => {
-    const newClinicCaseId = EnarmUtil.getCategory({ match: { params: params } });
-    setClinicCaseId(newClinicCaseId);
-    setCommentUrl(`http://enarm.godieboy.com/#/caso/${newClinicCaseId}`);
-  }, [params]);
+  const [width, setWidth] = useState('300'); // Default width
 
   // Effect for updating dimensions on mount and window resize
   useEffect(() => {
     const updateDimensionsFunc = () => {
       if (window.innerWidth < 500) {
-        setWidth(300);
+        setWidth('300');
         // Original code set height here, but it's not used in FacebookComments props
       } else {
         let update_width = window.innerWidth - 500;

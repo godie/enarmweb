@@ -1,4 +1,4 @@
-import React from 'react';
+
 import PropTypes from 'prop-types';
 
 const CustomPagination = ({
@@ -31,7 +31,7 @@ const CustomPagination = ({
     let endPage = Math.min(items, startPage + maxButtons - 1);
 
     if (endPage - startPage + 1 < maxButtons && startPage > 1) {
-        startPage = Math.max(1, endPage - maxButtons + 1);
+      startPage = Math.max(1, endPage - maxButtons + 1);
     }
 
     // Add first page if not in range
@@ -57,7 +57,7 @@ const CustomPagination = ({
     // Add last page if not in range
     if (endPage < items) {
       if (endPage < items - 1) { // Add ellipsis if there's a gap
-         pageNumbers.push(<li key="ellipsis-end" className="disabled"><a href="#!">...</a></li>);
+        pageNumbers.push(<li key="ellipsis-end" className="disabled"><a href="#!">...</a></li>);
       }
       pageNumbers.push(
         <li key={items} className={items === activePage ? 'active' : 'waves-effect'}>

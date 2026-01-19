@@ -1,64 +1,33 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Auth from "../modules/Auth";
-import UserService from "../services/UserService"; // Import UserService
+import UserService from "../services/UserService";
 
 const Profile = () => {
-  const [fbUser, setFbUser] = useState({ name: "", email: "", facebook_id: null }); // Add id to user state
+  const [user] = useState(() => Auth.getUserInfo() || { id: null });
   const [achievements, setAchievements] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(() => (user && user.id ? true : false));
+  const [error, setError] = useState(() =>
+    (user && user.id) ? null : "No se encontró información del usuario. Por favor inicia sesión."
+  );
 
   useEffect(() => {
-    let user = { name: "", email: "", id: null };
-    let userToSet = null; // Temporary variable to hold the user object
 
-    if (Auth.isFacebookUser()) {
-      const fbUserObject = Auth.getFacebookUser(); // Auth.getFacebookUser() already parses JSON
-      if (fbUserObject) {
-        userToSet = JSON.parse(fbUserObject); // Assign parsed object directly
-      } else {
-        console.error("Error parsing Facebook user data from Auth module: No user data found");
-        setError("Error loading user data.");
-      }
-    } else if (Auth.isUserAuthenticated()) { // Check for regular authenticated user
-      const userStr = localStorage.getItem('user'); // Assuming 'user' is the key for regular user data
-      if (userStr) {
-        try {
-          userToSet = JSON.parse(userStr);
-        } catch (e) {
-          console.error("Error parsing user data from localStorage:", e);
-          setError("Error loading user data.");
-        }
-      }
-    }
+    if (!user.id) return;
 
-    if (userToSet) {
-      setFbUser(userToSet); // Set state once after determining user type
-      user = userToSet; // Ensure 'user' variable for API call is updated
-      user.id  = userToSet.facebook_id
-    }
-
-
-    if (user && user.id) {
-      UserService.getAchievements(user.id)
-        .then(response => {
-          setAchievements(response.data);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error("Error fetching achievements:", err);
-          setError("Error fetching achievements.");
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-      // setError("User ID not found, cannot fetch achievements."); // Optional: set error if no user ID
-    }
-  }, []);
-
+    UserService.getAchievements(user.id)
+      .then(response => {
+        setAchievements(response.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching achievements:", err);
+        setError("Error fetching achievements.");
+        setLoading(false);
+      });
+  }, [user.id]);
 
   if (loading) {
-    return <div className="section center">Loading...</div>;
+    return <div className="section center">Cargando...</div>;
   }
 
   if (error) {
@@ -67,22 +36,29 @@ const Profile = () => {
 
   return (
     <div className="section center container">
-      <h4>Player Profile</h4>
-      <div className="card" style={{ padding: "20px" }}>
-        <p><strong>Name:</strong> {fbUser.name || "N/A"}</p>
-        <p><strong>Email:</strong> {fbUser.email || "N/A"}</p>
-        <h5>Achievements</h5>
+      <h4 className="white-text">Perfil de Usuario</h4>
+      <div className="card glass-card" style={{ padding: "20px", borderRadius: '15px' }}>
+        <p><strong>Nombre:</strong> {user.name || "N/A"}</p>
+        <p><strong>Email:</strong> {user.email || "N/A"}</p>
+        <p><strong>Rol:</strong> <span className="badge blue white-text" style={{ borderRadius: '5px' }}>{user.role || "player"}</span></p>
+
+        <h5 style={{ marginTop: '30px' }}>Logros</h5>
         {achievements.length > 0 ? (
-          <ul className="collection">
+          <ul className="collection glass-collection">
             {achievements.map(ach => (
               <li key={ach.id} className="collection-item" role="listitem">
-                <strong>{ach.name}</strong>: {ach.description}
-                {ach.unlocked_at && <span className="new badge" data-badge-caption="Unlocked"></span>}
+                <span className="title"><strong>{ach.name}</strong></span>
+                <p>{ach.description}</p>
+                {ach.achieved_at && (
+                  <span className="secondary-content green-text">
+                    <i className="material-icons">check_circle</i>
+                  </span>
+                )}
               </li>
             ))}
           </ul>
         ) : (
-          <p>No achievements yet.</p>
+          <p className="grey-text">Aún no has desbloqueado logros.</p>
         )}
       </div>
     </div>

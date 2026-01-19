@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const GoogleTagManager = ({ gtmId }) => {
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','${gtmId}');
     `;
-    
+
     document.head.appendChild(script);
 
     const noscript = document.createElement('noscript');
@@ -29,7 +29,7 @@ const GoogleTagManager = ({ gtmId }) => {
     iframe.style.display = 'none';
     iframe.style.visibility = 'hidden';
     noscript.appendChild(iframe);
-    
+
     document.body.insertBefore(noscript, document.body.firstChild);
 
     return () => {

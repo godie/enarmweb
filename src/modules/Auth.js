@@ -1,9 +1,7 @@
 class Auth {
 
   static TOKEN_KEY = 'token';
-  static PLAYER_TOKEN = 'player_token'
-  static FB_USER_KEY = 'fbUser';
-  static PLAYER_INFO_KEY = 'playerInfo';
+  static USER_INFO_KEY = 'userInfo';
 
   /**
    * Authenticate a user. Save a token string in Local Storage
@@ -14,83 +12,95 @@ class Auth {
     localStorage.setItem(Auth.TOKEN_KEY, token);
   }
 
-  static authenticatePlayer(token) {
-    localStorage.setItem(Auth.PLAYER_TOKEN, token);
-  }
-
   /**
-   * Check if a user is authenticated - check if a token is saved in Local Storage
-   *
-   * @returns {boolean}
+   * Check if a user is authenticated
    */
   static isUserAuthenticated() {
     return localStorage.getItem(Auth.TOKEN_KEY) !== null;
   }
 
   /**
-   * Check if a user is authenticated - check if a token is saved in Local Storage
-   *
-   * @returns {boolean}
+   * Check if the authenticated user is an admin
    */
-  static isPlayerAuthenticated() {
-    return localStorage.getItem(Auth.PLAYER_TOKEN) !== null;
+  static isAdmin() {
+    const info = this.getUserInfo();
+    return !!(info && info.role === 'admin');
   }
 
   /**
-   * Deauthenticate a user. Remove a token from Local Storage.
-   *
+   * Deauthenticate a user.
    */
   static deauthenticateUser() {
     localStorage.removeItem(Auth.TOKEN_KEY);
-  }
-
-  static deauthenticatePlayer() {
-    localStorage.removeItem(Auth.PLAYER_TOKEN);
-    Auth.removePlayerInfo();
-    Auth.removeFacebookUser();
+    localStorage.removeItem(Auth.USER_INFO_KEY);
   }
 
   /**
    * Get a token value.
-   *
-   * @returns {string}
    */
-
   static getToken() {
-    return localStorage.getItem(Auth.TOKEN_KEY) || localStorage.getItem(Auth.PLAYER_TOKEN);
+    return localStorage.getItem(Auth.TOKEN_KEY);
   }
 
-  static saveFacebookUser(fbuser) {
-    localStorage.setItem(Auth.FB_USER_KEY, JSON.stringify(fbuser));
+  /**
+   * Save user info (including role)
+   */
+  static saveUserInfo(info) {
+    localStorage.setItem(Auth.USER_INFO_KEY, JSON.stringify(info));
   }
 
-  static isFacebookUser() {
-    return localStorage.getItem(Auth.FB_USER_KEY) !== null;
-  }
-
-  static getFacebookUser() {
-    const fbUser = localStorage.getItem(Auth.FB_USER_KEY);
-    return fbUser ? JSON.parse(fbUser) : null;
-  }
-
-  static removeFacebookUser() {
-    localStorage.removeItem(Auth.FB_USER_KEY);
-  }
-
-  static savePlayerInfo(info) {
-    localStorage.setItem(Auth.PLAYER_INFO_KEY, JSON.stringify(info));
-  }
-
-  static getPlayerInfo() {
-    const info = localStorage.getItem(Auth.PLAYER_INFO_KEY);
+  static getUserInfo() {
+    const info = localStorage.getItem(Auth.USER_INFO_KEY);
     return info ? JSON.parse(info) : null;
   }
 
-  static removePlayerInfo() {
-    localStorage.removeItem(Auth.PLAYER_INFO_KEY);
+  static removeUserInfo() {
+    localStorage.removeItem(Auth.USER_INFO_KEY);
   }
 
+  /**
+   * ALIASES PARA COMPATIBILIDAD (Legacy)
+   */
+  static authenticatePlayer(token) {
+    this.authenticateUser(token);
+  }
 
+  static isPlayerAuthenticated() {
+    return this.isUserAuthenticated();
+  }
+
+  static deauthenticatePlayer() {
+    this.deauthenticateUser();
+  }
+
+  static savePlayerInfo(info) {
+    this.saveUserInfo(info);
+  }
+
+  static getPlayerInfo() {
+    return this.getUserInfo();
+  }
+
+  static removePlayerInfo() {
+    this.removeUserInfo();
+  }
+
+  static saveFacebookUser(fbuser) {
+    this.saveUserInfo(fbuser);
+  }
+
+  static isFacebookUser() {
+    const info = this.getUserInfo();
+    return info && info.facebook_id;
+  }
+
+  static getFacebookUser() {
+    return JSON.stringify(this.getUserInfo());
+  }
+
+  static removeFacebookUser() {
+    this.removeUserInfo();
+  }
 }
 
 export default Auth;

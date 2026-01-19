@@ -1,4 +1,4 @@
-import React from 'react';
+
 import PropTypes from 'prop-types';
 
 const CustomCollectionItem = ({
@@ -28,10 +28,10 @@ const CustomCollectionItem = ({
 
 
   if (Tag === 'a') {
-       return (
-        <a href={finalHref} className={itemClassName} onClick={onClick} {...props}>
-            {children}
-        </a>
+    return (
+      <a href={finalHref} className={itemClassName} onClick={onClick} {...props}>
+        {children}
+      </a>
     );
   }
 

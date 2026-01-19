@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import PropTypes from "prop-types";
 
 
@@ -24,10 +24,6 @@ export default function FacebookLogin({
       window.FB.Event.subscribe("auth.statusChange", onStatusChange);
     };
 
-    if (locale === undefined) {
-      locale = 'es_LA';
-    }
-
     // Load the SDK script if not already present
     if (!document.getElementById("facebook-jssdk")) {
       ((d, s, id) => {
@@ -52,8 +48,8 @@ export default function FacebookLogin({
   }, [appId, locale, version, xfbml, onStatusChange]);
 
   return (
-    <div className="col s12 m10 l8 offset-m1 l2">
-      <div className="section center" style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div className="col s12 m10 l8 offset-m1 offset-l2">
+      <div className="section center">
         <div
           className="fb-login-button"
           data-max-rows="1"
@@ -63,7 +59,6 @@ export default function FacebookLogin({
           data-auto-logout-link="true"
           data-use-continue-as="false"
           data-scope="public_profile,email"
-          data-width="400"
         />
       </div>
     </div>

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
     CustomRow,
     CustomCol,
     CustomButton,
     CustomTable,
-    CustomPreloader
+    CustomPreloader,
+    StatCard
 } from '../custom';
 import ExamService from '../../services/ExamService';
 import { Link } from 'react-router-dom';
@@ -27,16 +28,15 @@ const Summary = () => {
                     ExamService.loadCategories(),
                     ExamService.getExams(1)
                 ]);
-
                 setStats({
                     categories: cats.data.length || 0,
-                    clinicalCases: cases.data.length || 0,
+                    clinicalCases: cases.data.total_entries || 0,
                     questions: 150,
                     exams: 8
                 });
 
                 setRecentCategories((cats.data || []).slice(0, 5));
-                setRecentCases((cases.data || []).slice(0, 5));
+                setRecentCases((cases.data.clinical_cases || []).slice(0, 5));
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching dashboard stats", error);
@@ -54,18 +54,6 @@ const Summary = () => {
             </div>
         );
     }
-
-    const StatCard = ({ title, count, icon }) => (
-        <div className="card-panel white" style={{ borderLeft: '4px solid var(--medical-green)', borderRadius: '8px' }}>
-            <div className="valign-wrapper" style={{ justifyContent: 'space-between' }}>
-                <div>
-                    <span className="grey-text text-darken-1" style={{ fontSize: '0.8rem', fontWeight: 'bold', textTransform: 'uppercase' }}>{title}</span>
-                    <h4 className="green-text text-darken-2" style={{ margin: '5px 0' }}>{count}</h4>
-                </div>
-                <i className="material-icons grey-text text-lighten-2" style={{ fontSize: '2.5rem' }}>{icon}</i>
-            </div>
-        </div>
-    );
 
     return (
         <div className="dashboard-summary">
@@ -142,17 +130,20 @@ const Summary = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {recentCases.map(caso => (
-                                    <tr key={caso.id}>
-                                        <td>{caso.name || (caso.description ? caso.description.slice(0, 30) : 'Sin título')}</td>
-                                        <td className="center-align">4</td>
-                                        <td className="right-align">
-                                            <Link to={`/dashboard/edit/caso/${caso.id}`}>
-                                                <i className="material-icons grey-text">edit</i>
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {recentCases.map(caso => {
+                                    return (
+                                        <tr key={caso.id}>
+                                            <td>{caso.name || (caso.description ? caso.description.slice(0, 30) : 'Sin título')}</td>
+
+                                            <td className="center-align">{caso.questions}</td>
+                                            <td className="right-align">
+                                                <Link to={`/dashboard/edit/caso/${caso.id}`}>
+                                                    <i className="material-icons grey-text">edit</i>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </CustomTable>
                         <div className="center-align" style={{ marginTop: '1.5rem' }}>

@@ -1,8 +1,9 @@
-import React from "react";
+
 import { Link } from "react-router-dom";
 import Auth from "../modules/Auth";
 // import { Navbar } from "react-materialize"; // Removed
 import { CustomNavbar, CustomSideNav } from "./custom";
+import ThemeToggle from "./ThemeToggle";
 
 const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
   let logoutLink = null;
@@ -24,7 +25,10 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
     <>
       <li><Link role="link" to="/">Home</Link></li>
       <li><Link role="link" to="/caso/1">Caso Clinico</Link></li>
-      <li><Link role="link" to="/dashboard">Admin</Link></li>
+      {Auth.isPlayerAuthenticated() && <li><Link role="link" to="/contribuir">Contribuir</Link></li>}
+      {Auth.isUserAuthenticated() && Auth.isAdmin() && <li><Link role="link" to="/dashboard">Admin</Link></li>}
+      {Auth.isUserAuthenticated() && !Auth.isAdmin() && <li><Link role="link" to="/perfil">Perfil</Link></li>}
+      <ThemeToggle />
       {logoutLink && <li>{logoutLink}</li>}
     </>
   );

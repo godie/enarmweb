@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -57,9 +57,9 @@ export default function FacebookComments({
   return (
     <div>
       <div className="fb-comments"
-           data-href={href}
-           data-width={width}
-           data-numposts={numPosts}>
+        data-href={href}
+        data-width={width}
+        data-numposts={numPosts}>
       </div>
     </div>
   );

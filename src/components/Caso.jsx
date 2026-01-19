@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 //import FacebookProvider, { Comments } from 'react-facebook';
 import ExamService from "../services/ExamService";
@@ -19,10 +19,23 @@ const Caso = (props) => {
   const [goNext, setGoNext] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
 
-  const handleSelectOption = (questionIndex, answerIndex, changeEvent) => {
+  const handleSelectOption = (questionIndex, answerIndex) => {
     let newSelectedAnswers = [...selectedAnswers];
     let currentData = data;
-    newSelectedAnswers[questionIndex] = currentData[questionIndex].answers[answerIndex];
+    const answer = currentData[questionIndex].answers[answerIndex];
+    const isMultiple = currentData[questionIndex].answers.filter(a => a.is_correct).length > 1;
+
+    if (isMultiple) {
+      let currentSelection = Array.isArray(newSelectedAnswers[questionIndex]) ? newSelectedAnswers[questionIndex] : [];
+      if (currentSelection.some(a => a.id === answer.id)) {
+        currentSelection = currentSelection.filter(a => a.id !== answer.id);
+      } else {
+        currentSelection = [...currentSelection, answer];
+      }
+      newSelectedAnswers[questionIndex] = currentSelection;
+    } else {
+      newSelectedAnswers[questionIndex] = answer;
+    }
 
     setSelectedAnswers(newSelectedAnswers);
   };
@@ -38,8 +51,13 @@ const Caso = (props) => {
       return;
     } else {
       let shouldGoNext = true;
-      const unansweredQuestions = selectedAnswers.filter(answer => !answer.id || answer.id === 0);
-      if(unansweredQuestions.length > 0){
+      const unansweredQuestions = selectedAnswers.filter(answer => {
+        if (Array.isArray(answer)) {
+          return answer.length === 0;
+        }
+        return !answer.id || answer.id === 0;
+      });
+      if (unansweredQuestions.length > 0) {
         shouldGoNext = false;
       }
 
@@ -48,23 +66,42 @@ const Caso = (props) => {
       }
       setGoNext(shouldGoNext);
       setShowAnswers(shouldGoNext);
-      if(!shouldGoNext){
+      if (!shouldGoNext) {
         alertError('Espera', 'No has respondido todas las preguntas, respondelas para poder continuar');
       }
     }
   };
 
   const sendAnswers = (answers) => {
-    let fbUser = JSON.parse(Auth.getFacebookUser());
-    let playerAnswers = { facebook_id: fbUser.facebook_id, player_answers: [] };
-    for (let answer of answers) {
-      playerAnswers.player_answers.push({
-        question_id: answer.question_id,
-        answer_id: answer.id,
-      });
+    const userInfo = Auth.getUserInfo();
+    if (!userInfo) {
+      alertError('Simulador', 'Debes iniciar sesión para guardar tus respuestas');
+      return;
     }
-    ExamService.sendAnswers(playerAnswers)
-      .then((response) => {
+
+    const userAnswers = [];
+    answers.forEach(answer => {
+      if (Array.isArray(answer)) {
+        answer.forEach(a => {
+          userAnswers.push({
+            question_id: a.question_id,
+            answer_id: a.id,
+          });
+        });
+      } else if (answer.id > 0) {
+        userAnswers.push({
+          question_id: answer.question_id,
+          answer_id: answer.id,
+        });
+      }
+    });
+
+    const payload = {
+      user_answers: userAnswers
+    };
+
+    ExamService.sendAnswers(payload)
+      .then(() => {
         Util.showToast("se guardaron las respuestas");
       })
       .catch((error) => {
@@ -76,21 +113,22 @@ const Caso = (props) => {
   const loadPreguntas = (currentClinicCaseId) => {
     let caseIdToLoad = currentClinicCaseId;
     var newNext = parseInt(caseIdToLoad) + 1;
-  
+
     setNext(newNext);
 
     ExamService.getQuestions(caseIdToLoad)
       .then((response) => {
         var responseData = response.data;
-        if(responseData.length === 0){
+        if (responseData.length === 0) {
           alertError('Opps', 'No Se encontraron mas preguntas!');
           return;
         }
-      
-        const {questions, description} = responseData;
+
+        const { questions, description } = responseData;
         var initialSelectedAnswers = [];
         for (var i = 0; i < questions.length; i++) {
-          initialSelectedAnswers.push({ id: 0 });
+          const isMultiple = questions[i].answers.filter(a => a.is_correct).length > 1;
+          initialSelectedAnswers.push(isMultiple ? [] : { id: 0 });
         }
 
         setData(questions);

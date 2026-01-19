@@ -259,3 +259,20 @@
         padding: 20px;
     }
 }
+
+:root, :root[theme='light'] {
+    --md-sys-color-primary: var(--md-sys-color-primary-light);
+    --md-sys-color-background: var(--md-sys-color-background-light);
+    --md-sys-color-on-background: var(--md-sys-color-on-background-light);
+}
+
+:root[theme='dark'] {
+    --md-sys-color-primary: var(--md-sys-color-primary-dark);
+    --md-sys-color-background: var(--md-sys-color-background-dark);
+    --md-sys-color-on-background: var(--md-sys-color-on-background-dark);
+}
+
+body {
+    background-color: var(--md-sys-color-background) !important;
+    color: var(--md-sys-color-on-background) !important;
+}
