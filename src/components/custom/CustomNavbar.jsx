@@ -1,0 +1,79 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
+
+const CustomNavbar = ({
+  brand,
+  brandClassName = '', // Additional classes for the brand
+  alignLinks = 'right', // 'left' or 'right'
+  children, // Should be <li> elements or components that render to <li>
+  className = '',
+  fixed = false,
+  userName = '',
+  sidenavTriggerId = 'mobile-nav', // Default ID for the sidenav this navbar might trigger
+  centerLogo = false, // For centering logo, especially on mobile
+  ...props
+}) => {
+  const navWrapperClasses = `nav-wrapper ${className}`.trim();
+  const brandLogoClasses = `brand-logo ${brandClassName} ${centerLogo && alignLinks !== 'left' ? 'center' : ''}`.trim();
+  // Note: Materialize's default behavior is to center logo on mobile if it's between sidenav trigger and links.
+  // The 'center' class on brand-logo is more for desktop when links are also centered or not left-aligned.
+  // If alignLinks="left", react-materialize might not apply 'center' to brand even if centerLogo is true.
+  // We'll keep it simple: if centerLogo is true AND links are not explicitly left, try to center.
+
+  const navClasses = fixed ? 'navbar-fixed' : '';
+
+  const renderBrand = () => {
+    if (React.isValidElement(brand)) {
+      // If brand is a React element, clone it to add classes
+      return React.cloneElement(brand, {
+        className: `${brandLogoClasses} ${brand.props.className || ''}`.trim()
+      });
+    }
+    // Default to rendering as an <a> tag if it's a string or other non-element
+    return <a href="#!" className={brandLogoClasses}>{brand}</a>;
+  };
+
+  const navbarClasses = `nav navbar ${className}`.trim();
+
+  const mainNav = (
+    <nav {...props} className={navbarClasses}> {/* Main nav classes like color go here */}
+      <div className={navWrapperClasses}>
+        {renderBrand()}
+        <a
+          href="#"
+          onClick={(e) => e.preventDefault()}
+          data-target={sidenavTriggerId}
+          className="sidenav-trigger"
+        >
+          <i className="material-icons">menu</i>
+        </a>
+        <ul id="nav-mobile" className={`${alignLinks === 'left' ? 'left' : 'right'} hide-on-med-and-down`}>
+          {children}
+        </ul>
+        <ul id="nav-mobile-r" className='right hide-on-med-and-down'>
+          {userName !== '' ? <Link to="/profile" role="link">{userName}</Link> : ''}
+        </ul>
+      </div>
+    </nav>
+  );
+
+  if (fixed) {
+    return <div className={navClasses}>{mainNav}</div>;
+  }
+
+  return mainNav;
+};
+
+CustomNavbar.propTypes = {
+  brand: PropTypes.node,
+  brandClassName: PropTypes.string,
+  alignLinks: PropTypes.oneOf(['left', 'right']),
+  children: PropTypes.node, // Expect <li> elements
+  className: PropTypes.string, // For the <nav> element itself (e.g., color)
+  fixed: PropTypes.bool,
+  sidenavTriggerId: PropTypes.string,
+  centerLogo: PropTypes.bool,
+};
+
+export default CustomNavbar;

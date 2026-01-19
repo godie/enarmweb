@@ -1,19 +1,19 @@
 import Auth from "../modules/Auth";
 class BaseService {
 
-  static getURL(url){
+  static getURL(url) {
     var host = window.location.hostname;
     //console.log(host);
-    if(host === 'localhost'){
-      return 'http://localhost:3000/'+url;
-    }else{
-      return 'https://enarmapi.godieboy.com/'+url;
+    if (host === 'localhost') {
+      return 'http://localhost:3000/' + url;
+    } else {
+      return 'https://enarmapi.godieboy.com/' + url;
     }
   }
 
-  static getHeaders(){
+  static getHeaders() {
     let token = `bearer ${Auth.getToken()}`;
-    return { headers: { Authorization: token } };
+    return { headers: { Authorization: token }, params: {} };
   }
 
 }

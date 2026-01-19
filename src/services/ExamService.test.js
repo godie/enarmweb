@@ -1,12 +1,13 @@
+import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
 import axios from "axios";
 import ExamService from "./ExamService";
 import BaseService from "./BaseService";
 import Auth from "../modules/Auth";
 
 // Mock dependencies
-jest.mock("./BaseService");
-jest.mock("../modules/Auth");
-jest.mock("axios");
+vi.mock("./BaseService");
+vi.mock("../modules/Auth");
+vi.mock("axios");
 
 const mockToken = "test_token";
 const baseApiUrl = "http://api.example.com";
@@ -14,30 +15,31 @@ const baseApiUrl = "http://api.example.com";
 describe("ExamService", () => {
   beforeEach(() => {
     // Setup mocks before each test
-    Auth.getToken.mockReturnValue(mockToken);
-    BaseService.getURL.mockImplementation(path => `${baseApiUrl}/${path}`);
-    axios.get.mockResolvedValue({ data: {} });
-    axios.post.mockResolvedValue({ data: {} });
-    axios.put.mockResolvedValue({ data: {} });
+    vi.mocked(Auth.getToken).mockReturnValue(mockToken);
+    vi.mocked(BaseService.getURL).mockImplementation(path => `${baseApiUrl}/${path}`);
+    vi.mocked(BaseService.getHeaders).mockReturnValue({ headers: { Authorization: `bearer ${mockToken}`, "Content-Type": "application/json", accept: "application/json" } });
+    vi.mocked(axios.get).mockResolvedValue({ data: {} });
+    vi.mocked(axios.post).mockResolvedValue({ data: {} });
+    vi.mocked(axios.put).mockResolvedValue({ data: {} });
   });
 
   afterEach(() => {
     // Clear all mocks after each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const expectedHeaders = {
-    headers: { Authorization: `bearer ${mockToken}` },
+    headers: { Authorization: `bearer ${mockToken}`, "Content-Type": "application/json", accept: "application/json" },
   };
 
 
   describe("getExams", () => {
     it("should call axios.get with correct URL, headers, and params", async () => {
       const page = 1;
-      const expectedUrl = `${baseApiUrl}/clinical_cases`;
+      const expectedUrl = `${baseApiUrl}/exams`;
       await ExamService.getExams(page);
-      expect(BaseService.getURL).toHaveBeenCalledWith("clinical_cases");
-      expect(Auth.getToken).toHaveBeenCalled();
+      expect(BaseService.getURL).toHaveBeenCalledWith("exams");
+      expect(BaseService.getHeaders).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
         ...expectedHeaders,
         params: { page: page },
@@ -50,7 +52,7 @@ describe("ExamService", () => {
       const clinicCaseId = "case123";
       const expectedUrl = `${baseApiUrl}/clinical_cases/${clinicCaseId}`;
       // Mock getHeaders directly for this class if it's static and calls itself
-      const getHeadersSpy = jest.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
+      const getHeadersSpy = vi.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
 
       await ExamService.getQuestions(clinicCaseId);
 
@@ -65,7 +67,7 @@ describe("ExamService", () => {
     it("should call axios.get with correct URL and headers", async () => {
       const clinicCaseId = "case456";
       const expectedUrl = `${baseApiUrl}/clinical_cases/${clinicCaseId}`;
-      const getHeadersSpy = jest.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
+      const getHeadersSpy = vi.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
 
       await ExamService.getCaso(clinicCaseId);
 
@@ -79,7 +81,7 @@ describe("ExamService", () => {
   describe("loadCategories", () => {
     it("should call axios.get with correct URL and headers", async () => {
       const expectedUrl = `${baseApiUrl}/categories`;
-      const getHeadersSpy = jest.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
+      const getHeadersSpy = vi.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
       await ExamService.loadCategories();
       expect(BaseService.getURL).toHaveBeenCalledWith("categories");
       expect(getHeadersSpy).toHaveBeenCalled();
@@ -102,7 +104,7 @@ describe("ExamService", () => {
     });
 
     it("should call axios.put for an existing caso", async () => {
-      const {id} = casoExisting
+      const { id } = casoExisting
       const expectedUrl = `${baseApiUrl}/clinical_cases/${id}`;
       await ExamService.saveCaso(casoExisting);
       expect(BaseService.getURL).toHaveBeenCalledWith(`clinical_cases/${id}`);
@@ -116,21 +118,25 @@ describe("ExamService", () => {
     const answersNew = { questionId: 1, answer: "A" }; // No ID
     const answersExisting = { id: 1, questionId: 1, answer: "B" };
 
+    const simpleHeaders = {
+      headers: { Authorization: `bearer ${mockToken}` }
+    }
+
     it("should call axios.post for new answers", async () => {
-      const expectedUrl = `${baseApiUrl}/player_answers`;
+      const expectedUrl = `${baseApiUrl}/user_answers`;
       await ExamService.sendAnswers(answersNew);
-      expect(BaseService.getURL).toHaveBeenCalledWith("player_answers");
+      expect(BaseService.getURL).toHaveBeenCalledWith("user_answers");
       expect(Auth.getToken).toHaveBeenCalled();
-      expect(axios.post).toHaveBeenCalledWith(expectedUrl, answersNew, expectedHeaders);
+      expect(axios.post).toHaveBeenCalledWith(expectedUrl, answersNew, simpleHeaders);
       expect(axios.put).not.toHaveBeenCalled();
     });
 
     it("should call axios.put for existing answers", async () => {
-      const expectedUrl = `${baseApiUrl}/player_answers/${answersExisting.id}`;
+      const expectedUrl = `${baseApiUrl}/user_answers/${answersExisting.id}`;
       await ExamService.sendAnswers(answersExisting);
-      expect(BaseService.getURL).toHaveBeenCalledWith(`player_answers/${answersExisting.id}`);
+      expect(BaseService.getURL).toHaveBeenCalledWith(`user_answers/${answersExisting.id}`);
       expect(Auth.getToken).toHaveBeenCalled();
-      expect(axios.put).toHaveBeenCalledWith(expectedUrl, answersExisting, expectedHeaders);
+      expect(axios.put).toHaveBeenCalledWith(expectedUrl, answersExisting, simpleHeaders);
       expect(axios.post).not.toHaveBeenCalled();
     });
   });
@@ -141,11 +147,11 @@ describe("ExamService", () => {
     let getHeadersSpy;
 
     beforeEach(() => {
-      getHeadersSpy = jest.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
+      getHeadersSpy = vi.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
     });
 
     afterEach(() => {
-        getHeadersSpy.mockRestore();
+      getHeadersSpy.mockRestore();
     });
 
     it("should call axios.post for a new category", async () => {
@@ -171,7 +177,7 @@ describe("ExamService", () => {
     it("should call axios.get with correct URL and headers for a specific category", async () => {
       const categoryId = 123;
       const expectedUrl = `${baseApiUrl}/categories/${categoryId}`;
-      const getHeadersSpy = jest.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
+      const getHeadersSpy = vi.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
 
       await ExamService.getCategory(categoryId);
 

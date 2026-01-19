@@ -1,0 +1,68 @@
+import { useState, useEffect } from "react";
+import Auth from "../modules/Auth";
+import UserService from "../services/UserService";
+
+const Profile = () => {
+  const [user] = useState(() => Auth.getUserInfo() || { id: null });
+  const [achievements, setAchievements] = useState([]);
+  const [loading, setLoading] = useState(() => (user && user.id ? true : false));
+  const [error, setError] = useState(() =>
+    (user && user.id) ? null : "No se encontró información del usuario. Por favor inicia sesión."
+  );
+
+  useEffect(() => {
+
+    if (!user.id) return;
+
+    UserService.getAchievements(user.id)
+      .then(response => {
+        setAchievements(response.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching achievements:", err);
+        setError("Error fetching achievements.");
+        setLoading(false);
+      });
+  }, [user.id]);
+
+  if (loading) {
+    return <div className="section center">Cargando...</div>;
+  }
+
+  if (error) {
+    return <div className="section center red-text">{error}</div>;
+  }
+
+  return (
+    <div className="section center container">
+      <h4 className="white-text">Perfil de Usuario</h4>
+      <div className="card glass-card" style={{ padding: "20px", borderRadius: '15px' }}>
+        <p><strong>Nombre:</strong> {user.name || "N/A"}</p>
+        <p><strong>Email:</strong> {user.email || "N/A"}</p>
+        <p><strong>Rol:</strong> <span className="badge blue white-text" style={{ borderRadius: '5px' }}>{user.role || "player"}</span></p>
+
+        <h5 style={{ marginTop: '30px' }}>Logros</h5>
+        {achievements.length > 0 ? (
+          <ul className="collection glass-collection">
+            {achievements.map(ach => (
+              <li key={ach.id} className="collection-item" role="listitem">
+                <span className="title"><strong>{ach.name}</strong></span>
+                <p>{ach.description}</p>
+                {ach.achieved_at && (
+                  <span className="secondary-content green-text">
+                    <i className="material-icons">check_circle</i>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="grey-text">Aún no has desbloqueado logros.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
