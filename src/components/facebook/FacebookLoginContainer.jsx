@@ -57,6 +57,6 @@ export default function FacebookLoginContainer() {
   }, [onStatusChange]);
 
   return (
-    <FacebookLogin appId="401225480247747" onStatusChange={onStatusChange} ></FacebookLogin>
+    <FacebookLogin appId={import.meta.env.VITE_FACEBOOK_APP_ID || "401225480247747"} onStatusChange={onStatusChange} ></FacebookLogin>
   );
 }
