@@ -32,16 +32,24 @@ const ThemeToggle = () => {
 
     return (
         <li className="theme-toggle-item">
-            <a
-                href="#!"
-                onClick={(e) => { e.preventDefault(); toggleTheme(); }}
+            <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
                 title={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
-                style={{ display: 'flex', alignItems: 'center' }}
+                className="btn-flat white-text"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: '64px',
+                    padding: '0 15px',
+                    textTransform: 'none'
+                }}
             >
                 <i className="material-icons">
                     {theme === 'light' ? 'dark_mode' : 'light_mode'}
                 </i>
-            </a>
+            </button>
         </li>
     );
 };
