@@ -35,9 +35,9 @@ const Pregunta = ({
       if (isSelected && !answer.is_correct) {
         extraClass = "red lighten-4"; // Lighter red
         answerIcon = (
-          <a href="#!" className="secondary-content black-text">
-            <i className="material-icons">highlight_off</i>
-          </a>
+          <span className="secondary-content black-text" role="img" aria-label="Respuesta incorrecta">
+            <i className="material-icons" aria-hidden="true">highlight_off</i>
+          </span>
         );
       }
       if (isSelected && answer.is_correct) {
@@ -45,9 +45,9 @@ const Pregunta = ({
         // Ensure green class takes precedence or combine if needed
         extraClass = "green lighten-4";
         answerIcon = (
-          <a href="#!" className="secondary-content black-text">
-            <i className="material-icons">check_circle</i>
-          </a>
+          <span className="secondary-content black-text" role="img" aria-label="Respuesta correcta">
+            <i className="material-icons" aria-hidden="true">check_circle</i>
+          </span>
         );
       }
 
