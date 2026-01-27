@@ -61,9 +61,6 @@ jobs:
 
       - name: Run build
         run: npm run build
-    
-      - name: Move api/ into dist/
-        run: mv api dist/api
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
