@@ -13,7 +13,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-
+    environment: producto
     strategy:
       matrix:
         node-version: [22.x]
