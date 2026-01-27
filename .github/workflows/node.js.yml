@@ -9,13 +9,6 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
-  VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
-  VITE_FACEBOOK_APP_ID: ${{ vars.VITE_FACEBOOK_APP_ID }}
-  VITE_GOOGLE_ANALYTICS_ID: ${{ vars.VITE_GOOGLE_ANALYTICS_ID }}
-  VITE_APP_BASE_URL: ${{ vars.VITE_APP_BASE_URL }}
-
 jobs:
   test:
     name: Test
@@ -38,6 +31,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
+      
+      - name: Create .env.test file
+        run: |
+          echo "VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}" >> .env.test
+          echo "VITE_APP_BASE_URL=${{ vars.VITE_APP_BASE_URL }}" >> .env.test
+          echo "VITE_FACEBOOK_APP_ID=${{ vars.VITE_FACEBOOK_APP_ID }}" >> .env.test
+          echo "VITE_GOOGLE_ANALYTICS_ID=${{ vars.VITE_GOOGLE_ANALYTICS_ID }}" >> .env.test
+          echo "VITE_GOOGLE_CLIENT_ID=${{ vars.VITE_GOOGLE_CLIENT_ID }}" >> .env.test
 
       - name: Run tests
         run: npm test
