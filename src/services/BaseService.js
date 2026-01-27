@@ -2,13 +2,11 @@ import Auth from "../modules/Auth";
 class BaseService {
 
   static getURL(url) {
-    var host = window.location.hostname;
-    //console.log(host);
-    if (host === 'localhost') {
-      return 'http://localhost:3000/' + url;
-    } else {
-      return 'https://enarmapi.godieboy.com/' + url;
-    }
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 
+      (window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000' 
+        : 'https://enarmapi.godieboy.com');
+    return `${apiBaseUrl}/${url}`;
   }
 
   static getHeaders() {

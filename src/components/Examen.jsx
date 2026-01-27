@@ -10,7 +10,8 @@ const Examen = () => {
   // Initial state calculation using params directly, similar to constructor
   // This requires EnarmUtil.getCategory to be callable with a structure mimicking props
   const clinicCaseId = EnarmUtil.getCategory({ match: { params: params } });
-  const commentUrl = `http://enarm.godieboy.com/#/caso/${clinicCaseId}`;
+  const appBaseUrl = import.meta.env.VITE_APP_BASE_URL || window.location.origin;
+  const commentUrl = `${appBaseUrl}/#/caso/${clinicCaseId}`;
 
   const [width, setWidth] = useState('300'); // Default width
 
@@ -46,7 +47,7 @@ const Examen = () => {
               otherwise the curly braces are not strictly necessary if always rendered.
               Assuming it's always rendered if this component is rendered. */}
           <FacebookComments
-            appId="401225480247747"
+            appId={import.meta.env.VITE_FACEBOOK_APP_ID || "401225480247747"}
             href={commentUrl}
             width={width}
             numPosts={10}

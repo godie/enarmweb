@@ -50,7 +50,7 @@ export default function GoogleLoginContainer() {
 
     return (
         <GoogleLogin
-            clientId="32979180819-lob8rj66qsjukuq9dnjgqckv04nv5tof.apps.googleusercontent.com"
+            clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || "32979180819-lob8rj66qsjukuq9dnjgqckv04nv5tof.apps.googleusercontent.com"}
             onGoogleResponse={handleGoogleResponse}
         ></GoogleLogin>
     );
