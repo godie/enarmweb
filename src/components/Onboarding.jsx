@@ -39,6 +39,13 @@ const Onboarding = () => {
         }
     };
 
+    const handleKeyDown = (e, id) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleSpecialty(id);
+        }
+    };
+
     const handleSave = async () => {
         if (selected.length === 0) {
             alertError("Selección vacía", "Por favor elige al menos una especialidad para comenzar.");
@@ -88,7 +95,11 @@ const Onboarding = () => {
                         <CustomCol s={12} m={4} l={3} key={cat.id}>
                             <div
                                 className={`specialty-card center-align hoverable ${isSelected ? 'selected' : ''}`}
+                                role="button"
+                                tabIndex={0}
+                                aria-pressed={isSelected}
                                 onClick={() => toggleSpecialty(cat.id)}
+                                onKeyDown={(e) => handleKeyDown(e, cat.id)}
                                 style={{
                                     padding: '20px',
                                     borderRadius: '15px',
@@ -99,7 +110,11 @@ const Onboarding = () => {
                                     marginBottom: '20px'
                                 }}
                             >
-                                <i className={`material-icons ${isSelected ? 'green-text' : 'grey-text text-lighten-1'}`} style={{ fontSize: '3rem' }}>
+                                <i
+                                    className={`material-icons ${isSelected ? 'green-text' : 'grey-text text-lighten-1'}`}
+                                    style={{ fontSize: '3rem' }}
+                                    aria-hidden="true"
+                                >
                                     {isSelected ? 'check_circle' : 'medical_services'}
                                 </i>
                                 <h6 style={{ fontWeight: isSelected ? '600' : '400', marginTop: '10px' }}>{cat.name}</h6>
