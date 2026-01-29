@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import ReactGA from "react-ga";
 
-ReactGA.initialize("UA-2989088-15");
+const gaId = import.meta.env.VITE_GOOGLE_ANALYTICS_ID || "UA-2989088-15";
+ReactGA.initialize(gaId);
 
 function AnalyticsTracker({ location }) {
   useEffect(() => {

@@ -1,4 +1,6 @@
 import Util from './Util';
+import { describe, it, expect } from 'vitest';
+
 
 describe('Util', () => {
   describe('isEmpty', () => {
@@ -24,7 +26,7 @@ describe('Util', () => {
     });
 
     it('should return true for an object with undefined properties', () => {
-      expect(Util.isEmpty({a: undefined})).toBe(false); // Based on current implementation
+      expect(Util.isEmpty({ a: undefined })).toBe(false); // Based on current implementation
     });
 
     it('should return true for an object with inherited properties but no own properties', () => {

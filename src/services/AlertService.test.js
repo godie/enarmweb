@@ -1,14 +1,17 @@
+import { vi, describe, beforeEach, it, expect } from "vitest";
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { alertSuccess, alertError } from './AlertService';
 
-jest.mock('sweetalert2/dist/sweetalert2.js', () => ({
-  fire: jest.fn(),
+vi.mock('sweetalert2/dist/sweetalert2.js', () => ({
+  default: {
+    fire: vi.fn(),
+  }
 }));
 
 describe('AlertService', () => {
   beforeEach(() => {
     // Clear any previous calls to Swal.fire
-    Swal.fire.mockClear();
+    vi.clearAllMocks();
   });
 
   describe('alertSuccess', () => {

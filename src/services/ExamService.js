@@ -4,18 +4,56 @@ import Auth from "../modules/Auth";
 
 axios.defaults.timeout = 10000;
 
-export default class ExamService {
-  // This method was originally for clinical_cases, renaming to avoid conflict
-  // static getExams(page) {
-  //   let token = `bearer ${Auth.getToken()}`;
-  //   let headers = { headers: { Authorization: token }, params: { page: page } };
-  //   //Todo exams are differentes :P
-  //   let url = "clinical_cases";
-  //   return axios.get(BaseService.getURL(url), headers);
-  // }
+export default class ExamService extends BaseService {
+  static getExams(page = 1) {
+    let headers = this.getHeaders();
+    headers.params = { page: page };
+    let url = "exams";
+    return axios.get(BaseService.getURL(url), headers);
+  }
 
-  // Assuming this method is for questions related to a clinical case, keeping it as is.
-  // If it was meant for general questions, it's superseded by getAllQuestions.
+  static getClinicalCases(page) {
+    let headers = this.getHeaders();
+    headers.params = { page: page };
+    let url = "clinical_cases";
+    return axios.get(BaseService.getURL(url), headers);
+  }
+
+  static getExam(id) {
+    const headers = this.getHeaders();
+    let url = `exams/${id}`;
+    return axios.get(BaseService.getURL(url), headers);
+  }
+
+  static saveExam(exam) {
+    const headers = this.getHeaders();
+    let url = "exams";
+    if (exam.id > 0) {
+      url = url + "/" + exam.id;
+      return axios.put(BaseService.getURL(url), { exam }, headers);
+    } else {
+      return axios.post(BaseService.getURL(url), { exam }, headers);
+    }
+  }
+
+  static createExam(examData) {
+    const headers = this.getHeaders();
+    const url = "exams";
+    return axios.post(BaseService.getURL(url), { exam: examData }, headers);
+  }
+
+  static updateExam(examId, examData) {
+    const headers = this.getHeaders();
+    const url = `exams/${examId}`;
+    return axios.put(BaseService.getURL(url), { exam: examData }, headers);
+  }
+
+  static deleteExam(id) {
+    const headers = this.getHeaders();
+    let url = `exams/${id}`;
+    return axios.delete(BaseService.getURL(url), headers);
+  }
+
   static getQuestions(clinicCaseId) {
     let headers = this.getHeaders();
     let url = `clinical_cases/${clinicCaseId}`;
@@ -37,20 +75,19 @@ export default class ExamService {
   static saveCaso(caso) {
     let token = `bearer ${Auth.getToken()}`;
     let url = "clinical_cases";
-    let headers = { headers: { Authorization: token } };
-    caso['name'] = caso.description.slice(0,10);
+    let headers = { headers: { Authorization: token, 'Content-Type': 'application/json', accept: 'application/json' } };
     if (caso.id > 0) {
       url = url + "/" + caso.id;
       delete caso.id
-      return axios.put(BaseService.getURL(url),{ clinical_case: caso },headers);
+      return axios.put(BaseService.getURL(url), { clinical_case: caso }, headers);
     } else {
-      return axios.post(BaseService.getURL(url),{ clinical_case: caso },headers);
+      return axios.post(BaseService.getURL(url), { clinical_case: caso }, headers);
     }
   }
 
   static sendAnswers(playerAnswers) {
     let token = `bearer ${Auth.getToken()}`;
-    let url = "player_answers";
+    let url = "user_answers";
     let headers = { headers: { Authorization: token } };
 
     if (playerAnswers.id > 0) {
@@ -61,42 +98,34 @@ export default class ExamService {
     }
   }
 
-  static saveCategory(category){
+  static saveCategory(category) {
     const headers = this.getHeaders();
     let url = 'categories';
-    if(category.id > 0){
+    if (category.id > 0) {
       url = `${url}/${category.id}`;
       return axios.put(BaseService.getURL(url), category, headers);
-    }else{
+    } else {
       return axios.post(BaseService.getURL(url), category, headers);
     }
   }
 
-  static getCategory(id){
+  static getCategory(id) {
     const headers = this.getHeaders();
     let url = `categories/${id}`;
     return axios.get(BaseService.getURL(url), headers);
   }
 
-  static getHeaders(){
-    let token = `bearer ${Auth.getToken()}`;
-    return { headers: { Authorization: token } };
-  }
-
   // New method to get all questions (simulated)
   static getAllQuestions(page = 1) {
     console.warn("ExamService.getAllQuestions is using simulated data and pagination.");
-    // Simulate API call returning paginated questions
-    // In a real scenario, this would fetch from an endpoint like /questions?page=page
     const allQuestions = [
       { id: 1, text: "Cual es la causa mas frecuente de hipertension arterial sistemica en el adulto?", clinicalCaseId: 1, clinicalCaseName: "Caso Hipertension Adulto", answers: [{id:1, text:"Respuesta A"},{id:2, text:"Respuesta B"}] },
       { id: 2, text: "Paciente masculino de 34 anios de edad, con diagnostico de VIH hace 5 anios...", clinicalCaseId: 2, clinicalCaseName: "Caso VIH", answers: [{id:3, text:"Respuesta X"},{id:4, text:"Respuesta Y"}] },
       { id: 3, text: "Cual es el tratamiento de eleccion para la crisis hipertensiva tipo urgencia?", clinicalCaseId: null, clinicalCaseName: null, answers: [{id:5, text:"Respuesta 1"},{id:6, text:"Respuesta 2"}] },
       { id: 4, text: "Definicion de Preeclampsia", clinicalCaseId: 3, clinicalCaseName: "Caso Obstetricia", answers: [{id:7, text:"Definicion A"},{id:8, text:"Definicion B"}] },
       { id: 5, text: "Cual es el tumor oseo maligno mas frecuente en ninos?", clinicalCaseId: null, clinicalCaseName: null, answers: [{id:9, text:"Osteosarcoma"},{id:10, text:"Sarcoma de Ewing"}] },
-      // Add more questions as needed for pagination testing
     ];
-    const itemsPerPage = 10; // Or whatever your backend uses
+    const itemsPerPage = 10;
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedQuestions = allQuestions.slice(startIndex, endIndex);
@@ -108,17 +137,11 @@ export default class ExamService {
         currentPage: page,
       }
     });
-    // Real implementation:
-    // let headers = this.getHeaders();
-    // headers.params = { page: page };
-    // let url = "questions"; // Assuming a new endpoint for all questions
-    // return axios.get(BaseService.getURL(url), headers);
   }
 
   // New method to get a single question's details (simulated)
   static getQuestionDetail(questionId) {
     console.warn(`ExamService.getQuestionDetail for ID ${questionId} is using simulated data.`);
-    // Simulate API call
     const allQuestionsWithDetails = {
         1: {
           id: 1,
@@ -180,44 +203,5 @@ export default class ExamService {
     } else {
       return Promise.reject({ message: "Question not found" });
     }
-    // Real implementation:
-    // let headers = this.getHeaders();
-    // let url = `questions/${questionId}`; // Assuming an endpoint for single question details
-    // return axios.get(BaseService.getURL(url), headers);
-  }
-
-  // == Methods for Exams ==
-
-  static getExams(page = 1) { // Renamed from getExams(page) which was for clinical_cases
-    const headers = this.getHeaders();
-    headers.params = { page: page };
-    const url = "exams"; // Endpoint for exams
-    return axios.get(BaseService.getURL(url), headers);
-  }
-
-  static getExam(examId) {
-    const headers = this.getHeaders();
-    const url = `exams/${examId}`;
-    return axios.get(BaseService.getURL(url), headers);
-  }
-
-  static createExam(examData) {
-    const headers = this.getHeaders();
-    const url = "exams";
-    // Backend expects exam: { ... }
-    return axios.post(BaseService.getURL(url), { exam: examData }, headers);
-  }
-
-  static updateExam(examId, examData) {
-    const headers = this.getHeaders();
-    const url = `exams/${examId}`;
-    // Backend expects exam: { ... }
-    return axios.put(BaseService.getURL(url), { exam: examData }, headers);
-  }
-
-  static deleteExam(examId) {
-    const headers = this.getHeaders();
-    const url = `exams/${examId}`;
-    return axios.delete(BaseService.getURL(url), headers);
   }
 }

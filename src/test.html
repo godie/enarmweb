@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.2/dist/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./theme.css">
+</head>
+
+<body class="grey lighten-5">
+
+    <!-- Navbar -->
+    <nav class="green nav navbar">
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo center">Admin Dashboard</a>
+            <ul class="right">
+                <li><a href="#"><i class="material-icons">notifications</i></a></li>
+                <li><a href="#"><i class="material-icons">account_circle</i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Sidenav -->
+    <ul id="slide-out" class="sidenav sidenav-fixed grey darken-4">
+        <li><a href="#!" class="white-text"><i class="material-icons white-text">dashboard</i>Dashboard</a></li>
+        <li><a href="#!" class="white-text"><i class="material-icons white-text">local_hospital</i>Specialties</a></li>
+        <li><a href="#!" class="white-text"><i class="material-icons white-text">assignment</i>Clinical Cases</a></li>
+        <li><a href="#!" class="white-text"><i class="material-icons white-text">help</i>Questions</a></li>
+        <li><a href="#!" class="white-text"><i class="material-icons white-text">library_books</i>Exams</a></li>
+        <li><a href="#!" class="white-text"><i class="material-icons white-text">group</i>Players</a></li>
+    </ul>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Summary Cards -->
+        <div class="row">
+            <div class="col s12 m3">
+                <div class="card-panel green lighten-4">
+                    <span class="green-text text-darken-4">SPECIALTIES</span>
+                    <h5 class="green-text">5</h5>
+                </div>
+            </div>
+            <div class="col s12 m3">
+                <div class="card-panel green lighten-4">
+                    <span class="green-text text-darken-4">CLINICAL CASES</span>
+                    <h5 class="green-text">20</h5>
+                </div>
+            </div>
+            <div class="col s12 m3">
+                <div class="card-panel green lighten-4">
+                    <span class="green-text text-darken-4">QUESTIONS</span>
+                    <h5 class="green-text">150</h5>
+                </div>
+            </div>
+            <div class="col s12 m3">
+                <div class="card-panel green lighten-4">
+                    <span class="green-text text-darken-4">EXAMS</span>
+                    <h5 class="green-text">8</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specialties Table -->
+        <div class="row">
+            <div class="col s12 m6">
+                <h5>Specialties <a class="btn-small green right"><i class="material-icons">add</i></a></h5>
+                <table class="highlight">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cardiology</td>
+                            <td>
+                                <a class="btn-flat"><i class="material-icons">edit</i></a>
+                                <a class="btn-flat"><i class="material-icons">delete</i></a>
+                            </td>
+                        </tr>
+                        <!-- More rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Clinical Cases Table -->
+            <div class="col s12 m6">
+                <h5>Clinical Cases <a class="btn-small green right"><i class="material-icons">add</i></a></h5>
+                <table class="highlight">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Questions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hypertension Case</td>
+                            <td>4</td>
+                            <td>
+                                <a class="btn-flat"><i class="material-icons">edit</i></a>
+                                <a class="btn-flat"><i class="material-icons">delete</i></a>
+                            </td>
+                        </tr>
+                        <!-- More rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.2.2/dist/js/materialize.min.js"></script>
+
+</body>
+
+</html>
