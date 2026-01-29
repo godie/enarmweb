@@ -11,3 +11,7 @@
 ## 2025-01-28 - [Accessible Pagination and Semantic Navigation]
 **Learning:** For pagination components, adding `role="navigation"` and `aria-label` to the container, using `aria-current="page"` for the active link, and providing descriptive `aria-label` for icon-only navigation buttons significantly improves the experience for screen reader users. Decorative elements like ellipses should be spans with `aria-hidden="true"` rather than non-functional links.
 **Action:** Implement semantic navigation roles and ARIA states in all reusable navigational components.
+
+## 2025-05-20 - [Context-Aware Button Feedback and Dark Mode Compatibility]
+**Learning:** In exam-taking interfaces, using context-aware button labels (e.g., "Calificar" vs "Siguiente") improves clarity of the current state. Additionally, hardcoded background classes like Materialize's `white` must be removed from main containers to allow theme-aware CSS variables to function correctly in dark mode.
+**Action:** Always prefer dynamic labels for multi-state buttons and ensure layout containers don't use hardcoded color classes that override theme variables.

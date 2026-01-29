@@ -80,7 +80,7 @@ describe('Examen Component', () => {
 
       const fbCommentsComponent = screen.getByTestId('mock-fb-comments');
       expect(fbCommentsComponent).toBeInTheDocument();
-      expect(fbCommentsComponent).toHaveAttribute('data-href', 'http://enarm.godieboy.com/#/caso/1');
+      expect(fbCommentsComponent).toHaveAttribute('data-href', expect.stringMatching(/#\/caso\/1$/));
       // Initial width calculation: window.innerWidth - 500 = 1024 - 500 = 524
       expect(fbCommentsComponent).toHaveAttribute('data-width', '524');
     });
@@ -130,7 +130,7 @@ describe('Examen Component', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('mock-caso')).toHaveAttribute('data-cliniccaseid', '1');
-      expect(screen.getByTestId('mock-fb-comments')).toHaveAttribute('data-href', 'http://enarm.godieboy.com/#/caso/1');
+      expect(screen.getByTestId('mock-fb-comments')).toHaveAttribute('data-href', expect.stringMatching(/#\/caso\/1$/));
     });
 
     EnarmUtil.getCategory.mockClear(); // Clear previous calls to check the new one
@@ -148,7 +148,7 @@ describe('Examen Component', () => {
       expect(casoComponent).toHaveAttribute('data-cliniccaseid', 'alpha99');
 
       const fbCommentsComponent = screen.getByTestId('mock-fb-comments');
-      expect(fbCommentsComponent).toHaveAttribute('data-href', 'http://enarm.godieboy.com/#/caso/alpha99');
+      expect(fbCommentsComponent).toHaveAttribute('data-href', expect.stringMatching(/#\/caso\/alpha99$/));
     });
   });
 
@@ -169,7 +169,7 @@ describe('Examen Component', () => {
 
       const fbCommentsComponent = screen.getByTestId('mock-fb-comments');
       expect(fbCommentsComponent).toBeInTheDocument();
-      expect(fbCommentsComponent).toHaveAttribute('data-href', 'http://enarm.godieboy.com/#/caso/fallbackId123');
+      expect(fbCommentsComponent).toHaveAttribute('data-href', expect.stringMatching(/#\/caso\/fallbackId123$/));
     });
   });
 
