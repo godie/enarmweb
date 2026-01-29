@@ -4,7 +4,7 @@ class EnarmUtil {
 
   static isEmpty(obj) {
     for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) return false;
+      if (Object.prototype.hasOwnProperty.call(obj, prop)) return false;
     }
     return JSON.stringify(obj) === JSON.stringify({});
   }
@@ -26,8 +26,8 @@ class EnarmUtil {
     return localStorage.getItem(EnarmUtil.CATEGORIES_KEY);
   }
 
-  static clearCategories(){
-     localStorage.removeItem(EnarmUtil.CATEGORIES_KEY);
+  static clearCategories() {
+    localStorage.removeItem(EnarmUtil.CATEGORIES_KEY);
   }
 
   static setCategories(categories) {

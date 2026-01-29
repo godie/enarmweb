@@ -1,15 +1,17 @@
-
+import Auth from "../modules/Auth";
 class BaseService {
 
-  static getURL(url){
-    var host = window.location.hostname;
-     return 'https://enarmapi.godieboy.com/'+url;
-    //console.log(host);
-    if(host === 'localhost'){
-      return 'http://localhost:3000/'+url;
-    }else{
-      return 'https://enarmapi.godieboy.com/'+url;
-    }
+  static getURL(url) {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ||
+      (window.location.hostname === 'localhost'
+        ? 'http://localhost:3000'
+        : 'https://enarmapi.godieboy.com');
+    return `${apiBaseUrl}/${url}`;
+  }
+
+  static getHeaders() {
+    let token = `bearer ${Auth.getToken()}`;
+    return { headers: { Authorization: token }, params: {} };
   }
 
 }
