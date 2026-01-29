@@ -91,7 +91,7 @@ describe('Caso Component', () => {
     fireEvent.click(screen.getByLabelText(mockQuestions[0].answers[0].text));
     fireEvent.click(screen.getByLabelText(mockQuestions[1].answers[1].text));
 
-    const siguienteButton = screen.getByRole('button', { name: /siguiente/i });
+    const siguienteButton = screen.getByRole('button', { name: /calificar/i });
     fireEvent.click(siguienteButton);
 
     await waitFor(() => {
@@ -114,7 +114,7 @@ describe('Caso Component', () => {
     fireEvent.click(screen.getByLabelText(mockQuestions[0].answers[0].text));
     fireEvent.click(screen.getByLabelText(mockQuestions[1].answers[1].text));
 
-    const siguienteButton = screen.getByRole('button', { name: /siguiente/i });
+    const siguienteButton = screen.getByRole('button', { name: /calificar/i });
     fireEvent.click(siguienteButton);
 
     expect(alertError).toHaveBeenCalledWith('Simulador', 'Debes iniciar sesión para guardar tus respuestas');

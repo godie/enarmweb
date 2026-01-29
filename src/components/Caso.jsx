@@ -159,7 +159,7 @@ const Caso = (props) => {
   });
 
   return (
-    <div className="col s12 m12 l12 white">
+    <div className="col s12 m12 l12">
       <div className="col s12 m9 l9 offset-m1 offset-l1">
         <h6>Caso Clinico:</h6>
         <p>{casoClinico}</p>
@@ -170,8 +170,12 @@ const Caso = (props) => {
           <button
             onClick={checkAnswers}
             className="waves-effect btn"
+            aria-label={showAnswers ? "Ir al siguiente caso" : "Calificar respuestas"}
           >
-            <i className="material-icons right">navigate_next</i>Siguiente
+            <i className="material-icons right" aria-hidden="true">
+              {showAnswers ? "navigate_next" : "assignment_turned_in"}
+            </i>
+            {showAnswers ? "Siguiente" : "Calificar"}
           </button>
         </div>
       </div>

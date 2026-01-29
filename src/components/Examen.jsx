@@ -37,7 +37,7 @@ const Examen = () => {
   }, []); // Empty dependency array ensures this runs once on mount and cleans up on unmount
 
   return (
-    <div className="s12 m12 l6 white">
+    <div className="s12 m12 l6">
       <Caso
         clinicCaseId={clinicCaseId}
       />
