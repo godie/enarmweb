@@ -65,7 +65,7 @@ describe("PlayerLogin Component", () => {
     it("should render login form elements", () => {
         renderPlayerLogin();
         expect(screen.getAllByLabelText(/email o usuario/i).length).toBeGreaterThan(0);
-        expect(screen.getAllByLabelText(/password/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByLabelText(/contraseña/i).length).toBeGreaterThan(0);
         expect(screen.getByRole("button", { name: /^entrar$/i })).toBeInTheDocument();
     });
 
@@ -85,7 +85,7 @@ describe("PlayerLogin Component", () => {
         renderPlayerLogin();
 
         fireEvent.change(screen.getByLabelText(/email o usuario/i), { target: { value: "p1@ex.com" } });
-        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "password" } });
+        fireEvent.change(screen.getByLabelText(/contraseña/i), { target: { value: "password" } });
         fireEvent.click(screen.getByRole("button", { name: /^entrar$/i }));
 
         await waitFor(() => {
@@ -106,7 +106,7 @@ describe("PlayerLogin Component", () => {
         fireEvent.change(screen.getByLabelText(/nombre completo/i), { target: { value: "New" } });
         fireEvent.change(screen.getByLabelText(/usuario/i), { target: { value: "newuser" } });
         fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "new@ex.com" } });
-        fireEvent.change(screen.getByLabelText(/password/i), { target: { value: "password" } });
+        fireEvent.change(screen.getByLabelText(/contraseña/i), { target: { value: "password" } });
         fireEvent.click(screen.getByRole("button", { name: /registrarse/i }));
 
         await waitFor(() => {

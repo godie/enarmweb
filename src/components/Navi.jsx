@@ -11,7 +11,7 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
 
   if (Auth.isUserAuthenticated() || Auth.isPlayerAuthenticated()) {
     logoutLink = (
-      <Link to="/logout" role="link">
+      <Link to="/logout">
         Salir
       </Link>
     );
@@ -23,11 +23,11 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
 
   const navLinks = (
     <>
-      <li><Link role="link" to="/">Home</Link></li>
-      <li><Link role="link" to="/caso/1">Caso Clinico</Link></li>
-      {Auth.isPlayerAuthenticated() && <li><Link role="link" to="/contribuir">Contribuir</Link></li>}
-      {Auth.isUserAuthenticated() && Auth.isAdmin() && <li><Link role="link" to="/dashboard">Admin</Link></li>}
-      {Auth.isUserAuthenticated() && !Auth.isAdmin() && <li><Link role="link" to="/perfil">Perfil</Link></li>}
+      <li><Link to="/">Home</Link></li>
+      <li><Link to="/caso/1">Caso Clinico</Link></li>
+      {Auth.isPlayerAuthenticated() && <li><Link to="/contribuir">Contribuir</Link></li>}
+      {Auth.isUserAuthenticated() && Auth.isAdmin() && <li><Link to="/dashboard">Admin</Link></li>}
+      {Auth.isUserAuthenticated() && !Auth.isAdmin() && <li><Link to="/perfil">Perfil</Link></li>}
       <ThemeToggle />
       {logoutLink && <li>{logoutLink}</li>}
     </>
@@ -37,7 +37,7 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
     <>
       <CustomNavbar
         className="green darken-1 white-text"
-        brand={<span className="white-text">Enarm</span>}
+        brand={<Link to="/" className="white-text">Enarm</Link>}
         brandClassName='center'
         centerLogo
         alignLinks="right"

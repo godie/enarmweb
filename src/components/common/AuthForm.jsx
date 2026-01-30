@@ -68,7 +68,7 @@ const AuthForm = ({
                         <CustomCol s={12} m={10} l={8} offset="m1 l2">
                             <CustomTextInput
                                 type="password"
-                                label="password"
+                                label="Contraseña"
                                 id="password"
                                 name="password"
                                 autocomplete={isSignup ? "new-password" : "current-password"}
@@ -101,9 +101,14 @@ const AuthForm = ({
                     {onToggleSignup && (
                         <CustomRow>
                             <CustomCol s={12} m={10} l={8} offset="m1 l2" className="center">
-                                <a href="#!" className="white-text" onClick={(e) => { e.preventDefault(); onToggleSignup(); }}>
+                                <button
+                                    type="button"
+                                    className="btn-flat white-text"
+                                    onClick={onToggleSignup}
+                                    style={{ textTransform: 'none', background: 'transparent' }}
+                                >
                                     {isSignup ? "¿Ya tienes cuenta? Entra aquí" : "¿No tienes cuenta? Regístrate aquí"}
-                                </a>
+                                </button>
                             </CustomCol>
                         </CustomRow>
                     )}

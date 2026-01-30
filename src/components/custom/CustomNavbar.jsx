@@ -45,6 +45,7 @@ const CustomNavbar = ({
           onClick={(e) => e.preventDefault()}
           data-target={sidenavTriggerId}
           className="sidenav-trigger"
+          aria-label="Abrir menú de navegación"
         >
           <i className="material-icons">menu</i>
         </a>
@@ -52,7 +53,11 @@ const CustomNavbar = ({
           {children}
         </ul>
         <ul id="nav-mobile-r" className='right hide-on-med-and-down'>
-          {userName !== '' ? <Link to="/profile" role="link">{userName}</Link> : ''}
+          {userName !== '' && (
+            <li>
+              <Link to="/profile">{userName}</Link>
+            </li>
+          )}
         </ul>
       </div>
     </nav>
