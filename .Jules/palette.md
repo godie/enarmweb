@@ -15,3 +15,7 @@
 ## 2025-05-20 - [Context-Aware Button Feedback and Dark Mode Compatibility]
 **Learning:** In exam-taking interfaces, using context-aware button labels (e.g., "Calificar" vs "Siguiente") improves clarity of the current state. Additionally, hardcoded background classes like Materialize's `white` must be removed from main containers to allow theme-aware CSS variables to function correctly in dark mode.
 **Action:** Always prefer dynamic labels for multi-state buttons and ensure layout containers don't use hardcoded color classes that override theme variables.
+
+## 2025-05-24 - [Semantic Navbar and Localized Auth Labels]
+**Learning:** In navigation menus (`<ul>`), ensuring all top-level children are wrapped in `<li>` tags maintains HTML validity. Additionally, for actions that don't navigate (like toggling form states), using `<button type="button">` with `btn-flat` is more accessible than `<a>` with `href="#!"`. Localizing core labels like "Contraseña" improves consistency in non-English interfaces.
+**Action:** Always audit Navbar structure for `<li>` wrapping and prefer buttons for non-navigational actions.
