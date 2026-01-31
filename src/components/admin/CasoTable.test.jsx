@@ -249,7 +249,7 @@ describe('CasoTable Component', () => {
       }));
     });
 
-    expect(Util.showToast).toHaveBeenCalledWith("Se actualizo la especialidad");
+    expect(Util.showToast).toHaveBeenCalledWith("Se actualizó la especialidad");
     // Check if the select's value is updated in the DOM
     expect(firstSelect).toHaveValue(newCategoryId);
   });

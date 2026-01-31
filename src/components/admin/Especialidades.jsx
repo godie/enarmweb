@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-// import { Col, Row } from "react-materialize"; // Removed
-import CustomButton from "../custom/CustomButton";
-import CustomPreloader from "../custom/CustomPreloader";
-import CustomTable from "../custom/CustomTable";
-import CustomRow from "../custom/CustomRow"; // Added
-import CustomCol from "../custom/CustomCol"; // Added
-// CustomIcon is not directly used here if CustomButton handles the icon prop
+import {
+    CustomButton,
+    CustomPreloader,
+    CustomTable,
+    CustomRow,
+    CustomCol
+} from "../custom";
 import ExamService from "../../services/ExamService";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import EnarmUtil from "../../modules/EnarmUtil";
+import EspecialidadRow from "./EspecialidadRow";
 
-export default function Expecialidades({ title }) {
+export default function Especialidades({ title }) {
     const [isLoading, setIsLoading] = useState(true);
     const [especialidades, setEspecialidades] = useState([]);
 
@@ -25,27 +25,11 @@ export default function Expecialidades({ title }) {
 
     if (isLoading) {
         return (
-            <CustomRow>
-                <CustomCol s={5}>
-                    <CustomPreloader active color="green" size="big" />
-                </CustomCol>
-            </CustomRow>
+            <div className="center-align" style={{ padding: '50px' }}>
+                <CustomPreloader active color="green" size="big" />
+            </div>
         )
     }
-
-    const rows = especialidades.map(especialidad => (
-        <tr key={especialidad.id}>
-            <td>{especialidad.name}</td>
-            <td>{especialidad.description}</td>
-            <td><Link to={`/dashboard/edit/especialidad/${especialidad.id}`} className="secondary-content">
-                <CustomButton
-                    tooltip="Editar especialidad"
-                    className="btn-flat"
-                    icon="edit" // CustomButton takes icon name as a string prop
-                    waves="light" // Adding default waves, can be adjusted
-                /> </Link></td>
-        </tr>
-    ));
 
     const clearCache = () => {
         EnarmUtil.clearCategories();
@@ -75,7 +59,11 @@ export default function Expecialidades({ title }) {
                             <th className="right-align">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>{rows}</tbody>
+                    <tbody>
+                        {especialidades.map(especialidad => (
+                            <EspecialidadRow key={especialidad.id} especialidad={especialidad} />
+                        ))}
+                    </tbody>
                 </CustomTable>
             </div>
         </div>
@@ -83,10 +71,10 @@ export default function Expecialidades({ title }) {
 
 }
 
-Expecialidades.propTypes = {
+Especialidades.propTypes = {
     title: PropTypes.string
 }
 
-Expecialidades.defaultProps = {
+Especialidades.defaultProps = {
     title: 'Especialidades'
 }
