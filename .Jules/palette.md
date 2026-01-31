@@ -19,3 +19,7 @@
 ## 2025-05-24 - [Semantic Navbar and Localized Auth Labels]
 **Learning:** In navigation menus (`<ul>`), ensuring all top-level children are wrapped in `<li>` tags maintains HTML validity. Additionally, for actions that don't navigate (like toggling form states), using `<button type="button">` with `btn-flat` is more accessible than `<a>` with `href="#!"`. Localizing core labels like "Contraseña" improves consistency in non-English interfaces.
 **Action:** Always audit Navbar structure for `<li>` wrapping and prefer buttons for non-navigational actions.
+
+## 2025-05-25 - [Consistent Loading Feedback and Accessible Errors]
+**Learning:** Standardizing visual loading feedback by using `CustomPreloader` instead of plain text ("Cargando...") improves the professional feel of the app. In forms, adding `role="alert"` and `aria-live="assertive"` to error messages ensures they are announced to screen readers, while icons like `highlight_off` provide visual cues. Removing redundant `aria-label` from correctly labeled inputs prevents screen reader noise.
+**Action:** Use `CustomPreloader` for all loading states and ensure error messages are both visually and semantically descriptive.

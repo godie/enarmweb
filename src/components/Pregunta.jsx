@@ -57,7 +57,6 @@ const Pregunta = ({
       <li className={`collection-item ${extraClass}`} key={ansIndex}>
         <label htmlFor={`${questionDescription}-${answer.id}`} className="black-text">
           <input
-            aria-label={answer.text}
             type={isMultiple ? "checkbox" : "radio"}
             value={answer.id} // Corrected: use answer.id for value
             name={questionDescription} // Group radio buttons by question description

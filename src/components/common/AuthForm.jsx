@@ -3,6 +3,8 @@ import CustomButton from "../custom/CustomButton";
 import CustomRow from "../custom/CustomRow";
 import CustomCol from "../custom/CustomCol";
 import CustomTextInput from "../custom/CustomTextInput";
+import CustomPreloader from "../custom/CustomPreloader";
+import CustomIcon from "../custom/CustomIcon";
 
 const AuthForm = ({
     title,
@@ -81,7 +83,10 @@ const AuthForm = ({
                     {error && (
                         <CustomRow>
                             <CustomCol s={12} m={10} l={8} offset="m1 l2">
-                                <p className="red-text center-align">{error}</p>
+                                <p className="red-text center-align valign-wrapper" role="alert" aria-live="assertive" style={{ justifyContent: 'center' }}>
+                                    <CustomIcon tiny className="red-text">highlight_off</CustomIcon>
+                                    <span style={{ marginLeft: '8px' }}>{error}</span>
+                                </p>
                             </CustomCol>
                         </CustomRow>
                     )}
@@ -94,7 +99,12 @@ const AuthForm = ({
                                 className="grey lighten-3 green-text"
                                 disabled={isPending}
                             >
-                                {isPending ? isPendingText : submitText}
+                                {isPending ? (
+                                    <span className="valign-wrapper" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%' }}>
+                                        <CustomPreloader size="small" color="green" />
+                                        <span style={{ marginLeft: '10px' }}>{isPendingText}</span>
+                                    </span>
+                                ) : submitText}
                             </CustomButton>
                         </CustomCol>
                     </CustomRow>
