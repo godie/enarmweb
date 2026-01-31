@@ -1,69 +1,75 @@
 import { useEffect, useState } from "react";
-
-import { createBrowserHistory } from "history";
+import { useHistory, useParams } from "react-router-dom";
 import ExamService from "../../services/ExamService";
-import { CustomRow, CustomCol, CustomTextInput, CustomButton, CustomTextarea } from "../custom"; // Added
+import { CustomRow, CustomCol, CustomTextInput, CustomButton, CustomTextarea } from "../custom";
 import { alertError, alertSuccess } from "../../services/AlertService";
-import { useParams } from "react-router-dom";
-
 
 export default function EspecialidadForm() {
     const { identificador } = useParams();
-    const [formData, setFormDData] = useState({
+    const history = useHistory();
+    const [formData, setFormData] = useState({
         id: '0',
         name: '',
         description: '',
     });
 
     useEffect(() => {
-        if (identificador !== undefined && identificador > 0) {
+        if (identificador && parseInt(identificador) > 0) {
             ExamService.getCategory(identificador).then(response => {
                 const { data } = response;
-                setFormDData({ id: data.id, name: data.name, description: data.description || '' });
-            }).catch(err => console.log(err), alertError('ops!', 'ocurrio un error al cargar la especialidad'))
+                setFormData({ id: data.id, name: data.name, description: data.description || '' });
+            }).catch(err => {
+                console.error(err);
+                alertError('¡Ups!', 'Ocurrió un error al cargar la especialidad');
+            });
         }
     }, [identificador]);
+
     const handleChange = (event) => {
-        setFormDData({ ...formData, [event.target.name]: event.target.value });
+        setFormData({ ...formData, [event.target.name]: event.target.value });
     }
-    const browserHistory = createBrowserHistory();
 
     const onCancel = (e) => {
         e.preventDefault();
-        browserHistory.goBack();
+        history.goBack();
     }
 
     const onSubmit = (e) => {
         e.preventDefault();
 
         ExamService.saveCategory(formData)
-            .then(() => alertSuccess('Especialidad!', 'creada correctamente').then(() => browserHistory.goBack()))
-            .catch((err) => console.log(err), alertError('ops!', 'ocurrio un error'));
-
+            .then(() => {
+                alertSuccess('¡Especialidad!', 'Creada correctamente');
+                history.goBack();
+            })
+            .catch((err) => {
+                console.error(err);
+                alertError('¡Ups!', 'Ocurrió un error al guardar');
+            });
     }
 
     return (
         <CustomCol s={12} m={12} l={12} >
             <form onSubmit={onSubmit}>
-                <h3 className="center">Especialidad</h3>
-                {/* Hidden input for ID doesn't need Materialize styling or CustomTextInput */}
+                <h3 className="center">{formData.id !== '0' ? 'Editar Especialidad' : 'Nueva Especialidad'}</h3>
                 <input type="hidden" name="id" value={formData.id.toString()} />
 
                 <CustomRow>
-                    <CustomCol s={10} offset='s2' > {/* Wrapped TextInput */}
+                    <CustomCol s={12} m={8} offset="m2">
                         <CustomTextInput
                             label="Especialidad"
                             name="name"
                             onChange={handleChange}
                             value={formData.name}
                             id="especialidad_name"
+                            required
                         />
                     </CustomCol>
                 </CustomRow>
                 <CustomRow>
-                    <CustomCol s={10} offset='s2'> {/* Wrapped Textarea */}
+                    <CustomCol s={12} m={8} offset="m2">
                         <CustomTextarea
-                            label="Description"
+                            label="Descripción"
                             name="description"
                             onChange={handleChange}
                             value={formData.description}
@@ -72,9 +78,9 @@ export default function EspecialidadForm() {
                     </CustomCol>
                 </CustomRow>
                 <CustomRow>
-                    <CustomCol s={12}>
-                        <CustomRow> {/* Inner row for button alignment */}
-                            <CustomCol s={5} offset='s2'>
+                    <CustomCol s={12} m={8} offset="m2">
+                        <CustomRow>
+                            <CustomCol s={6}>
                                 <p className="left-align">
                                     <CustomButton
                                         large
@@ -86,13 +92,14 @@ export default function EspecialidadForm() {
                                     </CustomButton>
                                 </p>
                             </CustomCol>
-                            <CustomCol s={5}>
+                            <CustomCol s={6}>
                                 <p className="right-align">
                                     <CustomButton
                                         large
                                         type="submit"
                                         waves="light"
-                                        tooltip="Guardar Especialidad" // Corrected tooltip text
+                                        tooltip="Guardar Especialidad"
+                                        className="green darken-1"
                                     >
                                         Guardar
                                     </CustomButton>
@@ -104,5 +111,4 @@ export default function EspecialidadForm() {
             </form>
         </CustomCol >
     );
-
 }

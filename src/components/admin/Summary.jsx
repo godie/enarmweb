@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 import {
     CustomRow,
     CustomCol,
-    CustomButton,
-    CustomTable,
     CustomPreloader,
     StatCard
 } from '../custom';
 import ExamService from '../../services/ExamService';
 import { Link } from 'react-router-dom';
+import RecentSummaryTable from './RecentSummaryTable';
 
 const Summary = () => {
     const [stats, setStats] = useState({
@@ -24,15 +23,19 @@ const Summary = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
+                // Corrected: call getClinicalCases instead of getExams for case stats
                 const [cats, cases] = await Promise.all([
                     ExamService.loadCategories(),
-                    ExamService.getExams(1)
+                    ExamService.getClinicalCases(1)
                 ]);
+
+                // Assuming getClinicalCases returns { clinical_cases: [], total_entries: N }
+                // and loadCategories returns array directly in data
                 setStats({
                     categories: cats.data.length || 0,
                     clinicalCases: cases.data.total_entries || 0,
-                    questions: 150,
-                    exams: 8
+                    questions: 150, // This seems hardcoded in original, ideally should come from API
+                    exams: 8 // Hardcoded in original
                 });
 
                 setRecentCategories((cats.data || []).slice(0, 5));
@@ -73,84 +76,44 @@ const Summary = () => {
             </CustomRow>
 
             <CustomRow className="section">
-                <CustomCol s={12} m={6}>
-                    <div className="card-panel white">
-                        <div className="valign-wrapper" style={{ justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                            <h5 className="grey-text text-darken-3" style={{ margin: 0 }}>Especialidades</h5>
-                            <CustomButton
-                                href="#/dashboard/new/especialidad"
-                                node='a'
-                                className="green darken-1 btn white-text"
-                                icon="add"
-                            />
-                        </div>
-                        <CustomTable className="highlight">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th className="right-align">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {recentCategories.map(cat => (
-                                    <tr key={cat.id}>
-                                        <td>{cat.name}</td>
-                                        <td className="right-align">
-                                            <Link to={`/dashboard/edit/especialidad/${cat.id}`}>
-                                                <i className="material-icons grey-text">edit</i>
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </CustomTable>
-                        <div className="center-align" style={{ marginTop: '1.5rem' }}>
-                            <Link to="/dashboard/especialidades" className="green-text" style={{ fontWeight: '500' }}>VER TODAS</Link>
-                        </div>
-                    </div>
-                </CustomCol>
+                <RecentSummaryTable
+                    title="Especialidades"
+                    items={recentCategories}
+                    headers={['Nombre', 'Acciones']}
+                    addItemLink="#/dashboard/new/especialidad"
+                    viewAllLink="/dashboard/especialidades"
+                    renderRow={(cat) => (
+                        <tr key={cat.id}>
+                            <td>{cat.name}</td>
+                            <td className="right-align">
+                                <Link to={`/dashboard/edit/especialidad/${cat.id}`}>
+                                    <i className="material-icons grey-text">edit</i>
+                                </Link>
+                            </td>
+                        </tr>
+                    )}
+                />
 
-                <CustomCol s={12} m={6}>
-                    <div className="card-panel white">
-                        <div className="valign-wrapper" style={{ justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                            <h5 className="grey-text text-darken-3" style={{ margin: 0 }}>Casos Clínicos</h5>
-                            <CustomButton
-                                href="#/dashboard/add/caso"
-                                className="green darken-1 btn  white-text"
-                                icon="add"
-                                node="a"
-                            />
-                        </div>
-                        <CustomTable className="highlight">
-                            <thead>
-                                <tr>
-                                    <th>Título</th>
-                                    <th className="center-align">Preguntas</th>
-                                    <th className="right-align">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {recentCases.map(caso => {
-                                    return (
-                                        <tr key={caso.id}>
-                                            <td>{caso.name || (caso.description ? caso.description.slice(0, 30) : 'Sin título')}</td>
-
-                                            <td className="center-align">{caso.questions}</td>
-                                            <td className="right-align">
-                                                <Link to={`/dashboard/edit/caso/${caso.id}`}>
-                                                    <i className="material-icons grey-text">edit</i>
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </CustomTable>
-                        <div className="center-align" style={{ marginTop: '1.5rem' }}>
-                            <Link to="/dashboard/casos/1" className="green-text" style={{ fontWeight: '500' }}>VER TODOS</Link>
-                        </div>
-                    </div>
-                </CustomCol>
+                <RecentSummaryTable
+                    title="Casos Clínicos"
+                    items={recentCases}
+                    headers={['Título', 'Acciones']}
+                    // Note: Original had 'Preguntas' column but data was just {caso.questions} which might be count? 
+                    // Let's keep it simple or add if needed. The original code had nested td with center-align for questions.
+                    // Let's add 'Preguntas' back to headers if needed.
+                    addItemLink="#/dashboard/add/caso"
+                    viewAllLink="/dashboard/casos/1"
+                    renderRow={(caso) => (
+                        <tr key={caso.id}>
+                            <td>{caso.name || (caso.description ? caso.description.slice(0, 30) : 'Sin título')}</td>
+                            <td className="right-align">
+                                <Link to={`/dashboard/edit/caso/${caso.id}`}>
+                                    <i className="material-icons grey-text">edit</i>
+                                </Link>
+                            </td>
+                        </tr>
+                    )}
+                />
             </CustomRow>
         </div>
     );

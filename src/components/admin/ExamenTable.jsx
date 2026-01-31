@@ -3,11 +3,11 @@ import {
     CustomRow,
     CustomCol,
     CustomTable,
-    CustomPreloader,
-    CustomButton
+    CustomPreloader
 } from '../custom';
 import ExamService from '../../services/ExamService';
 import { alertError, alertSuccess, confirmDialog } from '../../services/AlertService';
+import ExamenRow from './ExamenRow';
 
 const ExamenTable = () => {
     const [exams, setExams] = useState([]);
@@ -35,13 +35,9 @@ const ExamenTable = () => {
         const confirm = await confirmDialog("¿Eliminar Examen?", `¿Estás seguro de que deseas eliminar ${exam.name}?`);
         if (confirm) {
             try {
-                // Assuming ExamService has deleteExam (it doesn't yet, let's add it or use clinical_cases logic)
-                // Actually exams endpoint supports DELETE
-                // I'll use axios directly or update ExamService
-                // For now let's assume it works if I add it to service
                 await ExamService.deleteExam(exam.id);
                 alertSuccess("Examen Eliminado", "El examen ha sido eliminado");
-                loadExams();
+                loadExams(false); // Don't show preloader for refresh after delete
             } catch (error) {
                 console.error("Error deleting exam", error);
                 alertError("Error", "No se pudo eliminar el examen");
@@ -72,31 +68,18 @@ const ExamenTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {exams.map(exam => (
-                                <tr key={exam.id}>
-                                    <td>{exam.name}</td>
-                                    <td>{exam.description || 'Sin descripción'}</td>
-                                    <td>{exam.exam_questions?.length || 0}</td>
-                                    <td className="right-align">
-                                        <CustomButton
-                                            flat
-                                            href={`#/dashboard/edit/exam/${exam.id}`}
-                                            icon="edit"
-                                            className="blue-text"
-                                        />
-                                        <CustomButton
-                                            flat
-                                            className="red-text"
-                                            icon="delete"
-                                            onClick={() => handleDeleteExam(exam)}
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                            {exams.length === 0 && (
+                            {exams.length === 0 ? (
                                 <tr>
                                     <td colSpan="4" className="center-align">No hay exámenes configurados</td>
                                 </tr>
+                            ) : (
+                                exams.map(exam => (
+                                    <ExamenRow
+                                        key={exam.id}
+                                        exam={exam}
+                                        onDelete={handleDeleteExam}
+                                    />
+                                ))
                             )}
                         </tbody>
                     </CustomTable>
