@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Auth from "../modules/Auth";
 import UserService from "../services/UserService";
+import CustomPreloader from "./custom/CustomPreloader";
 
 const Profile = () => {
   const [user] = useState(() => Auth.getUserInfo() || { id: null });
@@ -27,7 +28,11 @@ const Profile = () => {
   }, [user.id]);
 
   if (loading) {
-    return <div className="section center">Cargando...</div>;
+    return (
+      <div className="section center">
+        <CustomPreloader size="big" />
+      </div>
+    );
   }
 
   if (error) {

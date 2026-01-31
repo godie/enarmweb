@@ -51,8 +51,8 @@ describe('Profile Component', () => {
     vi.mocked(Auth.getUserInfo).mockReturnValue(mockFbUser);
     vi.mocked(UserService.getAchievements).mockReturnValue(new Promise(() => { })); // Promise that never resolves
 
-    render(<Profile />);
-    expect(screen.getByText('Cargando...')).toBeInTheDocument();
+    const { container } = render(<Profile />);
+    expect(container.querySelector('.preloader-wrapper')).toBeInTheDocument();
   });
 
   test('renders error message if user data is missing/null', async () => {
