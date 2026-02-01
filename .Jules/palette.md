@@ -23,3 +23,7 @@
 ## 2025-05-25 - [Consistent Loading Feedback and Accessible Errors]
 **Learning:** Standardizing visual loading feedback by using `CustomPreloader` instead of plain text ("Cargando...") improves the professional feel of the app. In forms, adding `role="alert"` and `aria-live="assertive"` to error messages ensures they are announced to screen readers, while icons like `highlight_off` provide visual cues. Removing redundant `aria-label` from correctly labeled inputs prevents screen reader noise.
 **Action:** Use `CustomPreloader` for all loading states and ensure error messages are both visually and semantically descriptive.
+
+## 2025-05-26 - [Visual Context in Forms and Consistent Loading]
+**Learning:** Adding Material Icons as prefixes to form inputs provides immediate visual context and improves scanability, especially in authentication forms. For dark-themed or colored containers, ensuring these icons have the correct contrast (e.g., `white-text`) is crucial. Standardizing loading feedback using `CustomPreloader` across different parts of the app (like Onboarding and Auth) creates a more cohesive and professional user experience.
+**Action:** Always include relevant prefix icons in high-visibility forms and use `CustomPreloader` for all async button states to maintain UI consistency.
