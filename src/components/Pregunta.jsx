@@ -50,7 +50,8 @@ const Pregunta = ({
           </span>
         );
       }
-
+    } else if (isSelected) {
+      extraClass = "blue lighten-5"; // Highlight selected option during exam
     }
 
     return (
