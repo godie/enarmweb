@@ -23,3 +23,7 @@
 ## 2025-05-25 - [Consistent Loading Feedback and Accessible Errors]
 **Learning:** Standardizing visual loading feedback by using `CustomPreloader` instead of plain text ("Cargando...") improves the professional feel of the app. In forms, adding `role="alert"` and `aria-live="assertive"` to error messages ensures they are announced to screen readers, while icons like `highlight_off` provide visual cues. Removing redundant `aria-label` from correctly labeled inputs prevents screen reader noise.
 **Action:** Use `CustomPreloader` for all loading states and ensure error messages are both visually and semantically descriptive.
+
+## 2025-05-26 - [Visual Selection Feedback and Linter Hygiene]
+**Learning:** Adding a subtle background highlight (e.g., `blue lighten-5`) to selected options in lists or collections improves clarity for users during interactive tasks like taking an exam. Furthermore, maintaining strict linter hygiene (like removing unused imports) is essential for CI/CD success, even if the change itself is small.
+**Action:** Always provide clear visual states for selection and ensure touched files are lint-clean.
