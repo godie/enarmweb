@@ -46,11 +46,14 @@ const CasoTable = () => {
 
   useEffect(() => {
     // Load cases data
-    setCasesData(null); // Reset data while loading to show spinner
-    setLoadingError(false);
+    Promise.resolve().then(() => {
+      setCasesData(null); // Reset data while loading to show spinner
+      setLoadingError(false);
+    });
 
     ExamService.getClinicalCases(currentPage)
       .then((response) => {
+        setLoadingError(false);
         setCasesData(response.data.clinical_cases);
         setTotalCases(response.data.total_entries);
       })

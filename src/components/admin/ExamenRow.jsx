@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import CustomButton from '../custom/CustomButton';
 
@@ -14,12 +13,14 @@ const ExamenRow = ({ exam, onDelete }) => {
                     href={`#/dashboard/edit/exam/${exam.id}`}
                     icon="edit"
                     className="blue-text"
+                    tooltip="Editar Examen"
                 />
                 <CustomButton
                     flat
                     className="red-text"
                     icon="delete"
                     onClick={() => onDelete(exam)}
+                    tooltip="Eliminar Examen"
                 />
             </td>
         </tr>

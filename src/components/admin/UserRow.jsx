@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { CustomButton, CustomSelect } from '../custom';
 
@@ -26,6 +25,7 @@ const UserRow = ({ user, onRoleChange, onDelete }) => {
                     className="red-text"
                     icon="delete"
                     onClick={() => onDelete(user)}
+                    tooltip="Eliminar Usuario"
                 />
             </td>
         </tr>
