@@ -16,8 +16,9 @@ const CasoTable = () => {
   const history = useHistory();
   const { page: pageParam } = useParams();
 
-  const [casesData, setCasesData] = useState(null);
+  const [casesData, setCasesData] = useState([]);
   const [totalCases, setTotalCases] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const currentPage = (() => {
     const pageNum = parseInt(pageParam, 10);
@@ -46,13 +47,12 @@ const CasoTable = () => {
 
   useEffect(() => {
     // Load cases data
-    setCasesData(null); // Reset data while loading to show spinner
-    setLoadingError(false);
 
     ExamService.getClinicalCases(currentPage)
       .then((response) => {
         setCasesData(response.data.clinical_cases);
         setTotalCases(response.data.total_entries);
+        setLoadingError(false);
       })
       .catch((error) => {
         setCasesData([]);
@@ -60,6 +60,9 @@ const CasoTable = () => {
         setLoadingError(true);
         console.error("Error loading exams", error);
         Util.showToast("Error al cargar los casos clínicos.");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [currentPage]);
 
@@ -82,14 +85,15 @@ const CasoTable = () => {
 
   const handlePageClick = (newPage) => {
     if (newPage === currentPage) return;
+    setLoading(true);
     history.push(`/dashboard/casos/${newPage}`);
   };
 
   const numPages = Math.ceil(totalCases / perPage);
 
-  if (casesData === null && !loadingError) {
+  if (loading && !loadingError) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '20px' }} role="progressbar">
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
         <CustomPreloader size="big" active />
       </div>
     );

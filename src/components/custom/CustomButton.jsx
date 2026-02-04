@@ -1,6 +1,7 @@
 import { useEffect, useRef, Children } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip, FloatingActionButton } from '@materializecss/materialize';
+import CustomPreloader from './CustomPreloader';
 
 const CustomButton = ({
   children,
@@ -20,6 +21,8 @@ const CustomButton = ({
   flat,
   onClick,
   fab,
+  isPending = false,
+  isPendingText = '',
   ...props // Cualquier otra prop que SI debe pasar al DOM
 }) => {
   const elementRef = useRef(null);
@@ -75,7 +78,7 @@ const CustomButton = ({
   // Construir clases dinámicamente
   let combinedClassName = `btn waves-effect waves-${waves} ${className}`;
 
-  if (disabled) {
+  if (disabled || isPending) {
     combinedClassName = `btn disabled ${className}`;
   }
 
@@ -139,7 +142,12 @@ const CustomButton = ({
   }
 
   // Contenido normal del botón
-  const content = (
+  const content = isPending ? (
+    <span className="valign-wrapper" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%' }}>
+      <CustomPreloader size="small" color="green" />
+      {isPendingText && <span style={{ marginLeft: '10px' }}>{isPendingText}</span>}
+    </span>
+  ) : (
     <>
       {iconPosition === 'left' && iconElement}
       {children}
@@ -229,6 +237,8 @@ CustomButton.propTypes = {
   small: PropTypes.bool,
   medium: PropTypes.bool,
   flat: PropTypes.bool,
+  isPending: PropTypes.bool,
+  isPendingText: PropTypes.string,
   /**
    * Fixed action button
    * If enabled, any children button will be rendered as actions

@@ -4,7 +4,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 import EspecialidadForm from './EspecialidadForm';
 import ExamService from '../../services/ExamService';
-import { alertSuccess, alertError } from '../../services/AlertService';
+import { alertSuccess } from '../../services/AlertService';
 
 // Mock services
 vi.mock('../../services/ExamService');

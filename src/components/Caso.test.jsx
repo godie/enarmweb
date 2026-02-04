@@ -79,9 +79,15 @@ describe('Caso Component', () => {
 
   test('renders without crashing and displays static text', async () => {
     render(<Caso clinicCaseId={1} />);
+    // Check for preloader initially
+    expect(screen.getByRole('progressbar', { hidden: true })).toBeInTheDocument();
+
     await waitFor(() => expect(screen.getByText('Caso Clinico:')).toBeInTheDocument());
     expect(ExamService.getQuestions).toHaveBeenCalledWith(1);
     expect(screen.getByText(mockClinicalCase.description)).toBeInTheDocument();
+
+    // Preloader should be gone
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 
   test('clicking "Siguiente" when all questions answered calls sendAnswers', async () => {

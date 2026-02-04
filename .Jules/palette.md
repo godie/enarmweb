@@ -27,3 +27,7 @@
 ## 2025-05-26 - [Visual Selection Feedback and Linter Hygiene]
 **Learning:** Adding a subtle background highlight (e.g., `blue lighten-5`) to selected options in lists or collections improves clarity for users during interactive tasks like taking an exam. Furthermore, maintaining strict linter hygiene (like removing unused imports) is essential for CI/CD success, even if the change itself is small.
 **Action:** Always provide clear visual states for selection and ensure touched files are lint-clean.
+
+## 2025-02-03 - [Unified Loading Feedback in Buttons and Components]
+**Learning:** Moving loading logic (spinners, text, disabled state) into base components like `CustomButton` reduces boilerplate and ensures consistent UX across the app. In Spanish interfaces, using semantic icons like `check_circle` within a `valign-wrapper` in toasts provides clear, professional feedback for critical actions like saving.
+**Action:** Abstract loading states into reusable UI components and always include visual markers (icons) for status updates.
