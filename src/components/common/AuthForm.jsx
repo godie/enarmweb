@@ -3,7 +3,6 @@ import CustomButton from "../custom/CustomButton";
 import CustomRow from "../custom/CustomRow";
 import CustomCol from "../custom/CustomCol";
 import CustomTextInput from "../custom/CustomTextInput";
-import CustomPreloader from "../custom/CustomPreloader";
 import CustomIcon from "../custom/CustomIcon";
 
 const AuthForm = ({
@@ -105,14 +104,10 @@ const AuthForm = ({
                                 large
                                 waves="light"
                                 className="grey lighten-3 green-text"
-                                disabled={isPending}
+                                isPending={isPending}
+                                isPendingText={isPendingText}
                             >
-                                {isPending ? (
-                                    <span className="valign-wrapper" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%' }}>
-                                        <CustomPreloader size="small" color="green" />
-                                        <span style={{ marginLeft: '10px' }}>{isPendingText}</span>
-                                    </span>
-                                ) : submitText}
+                                {submitText}
                             </CustomButton>
                         </CustomCol>
                     </CustomRow>
