@@ -36,6 +36,8 @@ const AuthForm = ({
                             <>
                                 <CustomCol s={12} m={10} l={8} offset="m1 l2">
                                     <CustomTextInput
+                                        icon="person"
+                                        iconClassName="white-text"
                                         label="Nombre Completo"
                                         id="name"
                                         name="name"
@@ -46,6 +48,8 @@ const AuthForm = ({
                                 </CustomCol>
                                 <CustomCol s={12} m={10} l={8} offset="m1 l2">
                                     <CustomTextInput
+                                        icon="account_circle"
+                                        iconClassName="white-text"
                                         label="Usuario"
                                         id="username"
                                         name="username"
@@ -58,6 +62,8 @@ const AuthForm = ({
                         )}
                         <CustomCol s={12} m={10} l={8} offset="m1 l2">
                             <CustomTextInput
+                                icon={isSignup ? "email" : "person"}
+                                iconClassName="white-text"
                                 label={isSignup ? "Email" : "Email o Usuario"}
                                 id="email"
                                 name="email"
@@ -69,6 +75,8 @@ const AuthForm = ({
                         </CustomCol>
                         <CustomCol s={12} m={10} l={8} offset="m1 l2">
                             <CustomTextInput
+                                icon="lock"
+                                iconClassName="white-text"
                                 type="password"
                                 label="Contraseña"
                                 id="password"
