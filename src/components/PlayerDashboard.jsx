@@ -25,6 +25,7 @@ const PlayerDashboard = () => {
     const user = Auth.getUserInfo();
     const userId = user?.id;
     const specialties = user?.preferences?.specialties;
+    const [focusedId, setFocusedId] = useState(null);
 
     useEffect(() => {
         // Redirigir a onboarding si no hay especialidades seleccionadas
@@ -58,6 +59,13 @@ const PlayerDashboard = () => {
         };
         fetchData();
     }, [history, specialties, userId]);
+
+    const handleKeyDown = (e, catId) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            history.push(`/especialidad/${catId}`);
+        }
+    };
 
     if (loading) {
         return (
@@ -114,17 +122,25 @@ const PlayerDashboard = () => {
                                 <div
                                     key={cat.id}
                                     className="specialty-item center-align hoverable"
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-label={`Estudiar especialidad: ${cat.name}`}
                                     onClick={() => history.push(`/especialidad/${cat.id}`)}
+                                    onKeyDown={(e) => handleKeyDown(e, cat.id)}
+                                    onFocus={() => setFocusedId(cat.id)}
+                                    onBlur={() => setFocusedId(null)}
                                     style={{
                                         padding: '20px',
-                                        border: '1px solid #f0f0f0',
+                                        border: focusedId === cat.id ? '1px solid var(--medical-green)' : '1px solid #f0f0f0',
+                                        backgroundColor: focusedId === cat.id ? '#f9fdfa' : 'white',
                                         borderRadius: '12px',
                                         cursor: 'pointer',
-                                        transition: 'all 0.3s ease'
+                                        transition: 'all 0.3s ease',
+                                        outline: 'none'
                                     }}
                                 >
-                                    <i className="material-icons green-text text-lighten-2" style={{ fontSize: '2.5rem' }}>medical_services</i>
-                                    <p className="grey-text text-darken-2" style={{ fontWeight: '500', margin: '10px 0 0' }}>{cat.name}</p>
+                                    <i className="material-icons green-text text-lighten-2" style={{ fontSize: '2.5rem' }} aria-hidden="true">medical_services</i>
+                                    <p className="grey-text text-darken-2" style={{ fontWeight: '500', margin: '10px 0 0' }} aria-hidden="true">{cat.name}</p>
                                 </div>
                             ))}
                         </div>
