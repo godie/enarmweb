@@ -132,7 +132,12 @@ const Onboarding = () => {
                         onClick={handleSave}
                         disabled={saving || selected.length === 0}
                     >
-                        {saving ? "Guardando..." : "Comenzar mi Entrenamiento"}
+                        {saving ? (
+                            <span className="valign-wrapper" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%' }}>
+                                <CustomPreloader size="small" color="white" />
+                                <span style={{ marginLeft: '10px' }}>Guardando...</span>
+                            </span>
+                        ) : "Comenzar mi Entrenamiento"}
                     </CustomButton>
                 </CustomCol>
             </CustomRow>

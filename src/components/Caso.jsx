@@ -7,6 +7,7 @@ import Auth from "../modules/Auth";
 import { useHistory } from 'react-router-dom';
 import { alertError } from "../services/AlertService";
 import Util from "../commons/Util";
+import { CustomButton, CustomPreloader } from "./custom";
 
 const Caso = (props) => {
   const { clinicCaseId } = props;
@@ -18,6 +19,8 @@ const Caso = (props) => {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [goNext, setGoNext] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSelectOption = (questionIndex, answerIndex) => {
     let newSelectedAnswers = [...selectedAnswers];
@@ -79,6 +82,7 @@ const Caso = (props) => {
       return;
     }
 
+    setIsSaving(true);
     const userAnswers = [];
     answers.forEach(answer => {
       if (Array.isArray(answer)) {
@@ -102,15 +106,19 @@ const Caso = (props) => {
 
     ExamService.sendAnswers(payload)
       .then(() => {
-        Util.showToast("se guardaron las respuestas");
+        Util.showToast('<div class="valign-wrapper"><i class="material-icons left">check_circle</i> Respuestas guardadas</div>');
       })
       .catch((error) => {
         alertError('Enarm simulator', 'Ocurrio un erro al guardar las respuestas');
         console.log("tronadera", error);
+      })
+      .finally(() => {
+        setIsSaving(false);
       });
   };
 
   const loadPreguntas = (currentClinicCaseId) => {
+    setLoading(true);
     let caseIdToLoad = currentClinicCaseId;
     var newNext = parseInt(caseIdToLoad) + 1;
 
@@ -134,9 +142,11 @@ const Caso = (props) => {
         setData(questions);
         setSelectedAnswers(initialSelectedAnswers);
         setCasoClinico(description);
+        setLoading(false);
       })
       .catch((error) => {
         console.log("OCurrio un error", error);
+        setLoading(false);
       });
   };
 
@@ -158,6 +168,14 @@ const Caso = (props) => {
     );
   });
 
+  if (loading) {
+    return (
+      <div className="center-align" style={{ padding: '50px' }}>
+        <CustomPreloader active color="green" size="big" />
+      </div>
+    );
+  }
+
   return (
     <div className="col s12 m12 l12">
       <div className="col s12 m9 l9 offset-m1 offset-l1">
@@ -167,16 +185,16 @@ const Caso = (props) => {
       {preguntas}
       <div className="row">
         <div className="col offset-s3 offset-m4 offset-l8">
-          <button
+          <CustomButton
             onClick={checkAnswers}
-            className="waves-effect btn"
             aria-label={showAnswers ? "Ir al siguiente caso" : "Calificar respuestas"}
+            isPending={isSaving}
+            isPendingText="Guardando..."
+            icon={showAnswers ? "navigate_next" : "assignment_turned_in"}
+            iconPosition="right"
           >
-            <i className="material-icons right" aria-hidden="true">
-              {showAnswers ? "navigate_next" : "assignment_turned_in"}
-            </i>
             {showAnswers ? "Siguiente" : "Calificar"}
-          </button>
+          </CustomButton>
         </div>
       </div>
     </div>

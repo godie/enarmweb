@@ -24,6 +24,10 @@
 **Learning:** Standardizing visual loading feedback by using `CustomPreloader` instead of plain text ("Cargando...") improves the professional feel of the app. In forms, adding `role="alert"` and `aria-live="assertive"` to error messages ensures they are announced to screen readers, while icons like `highlight_off` provide visual cues. Removing redundant `aria-label` from correctly labeled inputs prevents screen reader noise.
 **Action:** Use `CustomPreloader` for all loading states and ensure error messages are both visually and semantically descriptive.
 
+## 2025-05-26 - [Visual Context in Forms and Consistent Loading]
+**Learning:** Adding Material Icons as prefixes to form inputs provides immediate visual context and improves scanability, especially in authentication forms. For dark-themed or colored containers, ensuring these icons have the correct contrast (e.g., `white-text`) is crucial. Standardizing loading feedback using `CustomPreloader` across different parts of the app (like Onboarding and Auth) creates a more cohesive and professional user experience.
+**Action:** Always include relevant prefix icons in high-visibility forms and use `CustomPreloader` for all async button states to maintain UI consistency.
+
 ## 2025-05-26 - [Visual Selection Feedback and Linter Hygiene]
 **Learning:** Adding a subtle background highlight (e.g., `blue lighten-5`) to selected options in lists or collections improves clarity for users during interactive tasks like taking an exam. Furthermore, maintaining strict linter hygiene (like removing unused imports) is essential for CI/CD success, even if the change itself is small.
 **Action:** Always provide clear visual states for selection and ensure touched files are lint-clean.
@@ -31,3 +35,6 @@
 ## 2025-05-27 - [Unified Loading States and Derived ARIA Labels]
 **Learning:** Centralizing loading logic within the `CustomButton` component (using `isPending` and `isPendingText` props) ensures consistent visual feedback and simplifies form components. Furthermore, automatically deriving `aria-label` from `tooltip` for icon-only buttons provides a robust accessibility fallback without requiring repetitive developer effort.
 **Action:** Prefer integrated loading states in core button components and use tooltips to automatically populate ARIA labels for icon-only interactive elements.
+## 2025-02-03 - [Unified Loading Feedback in Buttons and Components]
+**Learning:** Moving loading logic (spinners, text, disabled state) into base components like `CustomButton` reduces boilerplate and ensures consistent UX across the app. In Spanish interfaces, using semantic icons like `check_circle` within a `valign-wrapper` in toasts provides clear, professional feedback for critical actions like saving.
+**Action:** Abstract loading states into reusable UI components and always include visual markers (icons) for status updates.
