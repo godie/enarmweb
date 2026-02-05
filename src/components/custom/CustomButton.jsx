@@ -23,6 +23,7 @@ const CustomButton = ({
   fab,
   isPending = false,
   isPendingText = '',
+  pendingColor = 'green',
   ...props // Cualquier otra prop que SI debe pasar al DOM
 }) => {
   const elementRef = useRef(null);
@@ -144,7 +145,7 @@ const CustomButton = ({
   // Contenido normal del botón
   const content = isPending ? (
     <span className="valign-wrapper" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%' }}>
-      <CustomPreloader size="small" color="green" />
+      <CustomPreloader size="small" color={pendingColor} />
       {isPendingText && <span style={{ marginLeft: '10px' }}>{isPendingText}</span>}
     </span>
   ) : (
@@ -161,10 +162,15 @@ const CustomButton = ({
   // Props comunes para ambos elementos
   const commonProps = {
     className: combinedClassName,
-    disabled,
-    onClick,
+    disabled: disabled || isPending,
+    onClick: isPending ? (e) => e.preventDefault() : onClick,
     ...props // Solo las props restantes que no hemos destructurado
   };
+
+  // Accessibility: if icon-only button, use tooltip as aria-label if not provided
+  if (!children && icon && !props['aria-label'] && tooltip) {
+    commonProps['aria-label'] = typeof tooltip === 'string' ? tooltip : (tooltip.text || tooltip.html || '');
+  }
 
   if (tooltip) {
     if (typeof tooltip === 'string') {
@@ -239,6 +245,7 @@ CustomButton.propTypes = {
   flat: PropTypes.bool,
   isPending: PropTypes.bool,
   isPendingText: PropTypes.string,
+  pendingColor: PropTypes.string,
   /**
    * Fixed action button
    * If enabled, any children button will be rendered as actions

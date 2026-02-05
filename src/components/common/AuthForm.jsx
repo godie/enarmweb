@@ -106,6 +106,7 @@ const AuthForm = ({
                                 className="grey lighten-3 green-text"
                                 isPending={isPending}
                                 isPendingText={isPendingText}
+                                pendingColor="green"
                             >
                                 {submitText}
                             </CustomButton>
