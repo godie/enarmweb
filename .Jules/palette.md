@@ -35,3 +35,7 @@
 ## 2025-02-03 - [Unified Loading Feedback in Buttons and Components]
 **Learning:** Moving loading logic (spinners, text, disabled state) into base components like `CustomButton` reduces boilerplate and ensures consistent UX across the app. In Spanish interfaces, using semantic icons like `check_circle` within a `valign-wrapper` in toasts provides clear, professional feedback for critical actions like saving.
 **Action:** Abstract loading states into reusable UI components and always include visual markers (icons) for status updates.
+
+## 2025-02-06 - [Automated ARIA Labels and Clean Tooltip Feedback]
+**Learning:** Icon-only buttons often lack descriptive labels for screen readers. Automatically deriving `aria-label` from `tooltip` props (while stripping any HTML tags) or from loading state text (`isPendingText`) ensures components remain accessible without additional developer effort. Marking decorative icons as `aria-hidden="true"` further reduces screen reader noise.
+**Action:** Implement automatic `aria-label` derivation in core UI components and ensure icons are hidden from assistive technologies when a parent label is present.
