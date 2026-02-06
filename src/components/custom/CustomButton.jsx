@@ -95,8 +95,13 @@ const CustomButton = ({
 
   // Renderizar icono si existe
   const iconElement = icon ? (
-    <i className="material-icons">{icon}</i>
+    <i className="material-icons" aria-hidden="true">{icon}</i>
   ) : null;
+
+  const getCleanLabel = (input) => {
+    const text = typeof input === 'string' ? input : (input?.text || input?.html);
+    return text ? text.replace(/<[^>]*>?/gm, '') : undefined;
+  };
 
   // Render FAB if enabled
   const renderFab = (classes) => {
@@ -105,7 +110,8 @@ const CustomButton = ({
 
     const fabButtonProps = {
       className: classes,
-      href: href || '#!'
+      href: href || '#!',
+      'aria-label': props['aria-label'] || getCleanLabel(tooltip)
     };
 
     if (tooltip) {
@@ -158,11 +164,24 @@ const CustomButton = ({
   // Elegir el componente a renderizar
   const Component = node;
 
+  // Derive aria-label for accessibility
+  const hasNoChildren = Children.count(children) === 0;
+  let autoAriaLabel = props['aria-label'];
+
+  if (!autoAriaLabel) {
+    if (isPending && isPendingText) {
+      autoAriaLabel = isPendingText;
+    } else if (hasNoChildren && icon) {
+      autoAriaLabel = getCleanLabel(tooltip);
+    }
+  }
+
   // Props comunes para ambos elementos
   const commonProps = {
     className: combinedClassName,
     disabled,
     onClick,
+    'aria-label': autoAriaLabel,
     ...props // Solo las props restantes que no hemos destructurado
   };
 
