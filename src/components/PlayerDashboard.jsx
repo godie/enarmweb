@@ -22,6 +22,7 @@ const PlayerDashboard = () => {
     });
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [focusedId, setFocusedId] = useState(null);
     const user = Auth.getUserInfo();
     const userId = user?.id;
     const specialties = user?.preferences?.specialties;
@@ -58,6 +59,13 @@ const PlayerDashboard = () => {
         };
         fetchData();
     }, [history, specialties, userId]);
+
+    const handleKeyDown = (e, catId) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            history.push(`/especialidad/${catId}`);
+        }
+    };
 
     if (loading) {
         return (
@@ -114,16 +122,25 @@ const PlayerDashboard = () => {
                                 <div
                                     key={cat.id}
                                     className="specialty-item center-align hoverable"
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-label={`Explorar especialidad: ${cat.name}`}
                                     onClick={() => history.push(`/especialidad/${cat.id}`)}
+                                    onKeyDown={(e) => handleKeyDown(e, cat.id)}
+                                    onMouseEnter={() => setFocusedId(cat.id)}
+                                    onMouseLeave={() => setFocusedId(null)}
+                                    onFocus={() => setFocusedId(cat.id)}
+                                    onBlur={() => setFocusedId(null)}
                                     style={{
                                         padding: '20px',
                                         border: '1px solid #f0f0f0',
                                         borderRadius: '12px',
                                         cursor: 'pointer',
-                                        transition: 'all 0.3s ease'
+                                        transition: 'all 0.3s ease',
+                                        backgroundColor: focusedId === cat.id ? '#f9fdfa' : 'transparent'
                                     }}
                                 >
-                                    <i className="material-icons green-text text-lighten-2" style={{ fontSize: '2.5rem' }}>medical_services</i>
+                                    <i className="material-icons green-text text-lighten-2" style={{ fontSize: '2.5rem' }} aria-hidden="true">medical_services</i>
                                     <p className="grey-text text-darken-2" style={{ fontWeight: '500', margin: '10px 0 0' }}>{cat.name}</p>
                                 </div>
                             ))}

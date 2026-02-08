@@ -35,3 +35,7 @@
 ## 2025-02-03 - [Unified Loading Feedback in Buttons and Components]
 **Learning:** Moving loading logic (spinners, text, disabled state) into base components like `CustomButton` reduces boilerplate and ensures consistent UX across the app. In Spanish interfaces, using semantic icons like `check_circle` within a `valign-wrapper` in toasts provides clear, professional feedback for critical actions like saving.
 **Action:** Abstract loading states into reusable UI components and always include visual markers (icons) for status updates.
+
+## 2025-05-27 - [Consistent Interactive Cards and Visual Focus Feedback]
+**Learning:** For interactive non-semantic elements like 'specialty cards', providing both semantic accessibility (role, tabIndex, onKeyDown) and visual feedback (state-driven background color changes) is essential for a cohesive UX. Using a subtle highlight like `#f9fdfa` on focus and hover helps users track their position in the grid, especially when using keyboard navigation.
+**Action:** Always complement accessibility improvements with visual state feedback to ensure the interface is both usable and delightful.
