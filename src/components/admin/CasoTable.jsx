@@ -49,7 +49,7 @@ const CasoTable = () => {
   const [lastPage, setLastPage] = useState(currentPage);
   if (currentPage !== lastPage) {
     setLastPage(currentPage);
-    setCasesData(null);
+    setCasesData([]);
     setLoadingError(false);
   }
 
