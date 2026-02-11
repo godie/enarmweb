@@ -35,3 +35,7 @@
 ## 2025-02-03 - [Unified Loading Feedback in Buttons and Components]
 **Learning:** Moving loading logic (spinners, text, disabled state) into base components like `CustomButton` reduces boilerplate and ensures consistent UX across the app. In Spanish interfaces, using semantic icons like `check_circle` within a `valign-wrapper` in toasts provides clear, professional feedback for critical actions like saving.
 **Action:** Abstract loading states into reusable UI components and always include visual markers (icons) for status updates.
+
+## 2025-05-27 - [Accessible Specialty Cards and Project Portability]
+**Learning:** Enhancing static `div` elements with `role="button"`, `tabIndex={0}`, and proper keyboard event listeners (Enter/Space) significantly improves accessibility for interactive grids. Additionally, removing hardcoded absolute paths for SSL in `vite.config.js` and preferring `https: false` in generic dev environments ensures the project remains portable and buildable for all contributors.
+**Action:** Always audit interactive non-button elements for keyboard support and ensure build configuration is environment-agnostic.

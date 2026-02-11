@@ -5,7 +5,7 @@ const StatCard = ({ title, count, icon }) => (
                 <span className="grey-text text-darken-1" style={{ fontSize: '0.8rem', fontWeight: 'bold', textTransform: 'uppercase' }}>{title}</span>
                 <h4 className="green-text text-darken-2" style={{ margin: '5px 0' }}>{count}</h4>
             </div>
-            <i className="material-icons grey-text text-lighten-2" style={{ fontSize: '2.5rem' }}>{icon}</i>
+            <i className="material-icons grey-text text-lighten-2" style={{ fontSize: '2.5rem' }} aria-hidden="true">{icon}</i>
         </div>
     </div>
 );

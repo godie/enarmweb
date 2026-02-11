@@ -110,16 +110,10 @@ const AuthForm = ({
                                     large
                                     waves="light"
                                     className="white-text text"
-                                    disabled={isPending}
+                                    isPending={isPending}
+                                    isPendingText={isPendingText}
                                 >
-                                    {isPending ? (
-                                        <span className="valign-wrapper inline-flex justify-center w-100">
-                                            <CustomPreloader size="small" color="white" />
-                                            <span className="ml-2">{isPendingText}</span>
-                                        </span>
-                                    ) : (
-                                        submitText
-                                    )}
+                                    {submitText}
                                 </CustomButton>
                             </div>
                             {registerLink}
@@ -206,14 +200,7 @@ const AuthForm = ({
                                 isPending={isPending}
                                 isPendingText={isPendingText}
                             >
-                                {isPending ? (
-                                    <span className="valign-wrapper" style={{ display: "inline-flex", justifyContent: "center", width: "100%" }}>
-                                        <CustomPreloader size="small" color="green" />
-                                        <span className="ml-2">{isPendingText}</span>
-                                    </span>
-                                ) : (
-                                    submitText
-                                )}
+                                {submitText}
                             </CustomButton>
                         </CustomCol>
                     </CustomRow>
