@@ -57,6 +57,7 @@ const CasoTable = () => {
     // Load cases data
     ExamService.getClinicalCases(currentPage)
       .then((response) => {
+        setLoadingError(false);
         setCasesData(response.data.clinical_cases);
         setTotalCases(response.data.total_entries);
         setLoadingError(false);
