@@ -23,6 +23,8 @@ import ExamenForm from "../components/admin/ExamenForm";
 import Onboarding from "../components/Onboarding";
 
 import PlayerDashboard from "../components/PlayerDashboard";
+import Landing from "../components/Landing";
+import Auth from "../modules/Auth";
 
 function DashboardCases(props) {
   return (
@@ -133,16 +135,8 @@ function AppExamen(props) {
 export default function AppRoutes() {
   return (
     <Switch>
-      {/* — Player login flow — */}
-      <Route
-        path="/login"
-        exact
-        component={() => (
-          <App>
-            <PlayerLogin />
-          </App>
-        )}
-      />
+      {/* — Player login flow (no Navi, full-page green + card) — */}
+      <Route path="/login" exact component={() => <PlayerLogin />} />
       <Route
         path="/loginfb"
         exact
@@ -156,15 +150,19 @@ export default function AppRoutes() {
       <Route path="/logout" exact component={Logout} />
       <Route path="/dashboard/logout" exact component={AdminLogout} />
 
-      {/* — Routes protected by PlayerRoute — */}
-      <PlayerRoute
+      {/* — Home: landing for guests (no Navi), dashboard for authenticated players — */}
+      <Route
         path="/"
         exact
-        component={() => (
-          <App>
-            <PlayerDashboard />
-          </App>
-        )}
+        render={() =>
+          Auth.isPlayerAuthenticated() ? (
+            <App>
+              <PlayerDashboard />
+            </App>
+          ) : (
+            <Landing />
+          )
+        }
       />
       <PlayerRoute
         path="/caso/:identificador"

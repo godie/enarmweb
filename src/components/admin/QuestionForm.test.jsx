@@ -2,6 +2,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, test, expect, vi } from 'vitest';
 import QuestionForm from './QuestionForm';
+import CasoContext from '../../context/CasoContext';
 
 describe('QuestionForm Component', () => {
     const mockProps = {
@@ -12,7 +13,10 @@ describe('QuestionForm Component', () => {
                 { text: 'Answer 2', is_correct: true }
             ]
         },
-        questionIndex: 0,
+        questionIndex: 0
+    };
+
+    const contextValue = {
         onChangeQuestion: vi.fn(),
         deleteQuestion: vi.fn(),
         onChangeAnswer: vi.fn(),
@@ -20,35 +24,43 @@ describe('QuestionForm Component', () => {
         deleteAnswer: vi.fn()
     };
 
+    const renderWithContext = (ui) => {
+        return render(
+            <CasoContext.Provider value={contextValue}>
+                {ui}
+            </CasoContext.Provider>
+        );
+    };
+
     test('renders question text input', () => {
-        render(<QuestionForm {...mockProps} />);
+        renderWithContext(<QuestionForm {...mockProps} />);
         expect(screen.getByLabelText('Texto de la pregunta')).toBeInTheDocument();
         expect(screen.getByDisplayValue('Question Text')).toBeInTheDocument();
     });
 
     test('renders correct number of answers', () => {
-        render(<QuestionForm {...mockProps} />);
+        renderWithContext(<QuestionForm {...mockProps} />);
         expect(screen.getAllByLabelText(/Respuesta \d/)).toHaveLength(2);
     });
 
     test('calls onChangeQuestion when text changes', () => {
-        render(<QuestionForm {...mockProps} />);
+        renderWithContext(<QuestionForm {...mockProps} />);
         const input = screen.getByLabelText('Texto de la pregunta');
         fireEvent.change(input, { target: { value: 'New Question' } });
-        expect(mockProps.onChangeQuestion).toHaveBeenCalledWith(0, expect.anything());
+        expect(contextValue.onChangeQuestion).toHaveBeenCalledWith(0, expect.anything());
     });
 
     test('calls deleteQuestion when delete button is clicked', () => {
-        render(<QuestionForm {...mockProps} />);
+        renderWithContext(<QuestionForm {...mockProps} />);
         const deleteBtn = screen.getByLabelText('Borrar pregunta');
         fireEvent.click(deleteBtn);
-        expect(mockProps.deleteQuestion).toHaveBeenCalledWith(0, expect.anything());
+        expect(contextValue.deleteQuestion).toHaveBeenCalledWith(0, expect.anything());
     });
 
     test('calls addAnswer when add button is clicked', () => {
-        render(<QuestionForm {...mockProps} />);
+        renderWithContext(<QuestionForm {...mockProps} />);
         const addBtn = screen.getByLabelText('Agregar una respuesta');
         fireEvent.click(addBtn);
-        expect(mockProps.addAnswer).toHaveBeenCalledWith(0, expect.anything());
+        expect(contextValue.addAnswer).toHaveBeenCalledWith(0, expect.anything());
     });
 });

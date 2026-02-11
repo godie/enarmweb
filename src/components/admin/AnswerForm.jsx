@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import {
     CustomRow,
@@ -8,14 +7,15 @@ import {
     CustomButton,
     CustomTextarea
 } from '../custom';
+import { useCaso } from '../../context/CasoContext';
 
 const AnswerForm = ({
     answer,
     questionIndex,
-    answerIndex,
-    onChangeAnswer,
-    deleteAnswer
+    answerIndex
 }) => {
+    const { onChangeAnswer, deleteAnswer } = useCaso();
+
     const keyId = `${questionIndex}-${answerIndex}`;
     const description = answer.description || "";
 
@@ -96,9 +96,7 @@ AnswerForm.propTypes = {
         description: PropTypes.string,
     }).isRequired,
     questionIndex: PropTypes.number.isRequired,
-    answerIndex: PropTypes.number.isRequired,
-    onChangeAnswer: PropTypes.func.isRequired,
-    deleteAnswer: PropTypes.func.isRequired,
+    answerIndex: PropTypes.number.isRequired
 };
 
 export default AnswerForm;

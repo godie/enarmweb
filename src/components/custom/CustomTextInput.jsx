@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Forms, CharacterCounter } from '@materializecss/materialize';
 
@@ -18,10 +18,14 @@ const CustomTextInput = ({
   placeholder = ' ',
   maxLength,
   'data-length': dataLength,
+  passwordToggle = false,
   ...props
 }) => {
   const inputRef = useRef(null);
   const counterInstance = useRef(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const isPasswordWithToggle = type === 'password' && passwordToggle;
+  const inputType = isPasswordWithToggle ? (showPassword ? 'text' : 'password') : type;
 
   useEffect(() => {
     // Initialize Character Counter if maxLength is present
@@ -66,15 +70,27 @@ const CustomTextInput = ({
       <input
         ref={inputRef}
         id={id}
-        type={type}
+        type={inputType}
         className={finalInputClassName.trim()}
         disabled={disabled}
         autoComplete={autocomplete}
         placeholder={placeholder}
+        style={isPasswordWithToggle ? { paddingRight: '2.5rem' } : undefined}
         // Conditionally apply value/onChange for controlled, or pass all props for uncontrolled
         {...(isControlled ? { value, onChange } : {})}
         {...props}
       />
+      {isPasswordWithToggle && (
+        <button
+          type="button"
+          className="input-password-toggle grey-text text-darken-2"
+          onClick={() => setShowPassword((v) => !v)}
+          tabIndex={-1}
+          aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+        >
+          <i className="material-icons">{showPassword ? 'visibility_off' : 'visibility'}</i>
+        </button>
+      )}
       {label && <label htmlFor={id}>{label}</label>}
     </div>
   );
@@ -93,6 +109,7 @@ CustomTextInput.propTypes = {
   type: PropTypes.string,
   validate: PropTypes.bool,
   autocomplete: PropTypes.string,
+  passwordToggle: PropTypes.bool,
 };
 
 export default CustomTextInput;

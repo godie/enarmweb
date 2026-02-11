@@ -1,22 +1,19 @@
 import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { CustomButton, CustomTextInput, CustomTextarea, CustomRow, CustomCol, CustomSelect } from "../custom";
 import ExamService from "../../services/ExamService";
 import QuestionForm from "./QuestionForm";
+import { useCaso } from "../../context/CasoContext";
 
-const CasoForm = ({
-  onChange,
-  caso,
-  onChangeAnswer,
-  onChangeQuestion,
-  addQuestion,
-  deleteQuestion,
-  addAnswer,
-  deleteAnswer,
-  onCancel,
-  saveCasoAction,
-  isAdmin = false
-}) => {
+const CasoForm = () => {
+
+  const {
+    onChange,
+    caso,
+    addQuestion,
+    onCancel,
+    saveCasoAction,
+    isAdmin = false
+  } = useCaso();
 
   const [categories, setCategories] = useState([]);
 
@@ -107,11 +104,6 @@ const CasoForm = ({
               key={questionIndex}
               question={question}
               questionIndex={questionIndex}
-              onChangeQuestion={onChangeQuestion}
-              deleteQuestion={deleteQuestion}
-              onChangeAnswer={onChangeAnswer}
-              addAnswer={addAnswer}
-              deleteAnswer={deleteAnswer}
             />
           ))}
 
@@ -171,17 +163,6 @@ const CasoForm = ({
 };
 
 CasoForm.propTypes = {
-  saveCasoAction: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onChangeAnswer: PropTypes.func.isRequired,
-  onChangeQuestion: PropTypes.func.isRequired,
-  deleteQuestion: PropTypes.func.isRequired,
-  caso: PropTypes.object.isRequired,
-  addQuestion: PropTypes.func,
-  addAnswer: PropTypes.func,
-  deleteAnswer: PropTypes.func,
-  onCancel: PropTypes.func,
-  isAdmin: PropTypes.bool,
 };
 
 export default CasoForm;
