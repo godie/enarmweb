@@ -39,3 +39,7 @@
 ## 2025-05-27 - [Consistent Interactive Cards and Visual Focus Feedback]
 **Learning:** For interactive non-semantic elements like 'specialty cards', providing both semantic accessibility (role, tabIndex, onKeyDown) and visual feedback (state-driven background color changes) is essential for a cohesive UX. Using a subtle highlight like `#f9fdfa` on focus and hover helps users track their position in the grid, especially when using keyboard navigation.
 **Action:** Always complement accessibility improvements with visual state feedback to ensure the interface is both usable and delightful.
+
+## 2025-05-27 - [Accessible Specialty Cards and Project Portability]
+**Learning:** Enhancing static `div` elements with `role="button"`, `tabIndex={0}`, and proper keyboard event listeners (Enter/Space) significantly improves accessibility for interactive grids. Additionally, removing hardcoded absolute paths for SSL in `vite.config.js` and preferring `https: false` in generic dev environments ensures the project remains portable and buildable for all contributors.
+**Action:** Always audit interactive non-button elements for keyboard support and ensure build configuration is environment-agnostic.

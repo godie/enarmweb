@@ -6,6 +6,7 @@ import { alertError } from "../services/AlertService";
 import FacebookLoginContainer from "./facebook/FacebookLoginContainer";
 import GoogleLoginContainer from "./google/GoogleLoginContainer";
 import CustomRow from "./custom/CustomRow";
+import CustomCol from "./custom/CustomCol";
 import AuthForm from "./common/AuthForm";
 
 export default function PlayerLogin() {
@@ -48,18 +49,22 @@ export default function PlayerLogin() {
 
     const extraContent = (
         <>
-            <div className="divider" style={{ backgroundColor: 'rgba(255,255,255,0.2)', margin: '20px 0' }}></div>
-            <h5 className="center white-text" style={{ fontSize: '1.2rem', marginBottom: '20px' }}>O continúa con</h5>
-            <CustomRow>
-                <FacebookLoginContainer />
-                <GoogleLoginContainer />
+            <div className="divider-row">O CONTINÚA CON</div>
+            <CustomRow className="login-social-row">
+                <CustomCol s={12} m={6}>
+                    <GoogleLoginContainer />
+                </CustomCol>
+                <CustomCol s={12} m={6}>
+                    <FacebookLoginContainer />
+                </CustomCol>
             </CustomRow>
         </>
     );
 
     return (
         <AuthForm
-            title={isSignup ? "Registrarse" : "Entrar"}
+            layout="card"
+            title={isSignup ? "Registrarse" : "Iniciar Sesión"}
             action={loginAction}
             isSignup={isSignup}
             onToggleSignup={() => setIsSignup(!isSignup)}

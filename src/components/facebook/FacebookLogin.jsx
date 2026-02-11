@@ -1,16 +1,15 @@
 import { useEffect } from "react";
 import PropTypes from "prop-types";
 
-
 export default function FacebookLogin({
   appId,
   onStatusChange,
-  locale = 'es_LA',
-  version = 'v23.0',
+  locale = "es_LA",
+  version = "v23.0",
   xfbml = true,
+  useCustomButton = false,
 }) {
   useEffect(() => {
-    // Initialize Facebook SDK
     window.fbAsyncInit = () => {
       window.FB.init({
         appId,
@@ -18,13 +17,10 @@ export default function FacebookLogin({
         xfbml,
         version,
       });
-      // Check current login status
       window.FB.getLoginStatus(onStatusChange);
-      // Subscribe to status changes
       window.FB.Event.subscribe("auth.statusChange", onStatusChange);
     };
 
-    // Load the SDK script if not already present
     if (!document.getElementById("facebook-jssdk")) {
       ((d, s, id) => {
         const fjs = d.getElementsByTagName(s)[0];
@@ -34,18 +30,39 @@ export default function FacebookLogin({
         js.src = `https://connect.facebook.net/${locale}/sdk.js`;
         fjs.parentNode.insertBefore(js, fjs);
       })(document, "script", "facebook-jssdk");
-    } else if (window.FB && xfbml) {
-      // Re-parse XFBML if SDK already loaded
+    } else if (window.FB && xfbml && !useCustomButton) {
       window.FB.XFBML.parse();
     }
 
-    // Cleanup subscription on unmount
     return () => {
       if (window.FB && window.FB.Event.unsubscribe) {
         window.FB.Event.unsubscribe("auth.statusChange", onStatusChange);
       }
     };
-  }, [appId, locale, version, xfbml, onStatusChange]);
+  }, [appId, locale, version, xfbml, onStatusChange, useCustomButton]);
+
+  const handleCustomClick = () => {
+    if (typeof window.FB !== "undefined") {
+      window.FB.login(
+        (response) => onStatusChange(response),
+        { scope: "public_profile,email" }
+      );
+    }
+  };
+
+  if (useCustomButton) {
+    return (
+      <button
+        type="button"
+        className="btn btn-outline waves-effect"
+        onClick={handleCustomClick}
+        aria-label="Iniciar sesión con Facebook"
+      >
+        <i className="material-icons left">facebook</i>
+        Facebook
+      </button>
+    );
+  }
 
   return (
     <div className="col s12 m10 l8 offset-m1 offset-l2">
@@ -71,10 +88,12 @@ FacebookLogin.propTypes = {
   locale: PropTypes.string,
   version: PropTypes.string,
   xfbml: PropTypes.bool,
+  useCustomButton: PropTypes.bool,
 };
 
 FacebookLogin.defaultProps = {
   locale: "es_LA",
   version: "v23.0",
   xfbml: true,
+  useCustomButton: false,
 };

@@ -40,9 +40,11 @@ vi.mock('../../services/AlertService', () => ({
 // Mock child component CasoForm
 let passedCasoProp; // To capture the 'caso' prop passed to CasoForm
 
-vi.mock('./CasoForm', () => {
+vi.mock('./CasoForm', async () => {
+  const { useCaso } = await import('../../context/CasoContext');
   return {
-    default: (props) => {
+    default: function MockCasoForm() {
+      const props = useCaso();
       passedCasoProp = props.caso; // Capture the caso prop
       // Simulate form interaction by calling the passed functions
       return (

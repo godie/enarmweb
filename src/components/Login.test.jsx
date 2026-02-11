@@ -59,7 +59,7 @@ describe("Login Component", () => {
   it("should render login form elements", () => {
     renderLogin();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/contraseña/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/contraseña/i,{selector: 'input'})).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /entrar/i })).toBeInTheDocument();
   });
 
@@ -73,7 +73,7 @@ describe("Login Component", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "test@example.com" },
     });
-    fireEvent.change(screen.getByLabelText(/contraseña/i), {
+    fireEvent.change(screen.getByLabelText(/contraseña/i,{selector: 'input'}), {
       target: { value: "password123" },
     });
     fireEvent.click(screen.getByRole("button", { name: /entrar/i }));
@@ -97,7 +97,7 @@ describe("Login Component", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "wrong@example.com" },
     });
-    fireEvent.change(screen.getByLabelText(/contraseña/i), {
+    fireEvent.change(screen.getByLabelText(/contraseña/i,{selector: 'input'}), {
       target: { value: "wrongpassword" },
     });
 
@@ -134,7 +134,7 @@ describe("Login Component", () => {
     );
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "test@example.com" } });
-    fireEvent.change(screen.getByLabelText(/contraseña/i), { target: { value: "password" } });
+    fireEvent.change(screen.getByLabelText(/contraseña/i,{selector: 'input'}), { target: { value: "password" } });
     fireEvent.click(screen.getByRole("button", { name: /entrar/i }));
 
     await waitFor(() => expect(mockHistoryReplace).toHaveBeenCalledWith({ pathname: "/custom-path" }));

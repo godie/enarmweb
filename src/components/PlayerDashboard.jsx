@@ -155,7 +155,7 @@ const PlayerDashboard = () => {
                             <ul className="collection" style={{ border: 'none' }}>
                                 {stats.recentAchievements.map(ach => (
                                     <li key={ach.id} className="collection-item avatar" style={{ border: 'none', paddingLeft: '60px' }}>
-                                        <i className="material-icons circle green">emoji_events</i>
+                                        <i className="material-icons circle green" aria-hidden="true">emoji_events</i>
                                         <span className="title" style={{ fontWeight: '500' }}>{ach.name}</span>
                                         <p className="grey-text truncate">{ach.description}</p>
                                     </li>
