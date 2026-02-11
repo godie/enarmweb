@@ -20,6 +20,13 @@ const CustomPreloader = ({
     wrapperClassName += ` ${className}`;
   }
 
+  const commonProps = {
+    className: wrapperClassName.trim(),
+    role: "progressbar",
+    "aria-busy": active,
+    ...props
+  };
+
   let spinnerLayerClassName = 'spinner-layer';
   if (color) {
     spinnerLayerClassName += ` spinner-${color}-only`;
@@ -43,7 +50,7 @@ const CustomPreloader = ({
 
   if (color) { // Single color preloader
     return (
-      <div className={wrapperClassName} {...props}>
+      <div {...commonProps}>
         <div className={spinnerLayerClassName}>
           <div className="circle-clipper left">
             <div className="circle"></div>
@@ -61,7 +68,7 @@ const CustomPreloader = ({
 
   // Default multi-color preloader (Materialize standard structure)
   return (
-    <div className={wrapperClassName} {...props}>
+    <div {...commonProps}>
       <div className="spinner-layer spinner-blue">
         <div className="circle-clipper left">
           <div className="circle"></div>

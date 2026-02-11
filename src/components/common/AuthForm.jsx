@@ -3,7 +3,6 @@ import CustomButton from "../custom/CustomButton";
 import CustomRow from "../custom/CustomRow";
 import CustomCol from "../custom/CustomCol";
 import CustomTextInput from "../custom/CustomTextInput";
-import CustomPreloader from "../custom/CustomPreloader";
 import CustomIcon from "../custom/CustomIcon";
 import "./AuthForm.css";
 
@@ -144,6 +143,8 @@ const AuthForm = ({
                             <>
                                 <CustomCol s={12} m={10} l={8} offset="m1 l2">
                                     <CustomTextInput
+                                        icon="person"
+                                        iconClassName="white-text"
                                         label="Nombre Completo"
                                         id="name"
                                         name="name"
@@ -154,6 +155,8 @@ const AuthForm = ({
                                 </CustomCol>
                                 <CustomCol s={12} m={10} l={8} offset="m1 l2">
                                     <CustomTextInput
+                                        icon="account_circle"
+                                        iconClassName="white-text"
                                         label="Usuario"
                                         id="username"
                                         name="username"
@@ -166,6 +169,8 @@ const AuthForm = ({
                         )}
                         <CustomCol s={12} m={10} l={8} offset="m1 l2">
                             <CustomTextInput
+                                icon={isSignup ? "email" : "person"}
+                                iconClassName="white-text"
                                 label={isSignup ? "Email" : "Email o Usuario"}
                                 id="email"
                                 name="email"
@@ -177,6 +182,8 @@ const AuthForm = ({
                         </CustomCol>
                         <CustomCol s={12} m={10} l={8} offset="m1 l2">
                             <CustomTextInput
+                                icon="lock"
+                                iconClassName="white-text"
                                 type="password"
                                 label="Contraseña"
                                 id="password"
@@ -196,7 +203,8 @@ const AuthForm = ({
                                 large
                                 waves="light"
                                 className="grey lighten-3 green-text"
-                                disabled={isPending}
+                                isPending={isPending}
+                                isPendingText={isPendingText}
                             >
                                 {isPending ? (
                                     <span className="valign-wrapper" style={{ display: "inline-flex", justifyContent: "center", width: "100%" }}>
