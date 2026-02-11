@@ -3,6 +3,7 @@ import CasoForm from "./CasoForm";
 import ExamService from "../../services/ExamService";
 import { useHistory, useParams } from 'react-router-dom';
 import { alertError, alertSuccess } from "../../services/AlertService";
+import CasoContext from "../../context/CasoContext";
 
 const INITIAL_CASO_STATE = {
   name: "",
@@ -232,28 +233,28 @@ const CasoContainer = () => {
     }
   }, [error]);
 
+  const value = {
+    caso,
+    addQuestion,
+    deleteQuestion,
+    addAnswer,
+    deleteAnswer,
+    onChangeAnswer,
+    onChangeQuestion,
+    onChange: changeCaso,
+    saveCasoAction: submitCasoAction,
+    onCancel,
+    isAdmin: true
+  };
+
   return (
-    <div style={{ padding: '2rem' }}>
-      <CasoForm
-        // onSubmit is removed, saveCasoAction is passed
-        saveCasoAction={submitCasoAction}
-        onChange={changeCaso}
-        caso={caso}
-        addQuestion={addQuestion}
-        deleteQuestion={deleteQuestion}
-        onChangeAnswer={onChangeAnswer}
-        onChangeQuestion={onChangeQuestion}
-        addAnswer={addAnswer}
-        deleteAnswer={deleteAnswer}
-        onCancel={onCancel}
-        isAdmin={true}
-      // Pass error and isPending if CasoForm needs to react to them (e.g., disable button, show message)
-      // error={error}
-      // isPending={isPending}
-      />
-      {/* Example of displaying form-level error here, if not handled in CasoForm */}
-      {/* {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>} */}
-    </div>
+    <CasoContext.Provider value={value}>
+      <div style={{ padding: '2rem' }}>
+        <CasoForm />
+        {/* Example of displaying form-level error here, if not handled in CasoForm */}
+        {/* {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>} */}
+      </div>
+    </CasoContext.Provider>
   );
 };
 

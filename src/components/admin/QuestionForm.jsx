@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 import {
     CustomRow,
@@ -7,16 +6,18 @@ import {
     CustomTextarea
 } from '../custom';
 import AnswerForm from './AnswerForm';
+import { useCaso } from '../../context/CasoContext';
 
 const QuestionForm = ({
     question,
-    questionIndex,
-    onChangeQuestion,
-    deleteQuestion,
-    onChangeAnswer,
-    addAnswer,
-    deleteAnswer
+    questionIndex
 }) => {
+    const {
+        onChangeQuestion,
+        deleteQuestion,
+        addAnswer
+    } = useCaso();
+
     const questionTextName = `questions[${questionIndex}][text]`;
 
     return (
@@ -66,8 +67,6 @@ const QuestionForm = ({
                         answer={answer}
                         questionIndex={questionIndex}
                         answerIndex={answerIndex}
-                        onChangeAnswer={onChangeAnswer}
-                        deleteAnswer={deleteAnswer}
                     />
                 ))}
 
@@ -95,12 +94,7 @@ QuestionForm.propTypes = {
         text: PropTypes.string,
         answers: PropTypes.array,
     }).isRequired,
-    questionIndex: PropTypes.number.isRequired,
-    onChangeQuestion: PropTypes.func.isRequired,
-    deleteQuestion: PropTypes.func.isRequired,
-    onChangeAnswer: PropTypes.func.isRequired,
-    addAnswer: PropTypes.func.isRequired,
-    deleteAnswer: PropTypes.func.isRequired,
+    questionIndex: PropTypes.number.isRequired
 };
 
 export default QuestionForm;

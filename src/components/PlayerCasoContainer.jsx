@@ -3,6 +3,7 @@ import CasoForm from "./admin/CasoForm";
 import ExamService from "../services/ExamService";
 import { useHistory } from 'react-router-dom';
 import { alertError, alertSuccess } from "../services/AlertService";
+import CasoContext from "../context/CasoContext";
 
 const PlayerCasoContainer = () => {
     const history = useHistory();
@@ -177,22 +178,26 @@ const PlayerCasoContainer = () => {
         }
     }, [caso.questions]);
 
+    const value = {
+        caso,
+        addQuestion,
+        deleteQuestion,
+        addAnswer,
+        deleteAnswer,
+        onChangeAnswer,
+        onChangeQuestion,
+        onChange: changeCaso,
+        saveCasoAction: submitCasoAction,
+        onCancel,
+        isAdmin: false
+    };
+
     return (
-        <div className="" style={{ padding: '2rem' }}>
-            <CasoForm
-                saveCasoAction={submitCasoAction}
-                onChange={changeCaso}
-                caso={caso}
-                addQuestion={addQuestion}
-                deleteQuestion={deleteQuestion}
-                onChangeAnswer={onChangeAnswer}
-                onChangeQuestion={onChangeQuestion}
-                addAnswer={addAnswer}
-                deleteAnswer={deleteAnswer}
-                onCancel={onCancel}
-                isAdmin={false}
-            />
-        </div>
+        <CasoContext.Provider value={value}>
+            <div className="" style={{ padding: '2rem' }}>
+                <CasoForm />
+            </div>
+        </CasoContext.Provider>
     );
 };
 

@@ -45,9 +45,16 @@ const CasoTable = () => {
     }
   }, [categories.length]);
 
+  // Track last page to reset state during render (avoids useEffect setState warning)
+  const [lastPage, setLastPage] = useState(currentPage);
+  if (currentPage !== lastPage) {
+    setLastPage(currentPage);
+    setCasesData([]);
+    setLoadingError(false);
+  }
+
   useEffect(() => {
     // Load cases data
-
     ExamService.getClinicalCases(currentPage)
       .then((response) => {
         setCasesData(response.data.clinical_cases);

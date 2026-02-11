@@ -1,0 +1,217 @@
+/* Landing page – full-width sections and theme-aware colors */
+
+.landing-page {
+  margin: 0 calc(-50vw + 50%);
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Hero */
+.landing-hero {
+  padding: 3rem 0 4rem;
+  position: relative;
+  background-color: var(--md-sys-color-primary, #006d3e) !important;
+}
+
+.landing-hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  background-color: var(--md-ref-palette-primary90, rgba(255, 255, 255, 0.2)) !important;
+}
+
+.landing-badge-icon {
+  font-size: 1.25rem !important;
+  vertical-align: middle;
+}
+
+.landing-hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+}
+
+.landing-hero-desc {
+  max-width: 36rem;
+  margin: 0 auto 2rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.landing-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.landing-hero-actions .btn {
+  margin: 0;
+}
+
+.landing-btn-outline {
+  border: 2px solid var(--md-sys-color-primary, #006d3e) !important;
+  background: #fff !important;
+  color: var(--md-sys-color-primary, #006d3e) !important;
+}
+
+.landing-btn-outline .material-icons,
+.landing-btn-outline:hover,
+.landing-btn-outline:hover .material-icons {
+  color: var(--md-sys-color-primary, #006d3e) !important;
+}
+
+.landing-btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Features */
+.landing-section {
+  padding: 4rem 0;
+}
+
+.landing-section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.landing-section-desc {
+  margin: 0 0 2.5rem;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.landing-features {
+  background-color: var(--md-sys-color-background, #fbfdf8);
+}
+
+.landing-feature-card {
+  border-radius: 8px;
+  height: 100%;
+  transition: box-shadow 0.3s ease;
+}
+
+.landing-feature-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.landing-feature-icon {
+  margin-bottom: 1rem;
+}
+
+.landing-feature-icon .material-icons {
+  font-size: 3.5rem !important;
+}
+
+.landing-feature-card h5 {
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.landing-feature-card p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Stats */
+.landing-stats {
+  padding: 3rem 0;
+  background-color: var(--md-sys-color-primary, #006d3e) !important;
+}
+
+.landing-stats-row .col {
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 601px) {
+  .landing-stats-row .col {
+    margin-bottom: 0;
+  }
+}
+
+.landing-stat {
+  padding: 0.5rem 0;
+}
+
+.landing-stat-number {
+  display: block;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.landing-stat-label {
+  display: block;
+  font-size: 0.95rem;
+  opacity: 0.95;
+  margin-top: 0.25rem;
+}
+
+/* CTA */
+.landing-cta {
+  background-color: var(--md-sys-color-background, #fbfdf8);
+}
+
+.landing-cta .btn {
+  margin-top: 0.5rem;
+}
+
+/* Footer */
+.landing-footer {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--md-sys-color-outline-variant-light, #e0e0e0);
+  background-color: var(--md-sys-color-background, #fbfdf8);
+}
+
+.landing-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.landing-footer-brand:hover {
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.landing-footer-logo {
+  font-size: 1.5rem !important;
+}
+
+[theme='dark'] .landing-hero-title,
+[theme='dark'] .landing-hero-desc,
+[theme='dark'] .landing-section-title,
+[theme='dark'] .landing-section-desc,
+[theme='dark'] .landing-feature-card h5,
+[theme='dark'] .landing-feature-card p {
+  color: var(--md-sys-color-on-background) !important;
+}
+
+[theme='dark'] .landing-footer {
+  border-top-color: var(--md-sys-color-outline-variant-dark);
+}
+
+[theme='dark'] .landing-features,
+[theme='dark'] .landing-cta,
+[theme='dark'] .landing-footer {
+  background-color: var(--md-sys-color-background);
+}

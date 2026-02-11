@@ -3,6 +3,12 @@
   --medical-bg: var(--md-sys-color-background, #f4f7f6);
   --medical-text: var(--md-sys-color-on-background, #424242);
   --medical-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  /* Outline button (Tailwind-style equivalent) */
+  --btn-outline-border: #e0e0e0;
+  --btn-outline-bg: #fff;
+  --btn-outline-hover-bg: #f5f5f5;
+  --btn-outline-hover-text: var(--medical-text);
+  --btn-outline-focus-ring: var(--medical-green);
 }
 
 body {
@@ -49,6 +55,7 @@ footer,
   padding-left: 300px;
 }
 
+
 @media only screen and (max-width : 992px) {
 
   header,
@@ -62,4 +69,73 @@ footer,
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* Password visibility toggle inside input-field */
+.input-field {
+  position: relative;
+}
+
+.input-field .input-password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.input-field.input-field .input-password-toggle .material-icons {
+  font-size: 1.25rem;
+}
+
+/* Outline button – equivalent to Tailwind variant (inline-flex, rounded, border, hover, focus ring) */
+.btn-outline,
+.btn.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--btn-outline-border);
+  background-color: var(--btn-outline-bg);
+  color: var(--medical-text);
+  padding: 0.5rem 1rem;
+  min-height: 48px;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-outline:hover,
+.btn.btn-outline:hover {
+  background-color: var(--btn-outline-hover-bg);
+  color: var(--btn-outline-hover-text);
+  border-color: var(--btn-outline-border);
+}
+
+.btn-outline:focus-visible,
+.btn.btn-outline:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--btn-outline-bg), 0 0 0 4px var(--btn-outline-focus-ring);
+}
+
+.btn-outline:disabled,
+.btn.btn-outline:disabled,
+.btn-outline.disabled,
+.btn.btn-outline.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.btn-outline .material-icons,
+.btn.btn-outline .material-icons {
+  pointer-events: none;
+  font-size: 1.25rem !important;
+  width: 1.25rem;
+  height: 1.25rem;
 }
