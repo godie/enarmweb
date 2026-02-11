@@ -9,10 +9,7 @@ const __dirname = path.dirname(__filename)
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    https: {
-      key: '/Users/diegomendozasalas/repos/enarmapi/localhost+2-key.pem',
-      cert: '/Users/diegomendozasalas/repos/enarmapi/localhost+2.pem',
-    }
+    https: false
   },
   plugins: [react()],
   resolve: {
