@@ -55,23 +55,18 @@ const CustomTextInput = ({
     }
   }, [value, props.defaultValue]);
 
-  let wrapperClasses = 'input-field';
-  if (className) {
-    wrapperClasses += ` ${className}`;
-  }
+  const togglePasswordVisibility = () => {
+    setShowPassword(prev => !prev);
+  };
 
-  let finalInputClassName = inputClassName;
-  if (validate) {
-    finalInputClassName += ' validate';
-  }
-
-  // Determine if it's controlled or uncontrolled
-  const isControlled = value !== undefined && onChange !== undefined;
-
+  // Construir clases
+  const wrapperClasses = `input-field${className ? ` ${className}` : ''}`;
+  const finalInputClassName = `${inputClassName}${validate ? ' validate' : ''}`.trim();
 
   return (
-    <div className={wrapperClasses.trim()}>
+    <div className={wrapperClasses}>
       {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
+      
       <input
         ref={inputRef}
         id={id}
