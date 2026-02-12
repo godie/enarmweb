@@ -42,3 +42,7 @@
 ## 2025-05-27 - [Accessible Specialty Cards and Project Portability]
 **Learning:** Enhancing static `div` elements with `role="button"`, `tabIndex={0}`, and proper keyboard event listeners (Enter/Space) significantly improves accessibility for interactive grids. Additionally, removing hardcoded absolute paths for SSL in `vite.config.js` and preferring `https: false` in generic dev environments ensures the project remains portable and buildable for all contributors.
 **Action:** Always audit interactive non-button elements for keyboard support and ensure build configuration is environment-agnostic.
+
+## 2025-05-28 - [Accessible Password Visibility and Decorative Icon Defaults]
+**Learning:** Removing `tabIndex={-1}` from custom password toggle buttons ensures they are reachable by keyboard users, while adding a circular `borderRadius` and adequate `padding` provides clear focus feedback. Furthermore, defaulting `CustomIcon` to `aria-hidden="true"` promotes a cleaner experience for screen readers by treating all icons as decorative unless explicitly marked otherwise, preventing redundant announcements.
+**Action:** Always ensure interactive toggles are keyboard-accessible and default decorative icons to be hidden from the accessibility tree.
