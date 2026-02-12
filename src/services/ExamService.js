@@ -104,4 +104,21 @@ export default class ExamService extends BaseService {
     return axios.get(BaseService.getURL(url), headers);
   }
 
+  /**
+   * Propose for Backend: The clinical_cases endpoint should support filtering by category_id.
+   * If not implemented, clinical_cases#index should be updated to:
+   * @example
+   * def index
+   *   @clinical_cases = ClinicalCase.all
+   *   @clinical_cases = @clinical_cases.where(category_id: params[:category_id]) if params[:category_id].present?
+   *   ...
+   * end
+   */
+  static getClinicalCasesByCategory(categoryId) {
+    let headers = this.getHeaders();
+    headers.params = { category_id: categoryId };
+    let url = "clinical_cases";
+    return axios.get(BaseService.getURL(url), headers);
+  }
+
 }

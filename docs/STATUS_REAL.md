@@ -18,6 +18,7 @@ La aplicación utiliza `react-router-dom` (v5) con un `Switch` principal en `App
 | `/onboarding` | `Onboarding` | Terminado | Real (Selección de especialidades) |
 | `/profile` | `Profile` | Terminado | Real (Perfil + Logros) |
 | `/caso/:id` | `Examen` -> `Caso` | Terminado | Real (Motor de preguntas) |
+| `/especialidad/:id` | `EspecialidadCasos` | Terminado | Real (Listado de casos por área) |
 | `/contribuir` | `PlayerCasoContainer` | Terminado | Real (Formulario de contribución) |
 | `/dashboard` | `Summary` (Admin) | Terminado | Real (Estadísticas generales) |
 | `/dashboard/casos/:page` | `CasoTable` | Terminado | Real (Listado CRUD) |
@@ -27,7 +28,6 @@ La aplicación utiliza `react-router-dom` (v5) con un `Switch` principal en `App
 | `/dashboard/examenes` | `ExamenTable` | Terminado | Real (Gestión simulacros) |
 
 ### ⚠️ Hallazgos en Rutas:
-- **Ruta Faltante:** `PlayerDashboard.jsx` intenta navegar a `/especialidad/:id`, pero esta ruta **no existe** en `AppRoutes.jsx`.
 - **Navegación `/caso/random`:** Existe lógica para navegar a un caso aleatorio, pero depende de que el componente `Caso` maneje el string "random".
 
 ---
@@ -77,8 +77,7 @@ Los servicios están centralizados en `src/services/` extendiendo de `BaseServic
 ## 5. Pendientes Críticos y Deuda Técnica
 
 ### 🔴 Críticos
-1. **Ruta Especialidades:** Implementar la vista y ruta para `/especialidad/:id` para que el dashboard sea navegable.
-2. **Dashboard Stats:** Reemplazar los mocks de `completedCases`, `accuracy` y `streak` por llamadas reales a un endpoint de estadísticas.
+1. **Dashboard Stats:** Reemplazar los mocks de `completedCases`, `accuracy` y `streak` por llamadas reales a un endpoint de estadísticas.
 
 ### 🟡 TODOs y Código Comentado
 - **`AppRoutes.jsx`:** Comentarios de limpieza tras eliminar `react-materialize`.
