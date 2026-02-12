@@ -21,6 +21,7 @@ import UserTable from "../components/admin/UserTable";
 import ExamenTable from "../components/admin/ExamenTable";
 import ExamenForm from "../components/admin/ExamenForm";
 import Onboarding from "../components/Onboarding";
+import EspecialidadCasos from "../pages/Player/EspecialidadCasos";
 
 import PlayerDashboard from "../components/PlayerDashboard";
 import Landing from "../components/Landing";
@@ -189,6 +190,14 @@ export default function AppRoutes() {
         component={() => (
           <App>
             <Profile />
+          </App>
+        )}
+      />
+      <PlayerRoute
+        path="/especialidad/:id"
+        component={(props) => (
+          <App>
+            <EspecialidadCasos {...props} />
           </App>
         )}
       />
