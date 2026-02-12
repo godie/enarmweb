@@ -7,6 +7,7 @@ const CustomIcon = ({
   size, // 'tiny', 'small', 'medium', 'large'
   left = false, // For alignment within buttons/text
   right = false, // For alignment
+  'aria-hidden': ariaHidden = 'true',
   ...props
 }) => {
   let iconClassName = 'material-icons';
@@ -25,7 +26,7 @@ const CustomIcon = ({
   }
 
   return (
-    <i className={iconClassName} {...props}>
+    <i className={iconClassName} aria-hidden={ariaHidden} {...props}>
       {children}
     </i>
   );

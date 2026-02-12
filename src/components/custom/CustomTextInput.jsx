@@ -26,7 +26,7 @@ const CustomTextInput = ({
   const [showPassword, setShowPassword] = useState(false);
 
   // Determinar tipo de input
-  const isPasswordWithToggle = type === 'password';
+  const isPasswordWithToggle = type === 'password' && passwordToggle;
   const inputType = isPasswordWithToggle ? (showPassword ? 'text' : 'password') : type;
 
   // Determinar si es controlado o no
@@ -87,22 +87,24 @@ const CustomTextInput = ({
           type="button"
           className="btn-flat input-password-toggle"
           onClick={togglePasswordVisibility}
-          tabIndex={-1}
           aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
           style={{
             position: 'absolute',
             right: '10px',
             top: '10px',
-            padding: 0,
-            background: 'transparent',
+            padding: '4px',
             border: 'none',
             cursor: 'pointer',
             zIndex: 2,
             minWidth: 'auto',
-            height: 'auto'
+            height: 'auto',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <i className="material-icons grey-text text-darken-2">
+          <i className="material-icons grey-text text-darken-2" aria-hidden="true">
             {showPassword ? 'visibility_off' : 'visibility'}
           </i>
         </button>

@@ -96,7 +96,7 @@ const CustomButton = ({
 
   // Renderizar icono si existe
   const iconElement = icon ? (
-    <i className="material-icons">{icon}</i>
+    <i className="material-icons" aria-hidden="true">{icon}</i>
   ) : null;
 
   // Render FAB if enabled
@@ -126,7 +126,7 @@ const CustomButton = ({
         {...props}
       >
         <a {...fabButtonProps} ref={fabButtonRef}>
-          {iconElement || <i className="material-icons">edit</i>}
+          {iconElement || <i className="material-icons" aria-hidden="true">edit</i>}
         </a>
         <ul>
           {Children.map(children, (child, index) => (
