@@ -1,48 +1,56 @@
-
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { vi, describe, beforeEach, test, expect } from 'vitest';
+import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
 import CasoTable from './CasoTable';
 import ExamService from '../../services/ExamService';
 import EnarmUtil from '../../modules/EnarmUtil';
 import Util from '../../commons/Util';
 
-// Mock react-router-dom
+// --- Router mock ---
 const mockHistoryPush = vi.fn();
-// We'll use actual useParams and useHistory from react-router-dom within MemoryRouter
-// so we don't need to mock them as extensively as before, but still control push.
-// The useParams mock will be handled by the <Route path>
-// For useHistory, we still might need to mock its `push` method if we want to assert on it.
-
-// Update your useParams mock slightly if you intend to directly control it for specific tests,
-// though MemoryRouter+Route is usually better for path params.
-let mockUrlParams = { page: '1' }; // Default params
+let mockUrlParams = { page: '1' };
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
     useParams: () => mockUrlParams,
-    useHistory: () => ({
-      push: mockHistoryPush,
-    }),
-    Link: ({ to, children }) => <a href={to}>{children}</a>
+    useHistory: () => ({ push: mockHistoryPush }),
+    Link: ({ to, children }) => <a href={to}>{children}</a>,
   };
 });
 
-// Mock services and utils
+// --- Service / util mocks ---
 vi.mock('../../services/ExamService');
 vi.mock('../../modules/EnarmUtil');
 vi.mock('../../commons/Util');
 
-// Mock react-materialize components that might be problematic or we want to inspect
-// For Preloader, we can just check for its default text or a role if it has one.
-// For Pagination, we need to be ableto find and click page items.
-// For Select, we need to be able to change its value.
-
+// --- Test data ---
 const mockCases = [
-  { id: 1, description: 'Case 1 Description', category_id: 101 },
-  { id: 2, description: 'Case 2 Description', category_id: 102 },
+  {
+    id: 1,
+    name: 'Caso Cardio 1',
+    description: 'Case 1 Description',
+    category_id: 101,
+    status: 'published',
+    questions: [{ id: 10 }, { id: 11 }],
+  },
+  {
+    id: 2,
+    name: 'Caso Neuro 2',
+    description: 'Case 2 Description',
+    category_id: 102,
+    status: 'pending',
+    questions: [{ id: 20 }],
+  },
+  {
+    id: 3,
+    name: 'Caso Sin Preguntas',
+    description: 'Case 3 Description',
+    category_id: 103,
+    status: 'rejected',
+    questions: [],
+  },
 ];
 
 const mockCategories = [
@@ -51,239 +59,309 @@ const mockCategories = [
   { id: 103, name: 'Pediatría' },
 ];
 
-// Helper function to render the component
-const renderCasoTable = (initialPath = '/dashboard/casos/1') => {
-  return render(
+// --- Helper ---
+const renderCasoTable = (initialPath = '/dashboard/casos/1') =>
+  render(
     <MemoryRouter initialEntries={[initialPath]}>
-      {/* Route is necessary to make useParams work */}
       <Route path="/dashboard/casos/:page">
         <CasoTable />
       </Route>
-      {/* Also add a route for the Link in CollectionItem if you plan to navigate to it */}
-      <Route path="/dashboard/edit/caso/:id">
-        {({ match }) =>
-          match ? (<div>Edit Caso Page for ID: {match.params.id}</div>) : null
-        }
-      </Route>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
-};
 
+// --- Suite ---
 describe('CasoTable Component', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
     vi.clearAllMocks();
 
-    // Default mock implementations
     ExamService.getClinicalCases.mockResolvedValue({
-      data: { clinical_cases: mockCases, total_entries: mockCases.length }
+      data: { clinical_cases: mockCases, total_entries: mockCases.length },
     });
     ExamService.loadCategories.mockResolvedValue({ data: mockCategories });
-    ExamService.saveCaso.mockImplementation(async (caso) => ({ data: caso })); // Echo back the saved caso
 
-    EnarmUtil.getCategories.mockReturnValue(null); // Default to no cache
-    EnarmUtil.setCategories.mockImplementation(() => { });
-    Util.showToast.mockImplementation(() => { });
+    EnarmUtil.getCategories.mockReturnValue(null);
+    EnarmUtil.setCategories.mockImplementation(() => {});
+    Util.showToast.mockImplementation(() => {});
 
-    mockUrlParams = { page: '1' }; // Reset params
+    mockUrlParams = { page: '1' };
   });
 
-  test('renders Preloader when data is initially null', async () => {
-    // Override default mock for this test to simulate loading
-    //ExamService.getClinicalCases.mockResolvedValue(new Promise(() => {})); // Never resolves for this test
-    ExamService.getClinicalCases.mockImplementation(() => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          reject(new Error('NetWork Timeout'));
-        }, 500);
-      })
-    });
-    ExamService.loadCategories.mockResolvedValue({ data: mockCategories }); // Resolve categories synchronously
-
-    renderCasoTable();
-    // Preloader in react-materialize renders a div with class "preloader-wrapper"
-    expect(screen.getByRole('progressbar')).toBeInTheDocument(); // react-materialize Preloader has role="progressbar"
-
-    vi.advanceTimersByTime(500);
-    await waitFor(() => {
-      // Afirmar que el Preloader ha desaparecido
-      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      // Afirmar que se mostró un toast de error (si tu componente lo maneja así)
-      expect(Util.showToast).toHaveBeenCalledWith("Error al cargar los casos clínicos."); // Ajusta el mensaje si es diferente
-      // O afirmar que se muestra algún mensaje de "no hay casos" o un estado de error en la UI
-      // Dependerá de cómo CasoTable.js maneje el catch de ExamService.getExams
-    });
-
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  test('renders a list of cases and header', async () => {
-    renderCasoTable();
-    await waitFor(() => {
-      expect(screen.getByText(`Casos Clinicos (${mockCases.length})`)).toBeInTheDocument();
-      expect(screen.getByText('Case 1 Description')).toBeInTheDocument();
-      expect(screen.getByText('Case 2 Description')).toBeInTheDocument();
-      expect(screen.getAllByRole('combobox')[0]).toHaveValue(mockCases[0].category_id.toString());
+  // =====================
+  // Loading & error states
+  // =====================
 
-    });
-    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+  test('shows preloader while data is loading', () => {
+    // Promise that never resolves during this test
+    ExamService.getClinicalCases.mockReturnValue(new Promise(() => {}));
+
+    renderCasoTable();
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
-  test('renders no cases message or empty state when data is empty', async () => {
-    ExamService.getClinicalCases.mockResolvedValue({ data: { clinical_cases: [], total_entries: 0 } });
-    ExamService.loadCategories.mockResolvedValue({ data: mockCategories }); // Categories load fine
-
+  test('hides preloader after data loads', async () => {
     renderCasoTable();
+
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      expect(screen.getByText('No se encontraron casos clínicos.')).toBeInTheDocument();
-      expect(screen.queryByText('Casos Clinicos (0)')).toBeInTheDocument();
-      expect(screen.queryByText('Case 1 Description')).not.toBeInTheDocument();
     });
   });
 
-  test('loads categories from API if not cached', async () => {
-    EnarmUtil.getCategories.mockReturnValue(null); // Ensure cache is empty
-    renderCasoTable();
-    await waitFor(() => expect(ExamService.loadCategories).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(EnarmUtil.setCategories).toHaveBeenCalledWith(JSON.stringify(mockCategories)));
-    // Check if select options are populated (indirectly checks setCategories)
-    await waitFor(() => {
-      // Get the first select rendered (assuming there's at least one case)
-      const selects = screen.getAllByRole('combobox');
-      expect(selects[0]).toHaveValue(mockCases[0].category_id.toString());
-      // Check for one of the category options
-      expect(screen.getAllByText(mockCategories[0].name, { selector: 'option' })[0]).toBeInTheDocument();
-    });
-  });
+  test('shows preloader then content once data resolves', async () => {
+    vi.useFakeTimers();
 
-  test('loads categories from cache if available', async () => {
-    EnarmUtil.getCategories.mockReturnValue(JSON.stringify(mockCategories));
-    renderCasoTable();
-    await waitFor(() => expect(ExamService.loadCategories).not.toHaveBeenCalled());
-    // Check if select options are populated
-    await waitFor(() => {
-      const selects = screen.getAllByRole('combobox');
-      expect(selects[0]).toHaveValue(mockCases[0].category_id.toString());
-      expect(screen.getAllByText(mockCategories[0].name, { selector: 'option' })[0]).toBeInTheDocument();
-    });
-  });
-
-  test('data is loaded on initial mount based on page param', async () => {
-    mockUrlParams = { page: '2' };
-    renderCasoTable();
-    await waitFor(() => expect(ExamService.getClinicalCases).toHaveBeenCalledWith(2));
-  });
-
-  // This test is more complex as it requires re-evaluating useParams.
-  // Typically, you test this by wrapping the component in a router and changing the route.
-  // For a unit test just checking useEffect dependency, we can change mockUrlParams and re-render.
-  test('data is re-loaded when page parameter changes', async () => {
-    const { rerender } = renderCasoTable();
-    await waitFor(() => expect(ExamService.getClinicalCases).toHaveBeenCalledWith(1));
-    ExamService.getClinicalCases.mockClear(); // Clear previous calls
-
-    // Simulate page change by changing mockUrlParams and re-rendering
-    mockUrlParams = { page: '3' };
-    rerender(<MemoryRouter initialEntries={['/dashboard/casos/3']}>
-      <Route path="/dashboard/casos/:page">
-        <CasoTable />
-      </Route>
-      <Route path="/dashboard/edit/caso/:id">
-        {({ match }) =>
-          match ? (<div data-testid="edit-page-mock">Edit Caso Page for ID: {match.params.id}</div>) : null
-        }
-      </Route>
-    </MemoryRouter>); // Rerender with new params context
-    await waitFor(() => {
-      expect(ExamService.getClinicalCases).toHaveBeenCalledWith(3);
-      expect(ExamService.getClinicalCases).toHaveBeenCalledTimes(1);
-      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      expect(screen.getByText(`Casos Clinicos (${mockCases.length})`)).toBeInTheDocument();
-    });
-
-  });
-
-
-  test('pagination works and calls history.push', async () => {
-    ExamService.getClinicalCases.mockResolvedValue({
-      data: { clinical_cases: mockCases, total_entries: 20 } // 20 items, 10 per page = 2 pages
-    });
-    const { container } = renderCasoTable('/dashboard/casos/1'); // ITEMS_PER_PAGE is 10
-
-    await waitFor(() => {
-      // react-materialize Pagination creates <li><a>Page number</a></li>
-      // We need to find the link for page 2.
-      // It usually has an <a> tag with text '2'.
-      //const pageLinks = screen.getAllByRole('link');
-      // This is a bit fragile. A better way would be if Pagination items had data-testid.
-      // Assuming page 2 link is present and identifiable.
-      // The Pagination component will render page numbers. We're looking for the '2'.
-      // It might be inside an <a> tag within an <li>.
-      // Let's find all pagination items. react-materialize Pagination uses <li> with class "waves-effect"
-      // The active page is 1. We want to click on page 2.
-      const paginationItems = container.querySelectorAll('.pagination li a');
-      const page2Button = Array.from(paginationItems).find(el => el.textContent === '2');
-      expect(page2Button).toBeInTheDocument();
-      fireEvent.click(page2Button);
-    });
-
-    await waitFor(() => {
-      expect(mockHistoryPush).toHaveBeenCalledWith('/dashboard/casos/2');
-    });
-  });
-
-  test('category change calls saveCaso and updates UI on success', async () => {
-    renderCasoTable();
-    await waitFor(() => expect(screen.getByText('Case 1 Description')).toBeInTheDocument());
-
-    const firstSelect = screen.getAllByRole('combobox')[0];
-    const newCategoryId = mockCategories[2].id.toString(); // Pediatría
-
-    fireEvent.change(firstSelect, { target: { value: newCategoryId } });
-
-    await waitFor(() => {
-      expect(ExamService.saveCaso).toHaveBeenCalledTimes(1);
-      expect(ExamService.saveCaso).toHaveBeenCalledWith(expect.objectContaining({
-        id: mockCases[0].id,
-        category_id: parseInt(newCategoryId, 10),
-      }));
-    });
-
-    expect(Util.showToast).toHaveBeenCalledWith("Se actualizó la especialidad");
-    // Check if the select's value is updated in the DOM
-    expect(firstSelect).toHaveValue(newCategoryId);
-  });
-
-  test('category change shows error toast on saveCaso failure', async () => {
-    ExamService.saveCaso.mockRejectedValue(new Error('Failed to save'));
-    renderCasoTable();
-    await waitFor(() => expect(screen.getByText('Case 1 Description')).toBeInTheDocument());
-
-    const firstSelect = screen.getAllByRole('combobox')[0];
-    const newCategoryId = mockCategories[2].id.toString();
-
-    fireEvent.change(firstSelect, { target: { value: newCategoryId } });
-
-    await waitFor(() => expect(ExamService.saveCaso).toHaveBeenCalledTimes(1));
-    expect(Util.showToast).toHaveBeenCalledWith("No se pudo actualizar la especialidad");
-  });
-
-  test('renders Preloader initially and then content once data loads', async () => {
-    const initialPromise = new Promise(resolve => setTimeout(() => resolve({
-      data: { clinical_cases: mockCases, total_entries: mockCases.length }
-    }), 100));
-    ExamService.getClinicalCases.mockReturnValue(initialPromise);
+    const delayed = new Promise((resolve) =>
+      setTimeout(
+        () =>
+          resolve({
+            data: { clinical_cases: mockCases, total_entries: mockCases.length },
+          }),
+        200,
+      ),
+    );
+    ExamService.getClinicalCases.mockReturnValue(delayed);
 
     renderCasoTable();
 
-    // Assert Preloader is visible initially
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
 
-    // Wait for the data to load and Preloader to disappear
+    vi.advanceTimersByTime(200);
+
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      expect(screen.getByText(`Casos Clinicos (${mockCases.length})`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (${mockCases.length})`)).toBeInTheDocument();
     });
   });
 
+  test('shows error message and toast when API fails', async () => {
+    vi.useFakeTimers();
+
+    ExamService.getClinicalCases.mockImplementation(
+      () =>
+        new Promise((_resolve, reject) =>
+          setTimeout(() => reject(new Error('Network Timeout')), 100),
+        ),
+    );
+
+    renderCasoTable();
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+
+    vi.advanceTimersByTime(100);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+      expect(screen.getByText('Error al cargar los casos. Intente de nuevo más tarde.')).toBeInTheDocument();
+      expect(Util.showToast).toHaveBeenCalledWith('Error al cargar los casos clínicos.');
+    });
+  });
+
+  // =====================
+  // Rendering table data
+  // =====================
+
+  test('renders h4 title with total count', async () => {
+    renderCasoTable();
+
+    await waitFor(() => {
+      const heading = screen.getByRole('heading', { level: 4 });
+      expect(heading).toHaveTextContent(`Casos Clínicos (${mockCases.length})`);
+    });
+  });
+
+  test('renders table headers: Nombre, Especialidad, Status, Preguntas, Acciones', async () => {
+    renderCasoTable();
+
+    await waitFor(() => {
+      expect(screen.getByText('Nombre')).toBeInTheDocument();
+      expect(screen.getByText('Especialidad')).toBeInTheDocument();
+      expect(screen.getByText('Status')).toBeInTheDocument();
+      expect(screen.getByText('Preguntas')).toBeInTheDocument();
+      expect(screen.getByText('Acciones')).toBeInTheDocument();
+    });
+  });
+
+  test('renders a row for each case with name', async () => {
+    renderCasoTable();
+
+    await waitFor(() => {
+      mockCases.forEach((caso) => {
+        expect(screen.getByText(caso.name)).toBeInTheDocument();
+      });
+    });
+  });
+
+  test('renders category name from especialidadesOptions map', async () => {
+    renderCasoTable();
+
+    await waitFor(() => {
+      expect(screen.getByText('Cardiología')).toBeInTheDocument();
+      expect(screen.getByText('Neurología')).toBeInTheDocument();
+      expect(screen.getByText('Pediatría')).toBeInTheDocument();
+    });
+  });
+
+  test('renders status badges with correct text', async () => {
+    renderCasoTable();
+
+    await waitFor(() => {
+      expect(screen.getByText('Publicado')).toBeInTheDocument();
+      expect(screen.getByText('Pendiente')).toBeInTheDocument();
+      expect(screen.getByText('Rechazado')).toBeInTheDocument();
+    });
+  });
+
+  test('renders correct question counts per row', async () => {
+    renderCasoTable();
+
+    await waitFor(() => {
+      const table = screen.getByRole('table');
+      const rows = within(table).getAllByRole('row');
+      // rows[0] = thead, rows[1..3] = data rows
+      const dataRows = rows.slice(1);
+
+      expect(dataRows).toHaveLength(mockCases.length);
+
+      // First case: 2 questions
+      expect(within(dataRows[0]).getByText('2')).toBeInTheDocument();
+      // Second case: 1 question
+      expect(within(dataRows[1]).getByText('1')).toBeInTheDocument();
+      // Third case: 0 questions
+      expect(within(dataRows[2]).getByText('0')).toBeInTheDocument();
+    });
+  });
+
+  test('renders edit link for each case with correct href', async () => {
+    renderCasoTable();
+
+    await waitFor(() => {
+      const editLinks = screen.getAllByRole('link', {
+        name: /Editar Caso/i,
+      });
+
+      expect(editLinks).toHaveLength(mockCases.length);
+
+      mockCases.forEach((caso, idx) => {
+        expect(editLinks[idx]).toHaveAttribute(
+          'href',
+          `#/dashboard/edit/caso/${caso.id}`,
+        );
+      });
+    });
+  });
+
+  // =====================
+  // Empty state
+  // =====================
+
+  test('renders empty message when no cases returned', async () => {
+    ExamService.getClinicalCases.mockResolvedValue({
+      data: { clinical_cases: [], total_entries: 0 },
+    });
+
+    renderCasoTable();
+
+    await waitFor(() => {
+      expect(screen.getByText('No se encontraron casos clínicos.')).toBeInTheDocument();
+      expect(screen.getByText('Casos Clínicos (0)')).toBeInTheDocument();
+    });
+  });
+
+  // =====================
+  // Category caching
+  // =====================
+
+  test('loads categories from API when cache is empty', async () => {
+    EnarmUtil.getCategories.mockReturnValue(null);
+
+    renderCasoTable();
+
+    await waitFor(() => {
+      expect(ExamService.loadCategories).toHaveBeenCalledTimes(1);
+      expect(EnarmUtil.setCategories).toHaveBeenCalledWith(JSON.stringify(mockCategories));
+    });
+  });
+
+  test('uses cached categories and skips API call', async () => {
+    EnarmUtil.getCategories.mockReturnValue(JSON.stringify(mockCategories));
+
+    renderCasoTable();
+
+    await waitFor(() => {
+      expect(ExamService.loadCategories).not.toHaveBeenCalled();
+      // Categories should still render from cache
+      expect(screen.getByText('Cardiología')).toBeInTheDocument();
+    });
+  });
+
+  // =====================
+  // Pagination
+  // =====================
+
+  test('calls getClinicalCases with page from URL params', async () => {
+    mockUrlParams = { page: '5' };
+    renderCasoTable('/dashboard/casos/5');
+
+    await waitFor(() => {
+      expect(ExamService.getClinicalCases).toHaveBeenCalledWith(5);
+    });
+  });
+
+  test('defaults to page 1 for invalid page param', async () => {
+    mockUrlParams = { page: 'abc' };
+    renderCasoTable('/dashboard/casos/abc');
+
+    await waitFor(() => {
+      expect(ExamService.getClinicalCases).toHaveBeenCalledWith(1);
+    });
+  });
+
+  test('re-fetches data when page param changes', async () => {
+    const { rerender } = renderCasoTable();
+
+    await waitFor(() => {
+      expect(ExamService.getClinicalCases).toHaveBeenCalledWith(1);
+    });
+
+    ExamService.getClinicalCases.mockClear();
+    mockUrlParams = { page: '3' };
+
+    rerender(
+      <MemoryRouter initialEntries={['/dashboard/casos/3']}>
+        <Route path="/dashboard/casos/:page">
+          <CasoTable />
+        </Route>
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(ExamService.getClinicalCases).toHaveBeenCalledWith(3);
+    });
+  });
+
+  test('pagination click calls history.push with new page', async () => {
+    ExamService.getClinicalCases.mockResolvedValue({
+      data: { clinical_cases: mockCases, total_entries: 30 }, // 30 items / 10 per page = 3 pages
+    });
+
+    const { container } = renderCasoTable('/dashboard/casos/1');
+
+    await waitFor(() => {
+      expect(screen.getByText(`Casos Clínicos (30)`)).toBeInTheDocument();
+    });
+
+    const paginationLinks = container.querySelectorAll('.pagination li a');
+    const page2Button = Array.from(paginationLinks).find(
+      (el) => el.textContent === '2',
+    );
+
+    expect(page2Button).toBeTruthy();
+    fireEvent.click(page2Button);
+
+    expect(mockHistoryPush).toHaveBeenCalledWith('/dashboard/casos/2');
+  });
 });

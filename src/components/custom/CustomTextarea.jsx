@@ -2,6 +2,18 @@ import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Forms, CharacterCounter } from '@materializecss/materialize';
 
+const TEXTAREA_STYLE = {
+  minHeight: '120px',
+  padding: '12px',
+  border: '1px solid var(--enarm-border, #e0e0e0)',
+  borderRadius: '8px',
+  resize: 'vertical',
+  lineHeight: '1.6',
+  boxSizing: 'border-box',
+  width: '100%',
+  transition: 'border-color 0.2s ease',
+};
+
 const CustomTextarea = ({
   id,
   label,
@@ -13,6 +25,7 @@ const CustomTextarea = ({
   icon,
   iconClassName = '',
   s, m, l, xl, // Grid size props
+  rows,
   maxLength,
   'data-length': dataLength,
   ...props
@@ -60,20 +73,25 @@ const CustomTextarea = ({
   if (l) wrapperClasses += ` col l${l}`;
   if (xl) wrapperClasses += ` col xl${xl}`;
 
+  const computedStyle = rows
+    ? { ...TEXTAREA_STYLE, minHeight: `${rows * 1.6 + 1.5}em` }
+    : TEXTAREA_STYLE;
+
   return (
     <div className={wrapperClasses.trim()}>
+      {label && <label htmlFor={id} className="active">{label}</label>}
       {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
       <textarea
         ref={textareaRef}
         id={id}
-        className={`materialize-textarea ${textareaClassName}`.trim()}
+        className={`materialize-textarea tm-5 ${textareaClassName}`.trim()}
+        style={computedStyle}
         value={value}
         onChange={onChange}
         disabled={disabled}
-        placeholder=" "
-        {...props} // Other props like 'maxLength', 'placeholder'
+        rows={rows}
+        {...props}
       />
-      {label && <label htmlFor={id}>{label}</label>}
     </div>
   );
 };

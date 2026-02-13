@@ -11,6 +11,7 @@ import {
 import ExamService from '../services/ExamService';
 import UserService from '../services/UserService';
 import Auth from '../modules/Auth';
+import styles from './PlayerDashboard.module.css';
 
 const PlayerDashboard = () => {
     const history = useHistory();
@@ -62,7 +63,7 @@ const PlayerDashboard = () => {
 
     if (loading) {
         return (
-            <div className="center-align" style={{ padding: '100px' }}>
+            <div className="center-align enarm-loading-wrapper">
                 <CustomPreloader active color="green" size="big" />
             </div>
         );
@@ -71,13 +72,13 @@ const PlayerDashboard = () => {
     return (
         <div className="player-dashboard">
             {/* Hero Section */}
-            <div className="hero-section" style={{ padding: '40px 0', borderBottom: '1px solid #eee', marginBottom: '30px' }}>
+            <div className="hero-section enarm-hero-section">
                 <CustomRow className="valign-wrapper">
                     <CustomCol s={12} m={8}>
-                        <h3 className="grey-text text-darken-3" style={{ fontWeight: '300', margin: 0 }}>
-                            ¡Hola, <span style={{ fontWeight: '600', color: 'var(--medical-green)' }}>{user?.name || 'Doctor'}</span>!
+                        <h3 className="grey-text text-darken-3 enarm-heading-light">
+                            ¡Hola, <span className="enarm-user-name">{user?.name || 'Doctor'}</span>!
                         </h3>
-                        <p className="grey-text text-darken-1" style={{ fontSize: '1.2rem' }}>
+                        <p className="grey-text text-darken-1 enarm-subtitle">
                             Tu camino al ENARM continúa hoy. ¿Qué quieres repasar?
                         </p>
                     </CustomCol>
@@ -110,11 +111,11 @@ const PlayerDashboard = () => {
                 {/* Main Study Area */}
                 <CustomCol s={12} l={8}>
                     <CustomCard title="Explorar por Especialidad" className="white z-depth-1">
-                        <div className="specialties-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '15px', marginTop: '10px' }}>
+                        <div className={styles.specialtiesGrid}>
                             {categories.map(cat => (
                                 <div
                                     key={cat.id}
-                                    className="specialty-item center-align hoverable"
+                                    className={`specialty-item center-align hoverable ${styles.specialtyItem} ${focusedId === cat.id ? styles.specialtyItemFocused : ''}`}
                                     role="button"
                                     tabIndex={0}
                                     aria-label={`Explorar especialidad ${cat.name}`}
@@ -129,17 +130,9 @@ const PlayerDashboard = () => {
                                     onMouseLeave={() => setFocusedId(null)}
                                     onFocus={() => setFocusedId(cat.id)}
                                     onBlur={() => setFocusedId(null)}
-                                    style={{
-                                        padding: '20px',
-                                        border: '1px solid #f0f0f0',
-                                        borderRadius: '12px',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.3s ease',
-                                        backgroundColor: focusedId === cat.id ? '#f9fdfa' : 'transparent'
-                                    }}
                                 >
-                                    <i className="material-icons green-text text-lighten-2" style={{ fontSize: '2.5rem' }} aria-hidden="true">medical_services</i>
-                                    <p className="grey-text text-darken-2" style={{ fontWeight: '500', margin: '10px 0 0' }}>{cat.name}</p>
+                                    <i className="material-icons green-text text-lighten-2 enarm-icon-lg" aria-hidden="true">medical_services</i>
+                                    <p className="grey-text text-darken-2 enarm-specialty-label">{cat.name}</p>
                                 </div>
                             ))}
                         </div>
@@ -150,22 +143,22 @@ const PlayerDashboard = () => {
                 <CustomCol s={12} l={4}>
                     <CustomCard title="Logros Recientes" className="white z-depth-1">
                         {stats.recentAchievements.length > 0 ? (
-                            <ul className="collection" style={{ border: 'none' }}>
+                            <ul className={`collection ${styles.achievementsList}`}>
                                 {stats.recentAchievements.map(ach => (
-                                    <li key={ach.id} className="collection-item avatar" style={{ border: 'none', paddingLeft: '60px' }}>
+                                    <li key={ach.id} className={`collection-item avatar ${styles.achievementsListItem}`}>
                                         <i className="material-icons circle green" aria-hidden="true">emoji_events</i>
-                                        <span className="title" style={{ fontWeight: '500' }}>{ach.name}</span>
+                                        <span className="title enarm-title-medium">{ach.name}</span>
                                         <p className="grey-text truncate">{ach.description}</p>
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <div className="center-align grey-text" style={{ padding: '20px' }}>
-                                <i className="material-icons" style={{ fontSize: '3rem', opacity: 0.2 }}>lock</i>
+                            <div className={`center-align grey-text ${styles.achievementsEmpty}`}>
+                                <i className={`material-icons ${styles.achievementsEmptyIcon}`} aria-hidden="true">lock</i>
                                 <p>Sigue practicando para desbloquear logros.</p>
                             </div>
                         )}
-                        <div className="center-align" style={{ marginTop: '10px' }}>
+                        <div className={`center-align ${styles.achievementsCta}`}>
                             <CustomButton flat className="green-text" onClick={() => history.push('/profile')}>
                                 Ver todos mis logros
                             </CustomButton>

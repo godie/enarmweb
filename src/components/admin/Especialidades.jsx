@@ -36,36 +36,32 @@ export default function Especialidades({ title }) {
     }
 
     return (
-        <div className="section no-padding">
-            <div className="card-panel">
-                <CustomRow className="valign-wrapper">
-                    <CustomCol s={12} m={8}>
-                        <h5 className="grey-text text-darken-3" style={{ margin: '0' }}>{title}</h5>
-                    </CustomCol>
-                    <CustomCol s={12} m={4} className="right-align">
-                        <CustomButton onClick={clearCache} className="green darken-1">
-                            LIMPIAR CACHÉ
-                        </CustomButton>
-                    </CustomCol>
-                </CustomRow>
+        <div className="especialidades-container">
+            <CustomRow>
+                <CustomCol s={12} m={8}>
+                    <h4 className="grey-text text-darken-3">{title}</h4>
+                </CustomCol>
+                <CustomCol s={12} m={4} className="right-align valign-wrapper" style={{ justifyContent: 'flex-end' }}>
+                    <CustomButton onClick={clearCache} className="green darken-1">
+                        LIMPIAR CACHÉ
+                    </CustomButton>
+                </CustomCol>
+            </CustomRow>
 
-                <div className="divider" style={{ margin: '1.5rem 0' }}></div>
-
-                <CustomTable striped className="highlight">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th className="right-align">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {especialidades.map(especialidad => (
-                            <EspecialidadRow key={especialidad.id} especialidad={especialidad} />
-                        ))}
-                    </tbody>
-                </CustomTable>
-            </div>
+            <CustomTable striped className="highlight z-depth-1">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th className="right-align">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {especialidades.map(especialidad => (
+                        <EspecialidadRow key={especialidad.id} especialidad={especialidad} />
+                    ))}
+                </tbody>
+            </CustomTable>
         </div>
     )
 
