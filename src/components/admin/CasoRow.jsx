@@ -40,18 +40,13 @@ const CasoRow = ({ caso, especialidadesOptions }) => {
 CasoRow.propTypes = {
     caso: PropTypes.shape({
         id: PropTypes.number.isRequired,
+        name: PropTypes.string,
         description: PropTypes.string,
         category_id: PropTypes.number,
-        status: PropTypes.string,
+        status: PropTypes.oneOf(['pending', 'published', 'rejected']),
         questions: PropTypes.array,
     }).isRequired,
-    categories: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired,
-        })
-    ).isRequired,
-    onChangeCategory: PropTypes.func.isRequired,
+    especialidadesOptions: PropTypes.instanceOf(Map).isRequired,
 };
 
 export default CasoRow;

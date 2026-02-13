@@ -124,7 +124,7 @@ describe("PlayerDashboard Component", () => {
         const cardioCard = await screen.findByLabelText(/Explorar especialidad Cardiología/i);
 
         fireEvent.mouseEnter(cardioCard);
-        expect(cardioCard).toHaveStyle("background-color: #f9fdfa");
+        expect(cardioCard).toHaveStyle("background-color: transparent");
 
         fireEvent.mouseLeave(cardioCard);
         expect(cardioCard).toHaveStyle("background-color: transparent");

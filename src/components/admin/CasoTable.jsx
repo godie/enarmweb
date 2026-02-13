@@ -80,23 +80,6 @@ const CasoTable = () => {
       });
   }, [currentPage]);
 
-  const changeCategory = (caso, newValue) => {
-    const categoryId = parseInt(newValue, 10);
-    const updatedCaso = { ...caso, category_id: categoryId };
-
-    ExamService.saveCaso(updatedCaso)
-      .then((response) => {
-        Util.showToast("Se actualizó la especialidad");
-        setCasesData((prevCasesData) =>
-          prevCasesData.map(c => c.id === caso.id ? response.data : c)
-        );
-      })
-      .catch((error) => {
-        console.error("Error updating case", error);
-        Util.showToast("No se pudo actualizar la especialidad");
-      });
-  };
-
   const handlePageClick = (newPage) => {
     if (newPage === currentPage) return;
     setLoading(true);
