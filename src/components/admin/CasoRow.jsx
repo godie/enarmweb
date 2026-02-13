@@ -1,48 +1,39 @@
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import CustomCollectionItem from '../custom/CustomCollectionItem';
-import CustomRow from '../custom/CustomRow';
-import CustomCol from '../custom/CustomCol';
-import CustomSelect from '../custom/CustomSelect';
 import CustomButton from '../custom/CustomButton';
+import CustomSelect from '../custom/CustomSelect';
 
-const CasoRow = ({ caso, categories, onChangeCategory }) => {
-    const especialidadesOptions = categories.map((esp) => (
-        <option key={esp.id} value={esp.id}>
-            {esp.name}
-        </option>
-    ));
+const STATUS_LABELS = {
+    pending: <span className="badge yellow darken-1">Pendiente</span>,
+    published: <span className="badge green darken-1">Publicado</span>,
+    rejected: <span className="badge red darken-1">Rechazado</span>,
+};
+
+
+
+const CasoRow = ({ caso, especialidadesOptions }) => {
+   
+    const questionsCount = caso.questions?.length ?? 0;
+    const statusLabel = STATUS_LABELS[caso.status] || caso.status || '—';
 
     return (
-        <CustomCollectionItem>
-            <CustomRow>
-                <CustomCol m={4} s={12}>
-                    <CustomSelect
-                        label="Especialidad"
-                        value={caso.category_id?.toString() || "0"}
-                        onChange={(e) => onChangeCategory(caso, e.target.value)}
-                        id={`select-especialidad-${caso.id}`}
-                        className="black-text"
-                    >
-                        <option value="0" disabled={(caso.category_id?.toString() || "0") !== "0"}>
-                            Sin Especialidad
-                        </option>
-                        {especialidadesOptions}
-                    </CustomSelect>
-                </CustomCol>
-                <CustomCol m={7} s={12}>
-                    {caso.description}
-                </CustomCol>
-                <Link to={`/dashboard/edit/caso/${caso.id}`} className="secondary-content">
-                    <CustomButton
-                        tooltip="Editar Caso clinico"
-                        className="btn-flat"
-                        icon="edit"
-                        waves="light"
-                    />
-                </Link>
-            </CustomRow>
-        </CustomCollectionItem>
+        <tr>
+            <td>{caso.name}</td>
+            <td>
+                <span className="badge white border darken-1">{especialidadesOptions.get(caso.category_id.toString())}</span>
+            </td>
+            <td>{STATUS_LABELS[caso.status]}</td>
+            <td className="center-align">{questionsCount}</td>
+            <td className="right-align">
+                <CustomButton
+                    flat
+                    node="a"
+                    href={`#/dashboard/edit/caso/${caso.id}`}
+                    tooltip="Editar Caso clínico"
+                    icon="edit"
+                    className="blue-text"
+                />
+            </td>
+        </tr>
     );
 };
 
@@ -51,6 +42,8 @@ CasoRow.propTypes = {
         id: PropTypes.number.isRequired,
         description: PropTypes.string,
         category_id: PropTypes.number,
+        status: PropTypes.string,
+        questions: PropTypes.array,
     }).isRequired,
     categories: PropTypes.arrayOf(
         PropTypes.shape({

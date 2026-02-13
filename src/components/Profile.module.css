@@ -1,0 +1,14 @@
+/* Profile – card and layout (no inline styles) */
+
+.cardWrapper {
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.sectionTitle {
+  margin-top: 30px;
+}
+
+.badgePill {
+  border-radius: 5px;
+}

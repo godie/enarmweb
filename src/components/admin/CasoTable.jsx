@@ -4,8 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import ExamService from "../../services/ExamService";
 import EnarmUtil from "../../modules/EnarmUtil";
 import Util from "../../commons/Util";
-import CustomCollection from "../custom/CustomCollection";
-import CustomCollectionItem from "../custom/CustomCollectionItem";
+import { CustomRow, CustomCol, CustomTable } from "../custom";
 import CustomPagination from "../custom/CustomPagination";
 import CustomPreloader from "../custom/CustomPreloader";
 import CasoRow from "./CasoRow";
@@ -19,7 +18,8 @@ const CasoTable = () => {
   const [casesData, setCasesData] = useState([]);
   const [totalCases, setTotalCases] = useState(0);
   const [loading, setLoading] = useState(true);
-
+  const [especialidadesOptions, setEspecialidadesOptions] = useState(new Map());
+ 
   const currentPage = (() => {
     const pageNum = parseInt(pageParam, 10);
     return !isNaN(pageNum) && pageNum > 0 ? pageNum : 1;
@@ -43,6 +43,12 @@ const CasoTable = () => {
         })
         .catch((error) => console.error("Error loading categories", error));
     }
+  }, [categories.length]);
+
+  useEffect(() => {
+    setEspecialidadesOptions(new Map(
+      categories.map((esp) => [`${esp.id}`, esp.name])
+    ));
   }, [categories.length]);
 
   // Track last page to reset state during render (avoids useEffect setState warning)
@@ -101,7 +107,7 @@ const CasoTable = () => {
 
   if (loading && !loadingError) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <div className="center-align enarm-loading-wrapper--compact">
         <CustomPreloader size="big" active />
       </div>
     );
@@ -109,45 +115,65 @@ const CasoTable = () => {
 
   if (loadingError) {
     return (
-      <CustomCollectionItem className="center-align red-text text-darken-4">
+      <div className="center-align red-text text-darken-4" style={{ padding: '20px' }}>
         Error al cargar los casos. Intente de nuevo más tarde.
-      </CustomCollectionItem>
+      </div>
     );
   }
 
   return (
-    <CustomCollection header={`Casos Clinicos (${totalCases})`} className="text-darken-1">
-      <CustomPagination
-        activePage={currentPage}
-        items={numPages}
-        maxButtons={8}
-        onSelect={handlePageClick}
-        className="green-text text-darken-1"
-      />
+    <div className="caso-table-container">
+      <CustomRow>
+        <CustomCol s={12}>
+          <h4 className="grey-text text-darken-3">{`Casos Clínicos (${totalCases})`}</h4>
 
-      {casesData.length === 0 ? (
-        <CustomCollectionItem className="center-align text-darken-1">
-          No se encontraron casos clínicos.
-        </CustomCollectionItem>
-      ) : (
-        casesData.map((caso) => (
-          <CasoRow
-            key={caso.id}
-            caso={caso}
-            categories={categories}
-            onChangeCategory={changeCategory}
+          <CustomPagination
+            activePage={currentPage}
+            items={numPages}
+            maxButtons={8}
+            onSelect={handlePageClick}
+            className="green-text text-darken-1"
           />
-        ))
-      )}
 
-      <CustomPagination
-        activePage={currentPage}
-        items={numPages}
-        maxButtons={8}
-        onSelect={handlePageClick}
-        className="green-text text-darken-1"
-      />
-    </CustomCollection>
+          <CustomTable striped className="highlight z-depth-1">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Especialidad</th>
+                <th>Status</th>
+                <th>Preguntas</th>
+                <th className="right-align">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {casesData.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="center-align">
+                    No se encontraron casos clínicos.
+                  </td>
+                </tr>
+              ) : (
+                casesData.map((caso) => (
+                  <CasoRow
+                    key={caso.id}
+                    caso={caso}
+                      especialidadesOptions={especialidadesOptions}
+                  />
+                ))
+              )}
+            </tbody>
+          </CustomTable>
+
+          <CustomPagination
+            activePage={currentPage}
+            items={numPages}
+            maxButtons={8}
+            onSelect={handlePageClick}
+            className="green-text text-darken-1"
+          />
+        </CustomCol>
+      </CustomRow>
+    </div>
   );
 };
 

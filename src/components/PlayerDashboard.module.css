@@ -1,0 +1,48 @@
+/* PlayerDashboard – layout and component-specific styles (no inline styles) */
+
+.specialtiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.specialtyItem {
+  padding: 20px;
+  border: 1px solid var(--enarm-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+.specialtyItem:hover,
+.specialtyItem:focus {
+  background-color: var(--enarm-surface-hover);
+}
+
+.specialtyItemFocused {
+  background-color: var(--enarm-surface-hover);
+}
+
+.achievementsList {
+  border: none;
+}
+
+.achievementsListItem {
+  border: none;
+  padding-left: 60px;
+}
+
+.achievementsEmpty {
+  padding: 20px;
+}
+
+.achievementsEmptyIcon {
+  font-size: 3rem;
+  opacity: 0.2;
+}
+
+.achievementsCta {
+  margin-top: 10px;
+}

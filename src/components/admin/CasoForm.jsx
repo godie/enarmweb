@@ -74,7 +74,7 @@ const CasoForm = () => {
               value={caso.description}
               onChange={onChange}
               name="description"
-              textareaClassName="z-depth-1"
+              textareaClassName="z-depth-1 mt-3"
             />
           </CustomCol>
         </CustomRow>

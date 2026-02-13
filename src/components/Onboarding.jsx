@@ -10,6 +10,7 @@ import ExamService from '../services/ExamService';
 import UserService from '../services/UserService';
 import Auth from '../modules/Auth';
 import { alertError, alertSuccess } from '../services/AlertService';
+import styles from './Onboarding.module.css';
 
 const Onboarding = () => {
     const history = useHistory();
@@ -73,16 +74,22 @@ const Onboarding = () => {
         }
     };
 
-    if (loading) return <div className="center-align" style={{ padding: '100px' }}><CustomPreloader active /></div>;
+    if (loading) {
+        return (
+            <div className="center-align enarm-loading-wrapper">
+                <CustomPreloader active />
+            </div>
+        );
+    }
 
     return (
-        <div className="onboarding-container" style={{ padding: '40px 0' }}>
+        <div className={`onboarding-container ${styles.container}`}>
             <CustomRow>
                 <CustomCol s={12} className="center-align">
-                    <h3 className="grey-text text-darken-3" style={{ fontWeight: '300' }}>
-                        ¡Bienvenido, <span style={{ fontWeight: '600', color: 'var(--medical-green)' }}>{user?.name}</span>!
+                    <h3 className="grey-text text-darken-3 enarm-heading-light">
+                        ¡Bienvenido, <span className="enarm-user-name">{user?.name}</span>!
                     </h3>
-                    <p className="grey-text text-darken-1" style={{ fontSize: '1.2rem', marginBottom: '40px' }}>
+                    <p className="grey-text text-darken-1 enarm-subtitle-mb">
                         Para personalizar tu experiencia, selecciona las especialidades que más te interesan practicar.
                     </p>
                 </CustomCol>
@@ -94,37 +101,27 @@ const Onboarding = () => {
                     return (
                         <CustomCol s={12} m={4} l={3} key={cat.id}>
                             <div
-                                className={`specialty-card center-align hoverable ${isSelected ? 'selected' : ''}`}
+                                className={`specialty-card center-align hoverable ${styles.specialtyCard} ${isSelected ? styles.specialtyCardSelected : ''}`}
                                 role="button"
                                 tabIndex={0}
                                 aria-pressed={isSelected}
                                 onClick={() => toggleSpecialty(cat.id)}
                                 onKeyDown={(e) => handleKeyDown(e, cat.id)}
-                                style={{
-                                    padding: '20px',
-                                    borderRadius: '15px',
-                                    border: isSelected ? '2px solid var(--medical-green)' : '2px solid transparent',
-                                    backgroundColor: isSelected ? '#e8f5e9' : 'white',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease',
-                                    marginBottom: '20px'
-                                }}
                             >
                                 <i
-                                    className={`material-icons ${isSelected ? 'green-text' : 'grey-text text-lighten-1'}`}
-                                    style={{ fontSize: '3rem' }}
+                                    className={`material-icons enarm-icon-xl ${styles.specialtyIcon} ${isSelected ? 'green-text' : 'grey-text text-lighten-1'}`}
                                     aria-hidden="true"
                                 >
                                     {isSelected ? 'check_circle' : 'medical_services'}
                                 </i>
-                                <h6 style={{ fontWeight: isSelected ? '600' : '400', marginTop: '10px' }}>{cat.name}</h6>
+                                <h6 className={`${styles.specialtyLabel} ${isSelected ? styles.specialtyLabelSelected : styles.specialtyLabelDefault}`}>{cat.name}</h6>
                             </div>
                         </CustomCol>
                     );
                 })}
             </CustomRow>
 
-            <CustomRow className="center-align" style={{ marginTop: '40px' }}>
+            <CustomRow className={`center-align ${styles.rowMarginTop}`}>
                 <CustomCol s={12}>
                     <CustomButton
                         large
@@ -133,9 +130,9 @@ const Onboarding = () => {
                         disabled={saving || selected.length === 0}
                     >
                         {saving ? (
-                            <span className="valign-wrapper" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%' }}>
+                            <span className={`valign-wrapper ${styles.valignInline}`}>
                                 <CustomPreloader size="small" color="white" />
-                                <span style={{ marginLeft: '10px' }}>Guardando...</span>
+                                <span className={styles.valignGap}>Guardando...</span>
                             </span>
                         ) : "Comenzar mi Entrenamiento"}
                     </CustomButton>

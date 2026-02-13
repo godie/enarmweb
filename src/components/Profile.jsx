@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Auth from "../modules/Auth";
 import UserService from "../services/UserService";
 import CustomPreloader from "./custom/CustomPreloader";
+import styles from "./Profile.module.css";
 
 const Profile = () => {
   const [user] = useState(() => Auth.getUserInfo() || { id: null });
@@ -42,12 +43,12 @@ const Profile = () => {
   return (
     <div className="section center container">
       <h4 className="white-text">Perfil de Usuario</h4>
-      <div className="card glass-card" style={{ padding: "20px", borderRadius: '15px' }}>
+      <div className={`card glass-card ${styles.cardWrapper}`}>
         <p><strong>Nombre:</strong> {user.name || "N/A"}</p>
         <p><strong>Email:</strong> {user.email || "N/A"}</p>
-        <p><strong>Rol:</strong> <span className="badge blue white-text" style={{ borderRadius: '5px' }}>{user.role || "player"}</span></p>
+        <p><strong>Rol:</strong> <span className={`badge blue white-text ${styles.badgePill}`}>{user.role || "player"}</span></p>
 
-        <h5 style={{ marginTop: '30px' }}>Logros</h5>
+        <h5 className={styles.sectionTitle}>Logros</h5>
         {achievements.length > 0 ? (
           <ul className="collection glass-collection">
             {achievements.map(ach => (

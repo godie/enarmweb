@@ -264,16 +264,251 @@
     --md-sys-color-primary: var(--md-sys-color-primary-light);
     --md-sys-color-background: var(--md-sys-color-background-light);
     --md-sys-color-on-background: var(--md-sys-color-on-background-light);
+    --md-sys-color-surface: var(--md-sys-color-surface-light);
+    --md-sys-color-on-surface: var(--md-sys-color-on-surface-light);
+    --md-sys-color-surface-variant: var(--md-sys-color-surface-variant-light);
+    --md-sys-color-on-surface-variant: var(--md-sys-color-on-surface-variant-light);
+    --md-sys-color-outline: var(--md-sys-color-outline-light);
+    --enarm-border: var(--md-sys-color-outline-variant-light);
+    --enarm-surface-hover: var(--md-ref-palette-primary98);
+    --enarm-surface-selected: var(--md-ref-palette-primary98);
 }
 
 :root[theme='dark'] {
     --md-sys-color-primary: var(--md-sys-color-primary-dark);
     --md-sys-color-background: var(--md-sys-color-background-dark);
     --md-sys-color-on-background: var(--md-sys-color-on-background-dark);
+    --md-sys-color-surface: var(--md-sys-color-surface-dark);
+    --md-sys-color-on-surface: var(--md-sys-color-on-surface-dark);
+    --md-sys-color-surface-variant: var(--md-sys-color-surface-variant-dark);
+    --md-sys-color-on-surface-variant: var(--md-sys-color-on-surface-variant-dark);
+    --md-sys-color-outline: var(--md-sys-color-outline-dark);
+    --enarm-border: var(--md-sys-color-outline-variant-dark);
+    --enarm-surface-hover: var(--md-ref-palette-primary20);
+    --enarm-surface-selected: var(--md-ref-palette-primary25);
+}
+
+/* ===== Textarea proper styling ===== */
+textarea.materialize-textarea {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    overflow-y: auto !important;
+}
+
+textarea.materialize-textarea:focus {
+    border-color: var(--medical-green, var(--md-sys-color-primary)) !important;
+    box-shadow: 0 0 0 1px var(--medical-green, var(--md-sys-color-primary)) !important;
+    outline: none;
+}
+
+:root[theme='dark'] textarea.materialize-textarea {
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    border-color: var(--md-sys-color-outline);
+}
+
+/* ENARM semantic utility classes (replace inline styles) */
+.enarm-loading-wrapper {
+    padding: 100px;
+}
+.enarm-loading-wrapper--compact {
+    padding: 50px;
+}
+.enarm-hero-section {
+    padding: 40px 0;
+    border-bottom: 1px solid var(--enarm-border);
+    margin-bottom: 30px;
+}
+.enarm-user-name {
+    font-weight: 600;
+    color: var(--medical-green, var(--md-sys-color-primary));
+}
+.enarm-heading-light {
+    font-weight: 300;
+    margin: 0;
+}
+.enarm-subtitle {
+    font-size: 1.2rem;
+}
+.enarm-section-title {
+    margin-top: 30px;
+}
+.enarm-collection-no-border {
+    border: none;
+}
+.enarm-collection-item-no-border {
+    border: none;
+    padding-left: 60px;
+}
+.enarm-title-medium {
+    font-weight: 500;
+}
+.enarm-empty-state {
+    padding: 20px;
+}
+.enarm-empty-state-icon {
+    font-size: 3rem;
+    opacity: 0.2;
+}
+.enarm-actions-top {
+    margin-top: 10px;
+}
+.enarm-row-margin-top {
+    margin-top: 40px;
+}
+.enarm-valign-inline {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+}
+.enarm-valign-gap {
+    margin-left: 10px;
+}
+.enarm-card-title-margin {
+    margin-top: 10px;
+}
+.enarm-badge-pill {
+    border-radius: 5px;
+}
+.enarm-card-rounded {
+    padding: 20px;
+    border-radius: 15px;
+}
+.enarm-mb-20 {
+    margin-bottom: 20px;
+}
+.enarm-mt-10 {
+    margin-top: 10px;
+}
+.enarm-subtitle-mb {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+}
+.enarm-icon-lg {
+    font-size: 2.5rem;
+}
+.enarm-icon-xl {
+    font-size: 3rem;
+}
+.enarm-specialty-label {
+    font-weight: 500;
+    margin: 10px 0 0;
+}
+.enarm-specialty-card-weight {
+    margin-top: 10px;
+}
+.enarm-specialty-card-weight--selected {
+    font-weight: 600;
+}
+.enarm-specialty-card-weight--default {
+    font-weight: 400;
 }
 
 body {
     background-color: var(--md-sys-color-background) !important;
     color: var(--md-sys-color-on-background) !important;
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== Materialize dark-mode overrides ===== */
+:root[theme='dark'] .card,
+:root[theme='dark'] .card-panel {
+    background-color: var(--md-sys-color-surface) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    border-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] .collection {
+    border-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] .collection .collection-header {
+    background-color: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+:root[theme='dark'] .collection .collection-header h4,
+:root[theme='dark'] .collection .collection-header h5,
+:root[theme='dark'] .collection .collection-header h6 {
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+:root[theme='dark'] .collection .collection-item {
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    border-bottom-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] table {
+    color: var(--md-sys-color-on-surface);
+}
+
+:root[theme='dark'] table thead {
+    border-bottom-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] table th {
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+:root[theme='dark'] table td {
+    color: var(--md-sys-color-on-surface);
+    border-bottom-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] table.striped > tbody > tr:nth-child(odd) {
+    background-color: var(--md-sys-color-surface-variant);
+}
+
+:root[theme='dark'] table.highlight > tbody > tr:hover {
+    background-color: var(--enarm-surface-hover);
+}
+
+:root[theme='dark'] .collection .collection-item.active {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary-dark);
+}
+
+:root[theme='dark'] select {
+    color: var(--md-sys-color-on-surface);
+    border-bottom-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] .select-wrapper input.select-dropdown {
+    color: var(--md-sys-color-on-surface);
+    border-bottom-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] .dropdown-content {
+    background-color: var(--md-sys-color-surface);
+}
+
+:root[theme='dark'] .dropdown-content li > a,
+:root[theme='dark'] .dropdown-content li > span {
+    color: var(--md-sys-color-on-surface);
+}
+
+:root[theme='dark'] .dropdown-content li:hover {
+    background-color: var(--enarm-surface-hover);
+}
+
+:root[theme='dark'] .divider {
+    background-color: var(--md-sys-color-outline);
+}
+
+:root[theme='dark'] h1,
+:root[theme='dark'] h2,
+:root[theme='dark'] h3,
+:root[theme='dark'] h4,
+:root[theme='dark'] h5,
+:root[theme='dark'] h6 {
+    color: var(--md-sys-color-on-surface);
+}
+
+:root[theme='dark'] .grey-text.text-darken-3 {
+    color: var(--md-sys-color-on-surface) !important;
+}
+
+:root[theme='dark'] .black-text {
+    color: var(--md-sys-color-on-surface) !important;
 }

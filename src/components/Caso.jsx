@@ -170,7 +170,7 @@ const Caso = (props) => {
 
   if (loading) {
     return (
-      <div className="center-align" style={{ padding: '50px' }}>
+      <div className="center-align enarm-loading-wrapper--compact">
         <CustomPreloader active color="green" size="big" />
       </div>
     );

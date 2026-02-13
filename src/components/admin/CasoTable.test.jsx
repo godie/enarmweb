@@ -41,8 +41,8 @@ vi.mock('../../commons/Util');
 // For Select, we need to be able to change its value.
 
 const mockCases = [
-  { id: 1, description: 'Case 1 Description', category_id: 101 },
-  { id: 2, description: 'Case 2 Description', category_id: 102 },
+  { id: 1, description: 'Case 1 Description', category_id: 101, status: 'published', questions: [{ id: 1 }, { id: 2 }] },
+  { id: 2, description: 'Case 2 Description', category_id: 102, status: 'pending', questions: [{ id: 3 }] },
 ];
 
 const mockCategories = [
@@ -119,7 +119,7 @@ describe('CasoTable Component', () => {
   test('renders a list of cases and header', async () => {
     renderCasoTable();
     await waitFor(() => {
-      expect(screen.getByText(`Casos Clinicos (${mockCases.length})`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (${mockCases.length})`)).toBeInTheDocument();
       expect(screen.getByText('Case 1 Description')).toBeInTheDocument();
       expect(screen.getByText('Case 2 Description')).toBeInTheDocument();
       expect(screen.getAllByRole('combobox')[0]).toHaveValue(mockCases[0].category_id.toString());
@@ -136,7 +136,7 @@ describe('CasoTable Component', () => {
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       expect(screen.getByText('No se encontraron casos clínicos.')).toBeInTheDocument();
-      expect(screen.queryByText('Casos Clinicos (0)')).toBeInTheDocument();
+      expect(screen.queryByText('Casos Clínicos (0)')).toBeInTheDocument();
       expect(screen.queryByText('Case 1 Description')).not.toBeInTheDocument();
     });
   });
@@ -198,7 +198,7 @@ describe('CasoTable Component', () => {
       expect(ExamService.getClinicalCases).toHaveBeenCalledWith(3);
       expect(ExamService.getClinicalCases).toHaveBeenCalledTimes(1);
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      expect(screen.getByText(`Casos Clinicos (${mockCases.length})`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (${mockCases.length})`)).toBeInTheDocument();
     });
 
   });
@@ -282,7 +282,7 @@ describe('CasoTable Component', () => {
     // Wait for the data to load and Preloader to disappear
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      expect(screen.getByText(`Casos Clinicos (${mockCases.length})`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (${mockCases.length})`)).toBeInTheDocument();
     });
   });
 

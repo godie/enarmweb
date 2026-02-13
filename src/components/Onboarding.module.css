@@ -1,0 +1,59 @@
+/* Onboarding – container, specialty cards, layout (no inline styles) */
+
+.container {
+  padding: 40px 0;
+}
+
+.specialtyCard {
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid var(--enarm-border);
+  background-color: var(--md-sys-color-surface-light, #fff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 20px;
+}
+
+:root[theme='dark'] .specialtyCard {
+  background-color: var(--md-sys-color-surface-dark);
+}
+
+.specialtyCard:hover {
+  border-color: var(--medical-green, var(--md-sys-color-primary));
+}
+
+/* Cambia el icono a verde en hover */
+.specialtyCard:hover .specialtyIcon {
+  color: var(--medical-green, var(--md-sys-color-primary)) !important;
+}
+
+.specialtyCardSelected {
+  border-color: var(--medical-green, var(--md-sys-color-primary));
+  background-color: var(--enarm-surface-selected);
+}
+
+.rowMarginTop {
+  margin-top: 40px;
+}
+
+.valignInline {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.valignGap {
+  margin-left: 10px;
+}
+
+.specialtyLabel {
+  margin-top: 10px;
+}
+
+.specialtyLabelSelected {
+  font-weight: 600;
+}
+
+.specialtyLabelDefault {
+  font-weight: 400;
+}
