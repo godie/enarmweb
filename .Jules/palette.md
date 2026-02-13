@@ -46,3 +46,7 @@
 ## 2025-05-28 - [Accessible Password Visibility and Decorative Icon Defaults]
 **Learning:** Removing `tabIndex={-1}` from custom password toggle buttons ensures they are reachable by keyboard users, while adding a circular `borderRadius` and adequate `padding` provides clear focus feedback. Furthermore, defaulting `CustomIcon` to `aria-hidden="true"` promotes a cleaner experience for screen readers by treating all icons as decorative unless explicitly marked otherwise, preventing redundant announcements.
 **Action:** Always ensure interactive toggles are keyboard-accessible and default decorative icons to be hidden from the accessibility tree.
+
+## 2025-05-29 - [Standardized Loading and Password Toggle Consistency]
+**Learning:** Standardizing loading states using centralized component props (like `isPending` in `CustomButton`) improves code maintainability and visual consistency. However, when using custom colors for spinners (like `pendingColor`), they must match existing CSS classes (e.g., `spinner-yellow-only`) to ensure visibility. Additionally, providing a `passwordToggleClassName` prop in `CustomTextInput` allows for proper contrast of the visibility toggle icon across different background colors (e.g., `white-text` for dark backgrounds).
+**Action:** Always verify that custom component colors are supported by the underlying CSS framework and ensure high contrast for all interactive elements.
