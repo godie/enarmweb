@@ -127,14 +127,12 @@ const Onboarding = () => {
                         large
                         className="green"
                         onClick={handleSave}
-                        disabled={saving || selected.length === 0}
+                        disabled={selected.length === 0}
+                        isPending={saving}
+                        isPendingText="Guardando..."
+                        pendingColor="yellow"
                     >
-                        {saving ? (
-                            <span className={`valign-wrapper ${styles.valignInline}`}>
-                                <CustomPreloader size="small" color="white" />
-                                <span className={styles.valignGap}>Guardando...</span>
-                            </span>
-                        ) : "Comenzar mi Entrenamiento"}
+                        Comenzar mi Entrenamiento
                     </CustomButton>
                 </CustomCol>
             </CustomRow>

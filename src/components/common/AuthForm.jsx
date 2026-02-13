@@ -184,6 +184,8 @@ const AuthForm = ({
                                 name="password"
                                 autocomplete={isSignup ? "new-password" : "current-password"}
                                 inputClassName="white-text"
+                                passwordToggle
+                                passwordToggleClassName="white-text"
                                 validate
                                 required
                             />

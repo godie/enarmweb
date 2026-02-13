@@ -19,6 +19,7 @@ const CustomTextInput = ({
   maxLength,
   'data-length': dataLength,
   passwordToggle = false,
+  passwordToggleClassName = 'grey-text text-darken-2',
   ...props
 }) => {
   const inputRef = useRef(null);
@@ -104,7 +105,7 @@ const CustomTextInput = ({
             justifyContent: 'center'
           }}
         >
-          <i className="material-icons grey-text text-darken-2" aria-hidden="true">
+          <i className={`material-icons ${passwordToggleClassName}`} aria-hidden="true">
             {showPassword ? 'visibility_off' : 'visibility'}
           </i>
         </button>
@@ -132,6 +133,7 @@ CustomTextInput.propTypes = {
   'data-length': PropTypes.number,
   placeholder: PropTypes.string,
   passwordToggle: PropTypes.bool,
+  passwordToggleClassName: PropTypes.string,
 };
 
 export default CustomTextInput;
