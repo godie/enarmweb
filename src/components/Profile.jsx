@@ -42,11 +42,11 @@ const Profile = () => {
 
   return (
     <div className="section center container">
-      <h4 className="white-text">Perfil de Usuario</h4>
+      <h4>Perfil de Usuario</h4>
       <div className={`card glass-card ${styles.cardWrapper}`}>
         <p><strong>Nombre:</strong> {user.name || "N/A"}</p>
         <p><strong>Email:</strong> {user.email || "N/A"}</p>
-        <p><strong>Rol:</strong> <span className={`badge blue white-text ${styles.badgePill}`}>{user.role || "player"}</span></p>
+        <p><strong>Rol:</strong> <span className={`badge blue ${styles.badgePill}`}>{user.role || "player"}</span></p>
 
         <h5 className={styles.sectionTitle}>Logros</h5>
         {achievements.length > 0 ? (

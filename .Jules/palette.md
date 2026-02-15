@@ -50,3 +50,7 @@
 ## 2025-05-29 - [Standardized Loading and Password Toggle Consistency]
 **Learning:** Standardizing loading states using centralized component props (like `isPending` in `CustomButton`) improves code maintainability and visual consistency. However, when using custom colors for spinners (like `pendingColor`), they must match existing CSS classes (e.g., `spinner-yellow-only`) to ensure visibility. Additionally, providing a `passwordToggleClassName` prop in `CustomTextInput` allows for proper contrast of the visibility toggle icon across different background colors (e.g., `white-text` for dark backgrounds).
 **Action:** Always verify that custom component colors are supported by the underlying CSS framework and ensure high contrast for all interactive elements.
+
+## 2025-06-03 - [Theme-Aware Containers and Hover Tooltips]
+**Learning:** Hardcoded Materialize color classes like `white` or `white-text` on main layout containers (e.g., `card-panel`, `card`) block theme-aware CSS variables from functioning in dark mode. Removing these classes allows the CSS variables in `theme.css` to properly apply themed backgrounds and text colors. Additionally, providing a native `title` attribute to icon-only buttons (like password toggles) offers a simple, accessible tooltip for mouse users without adding extra library dependencies.
+**Action:** Audit layout containers for hardcoded color classes and always provide native tooltips for interactive icons.

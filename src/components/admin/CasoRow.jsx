@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import CustomButton from '../custom/CustomButton';
-import CustomSelect from '../custom/CustomSelect';
 
 const STATUS_LABELS = {
     pending: <span className="badge yellow darken-1">Pendiente</span>,
@@ -13,7 +12,6 @@ const STATUS_LABELS = {
 const CasoRow = ({ caso, especialidadesOptions }) => {
    
     const questionsCount = caso.questions?.length ?? 0;
-    const statusLabel = STATUS_LABELS[caso.status] || caso.status || '—';
 
     return (
         <tr>

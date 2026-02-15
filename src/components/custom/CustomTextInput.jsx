@@ -89,6 +89,7 @@ const CustomTextInput = ({
           className="btn-flat input-password-toggle"
           onClick={togglePasswordVisibility}
           aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          title={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
           style={{
             position: 'absolute',
             right: '10px',

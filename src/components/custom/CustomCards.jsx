@@ -1,5 +1,5 @@
 const StatCard = ({ title, count, icon }) => (
-    <div className="card-panel white" style={{ borderLeft: '4px solid var(--medical-green)', borderRadius: '8px' }}>
+    <div className="card-panel" style={{ borderLeft: '4px solid var(--medical-green)', borderRadius: '8px' }}>
         <div className="valign-wrapper" style={{ justifyContent: 'space-between' }}>
             <div>
                 <span className="grey-text text-darken-1" style={{ fontSize: '0.8rem', fontWeight: 'bold', textTransform: 'uppercase' }}>{title}</span>
