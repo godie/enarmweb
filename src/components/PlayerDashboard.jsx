@@ -87,6 +87,8 @@ const PlayerDashboard = () => {
                             large
                             className="green pulse"
                             onClick={() => history.push('/caso/random')}
+                            tooltip="Comienza un caso aleatorio para practicar"
+                            aria-label="Comenzar entrenamiento rápido con un caso aleatorio"
                         >
                             Entrenamiento Rápido
                         </CustomButton>

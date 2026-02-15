@@ -23,7 +23,7 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
 
   const navLinks = (
     <>
-      <li><Link to="/">Home</Link></li>
+      <li><Link to="/">Inicio</Link></li>
       <li><Link to="/caso/1">Caso Clinico</Link></li>
       {Auth.isPlayerAuthenticated() && <li><Link to="/contribuir">Contribuir</Link></li>}
       {Auth.isUserAuthenticated() && Auth.isAdmin() && <li><Link to="/dashboard">Admin</Link></li>}
