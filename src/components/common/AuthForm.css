@@ -189,26 +189,26 @@
 }
 
 /* Dark mode (opcional, como en el HTML) */
-body.dark-mode .login-page {
+:root[theme='dark'] .login-page {
   background: linear-gradient(135deg, #0a3d2e, #0f5c44);
 }
 
-body.dark-mode .login-page-card.card {
+:root[theme='dark'] .login-page-card.card {
   background: #2f3b45;
   color: #fff;
 }
 
-body.dark-mode .divider-row::before,
-body.dark-mode .divider-row::after {
+:root[theme='dark'] .divider-row::before,
+:root[theme='dark'] .divider-row::after {
   background: rgba(255, 255, 255, 0.2);
 }
 
-body.dark-mode .login-page .btn-outline {
+:root[theme='dark'] .login-page .btn-outline {
   color: #fff !important;
   border-color: rgba(255, 255, 255, 0.35);
 }
 
-body.dark-mode .login-page .btn-outline:hover {
+:root[theme='dark'] .login-page .btn-outline:hover {
   background: rgba(255, 255, 255, 0.08) !important;
   color: #fff !important;
 }

@@ -1,5 +1,5 @@
 // src/components/admin/CasoTable.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ExamService from "../../services/ExamService";
 import EnarmUtil from "../../modules/EnarmUtil";
@@ -18,7 +18,6 @@ const CasoTable = () => {
   const [casesData, setCasesData] = useState([]);
   const [totalCases, setTotalCases] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [especialidadesOptions, setEspecialidadesOptions] = useState(new Map());
  
   const currentPage = (() => {
     const pageNum = parseInt(pageParam, 10);
@@ -45,11 +44,9 @@ const CasoTable = () => {
     }
   }, [categories.length]);
 
-  useEffect(() => {
-    setEspecialidadesOptions(new Map(
-      categories.map((esp) => [`${esp.id}`, esp.name])
-    ));
-  }, [categories.length]);
+  const especialidadesOptions = useMemo(() => new Map(
+    categories.map((esp) => [`${esp.id}`, esp.name])
+  ), [categories]);
 
   // Track last page to reset state during render (avoids useEffect setState warning)
   const [lastPage, setLastPage] = useState(currentPage);

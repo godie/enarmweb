@@ -3,7 +3,7 @@ import { CustomButton, CustomTable, CustomCol } from '../custom';
 
 const RecentSummaryTable = ({ title, items, headers, renderRow, addItemLink, viewAllLink }) => (
     <CustomCol s={12} m={6}>
-        <div className="card-panel white">
+        <div className="card-panel">
             <div className="valign-wrapper" style={{ justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                 <h5 className="grey-text text-darken-3" style={{ margin: 0 }}>{title}</h5>
                 <CustomButton

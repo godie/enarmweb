@@ -110,7 +110,7 @@ const PlayerDashboard = () => {
             <CustomRow>
                 {/* Main Study Area */}
                 <CustomCol s={12} l={8}>
-                    <CustomCard title="Explorar por Especialidad" className="white z-depth-1">
+                    <CustomCard title="Explorar por Especialidad" className="z-depth-1">
                         <div className={styles.specialtiesGrid}>
                             {categories.map(cat => (
                                 <div
@@ -141,7 +141,7 @@ const PlayerDashboard = () => {
 
                 {/* Achievements & Activity */}
                 <CustomCol s={12} l={4}>
-                    <CustomCard title="Logros Recientes" className="white z-depth-1">
+                    <CustomCard title="Logros Recientes" className="z-depth-1">
                         {stats.recentAchievements.length > 0 ? (
                             <ul className={`collection ${styles.achievementsList}`}>
                                 {stats.recentAchievements.map(ach => (
