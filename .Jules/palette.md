@@ -58,3 +58,7 @@
 ## 2025-06-04 - [Spanish Localization Consistency and Interactive Card Accessibility]
 **Learning:** Maintaining consistent language throughout the interface (e.g., using 'Inicio' instead of 'Home' in a Spanish UI) improves the professional feel and predictability of the application. Furthermore, adding dynamic ARIA labels to interactive elements that don't have explicit text (like selection cards) to reflect their current state ('Seleccionar' vs 'Deseleccionar') is crucial for screen reader users to understand the effect of their actions.
 **Action:** Always audit navigation links for language consistency and provide state-aware ARIA labels for non-semantic interactive cards.
+
+## 2025-06-05 - [Exam Orientation and Progress Feedback]
+**Learning:** For multi-step assessments or exams, providing clear orientation through question numbering (e.g., "1. ¿Cuál es el diagnóstico?") and visual progress feedback (using a determinate progress bar) significantly improves user confidence and reduces cognitive load. Using Materialize's `progress` and `determinate` classes with CSS transitions ensures the feedback feels smooth and professional.
+**Action:** Always include sequential numbering for ordered lists of interactive items and provide a visual indicator of overall completion for multi-step processes.

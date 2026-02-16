@@ -154,6 +154,14 @@ const Caso = (props) => {
     loadPreguntas(clinicCaseId);
   }, [clinicCaseId]); // Runs on mount and when clinicCaseId changes
 
+  const answeredCount = selectedAnswers.filter(answer => {
+    if (Array.isArray(answer)) {
+      return answer.length > 0;
+    }
+    return answer && answer.id !== 0;
+  }).length;
+  const progress = data.length > 0 ? (answeredCount / data.length) * 100 : 0;
+
   var preguntas = data.map((pregunta, index) => {
     return (
       <Pregunta
@@ -181,6 +189,23 @@ const Caso = (props) => {
       <div className="col s12 m9 l9 offset-m1 offset-l1">
         <h6>Caso Clinico:</h6>
         <p>{casoClinico}</p>
+
+        {data.length > 0 && (
+          <div style={{ marginBottom: '20px' }}>
+            <div className="progress green lighten-4" style={{ height: '8px', borderRadius: '4px', margin: '15px 0 5px' }}>
+              <div
+                className="determinate green"
+                style={{
+                  width: `${progress}%`,
+                  transition: 'width 0.3s ease'
+                }}
+              />
+            </div>
+            <span className="grey-text text-darken-1" style={{ fontSize: '0.9rem' }}>
+              Progreso: {answeredCount} de {data.length} preguntas respondidas
+            </span>
+          </div>
+        )}
       </div>
       {preguntas}
       <div className="row">
