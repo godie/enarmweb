@@ -104,6 +104,7 @@ const Onboarding = () => {
                                 className={`specialty-card center-align hoverable ${styles.specialtyCard} ${isSelected ? styles.specialtyCardSelected : ''}`}
                                 role="button"
                                 tabIndex={0}
+                                aria-label={`${isSelected ? 'Deseleccionar' : 'Seleccionar'} especialidad ${cat.name}`}
                                 aria-pressed={isSelected}
                                 onClick={() => toggleSpecialty(cat.id)}
                                 onKeyDown={(e) => handleKeyDown(e, cat.id)}
