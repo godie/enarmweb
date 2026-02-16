@@ -80,7 +80,12 @@ const Pregunta = ({
     <div className="col s12 m12 l12">
       <ul className="collection with-header">
         <li className="collection-header">
-          <h5>{questionDescription}</h5>
+          <h5 style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <span className="green-text text-darken-2" style={{ marginRight: '10px', fontWeight: 'bold' }}>
+              {questionIndex + 1}.
+            </span>
+            <span>{questionDescription}</span>
+          </h5>
         </li>
         {answerItems}
       </ul>
