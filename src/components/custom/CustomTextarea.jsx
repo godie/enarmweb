@@ -79,7 +79,21 @@ const CustomTextarea = ({
 
   return (
     <div className={wrapperClasses.trim()}>
-      {label && <label htmlFor={id} className="active">{label}</label>}
+      {label && (
+        <label htmlFor={id} className="active">
+          {label}
+          {props.required && (
+            <span
+              className="red-text"
+              style={{ marginLeft: '4px', fontWeight: 'bold' }}
+              aria-hidden="true"
+              title="Obligatorio"
+            >
+              *
+            </span>
+          )}
+        </label>
+      )}
       {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
       <textarea
         ref={textareaRef}
@@ -91,6 +105,7 @@ const CustomTextarea = ({
         disabled={disabled}
         rows={rows}
         {...props}
+        aria-required={props.required ? 'true' : undefined}
       />
     </div>
   );

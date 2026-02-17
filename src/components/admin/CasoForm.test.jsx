@@ -39,7 +39,7 @@ describe('CasoForm Component', () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
 
-    expect(screen.getByLabelText(/Caso clinico/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Caso clínico/i)).toBeInTheDocument();
     expect(screen.getByDisplayValue('Initial Case Description')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /agregar pregunta/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('CasoForm Component', () => {
   test('calls onChange when description is changed', () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
-    const descriptionTextarea = screen.getByLabelText(/Caso clinico/i);
+    const descriptionTextarea = screen.getByLabelText(/Caso clínico/i);
     fireEvent.change(descriptionTextarea, { target: { name: 'description', value: 'New description' } });
     expect(contextValue.onChange).toHaveBeenCalledTimes(1);
   });

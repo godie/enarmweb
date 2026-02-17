@@ -81,6 +81,7 @@ const CustomTextInput = ({
         style={isPasswordWithToggle ? { paddingRight: '2.5rem' } : undefined}
         {...(isControlled ? { value, onChange } : {})}
         {...props}
+        aria-required={props.required ? 'true' : undefined}
       />
 
       {isPasswordWithToggle && (
@@ -112,7 +113,21 @@ const CustomTextInput = ({
         </button>
       )}
 
-      {label && <label htmlFor={id}>{label}</label>}
+      {label && (
+        <label htmlFor={id}>
+          {label}
+          {props.required && (
+            <span
+              className="red-text"
+              style={{ marginLeft: '4px', fontWeight: 'bold' }}
+              aria-hidden="true"
+              title="Obligatorio"
+            >
+              *
+            </span>
+          )}
+        </label>
+      )}
     </div>
   );
 };

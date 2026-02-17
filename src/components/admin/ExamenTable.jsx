@@ -63,7 +63,7 @@ const ExamenTable = () => {
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th>Casos Clinicos</th>
+                                <th>Casos Clínicos</th>
                                 <th className="right-align">Acciones</th>
                             </tr>
                         </thead>

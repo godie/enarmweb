@@ -236,7 +236,7 @@ describe('CasoContainer Component', () => {
 
     // NUEVO: Aserciones para AlertService.alertSuccess
     await waitFor(() => expect(alertSuccess).toHaveBeenCalledTimes(1));
-    expect(alertSuccess).toHaveBeenCalledWith('Caso Clinico', 'Se ha guardado correctamente');
+    expect(alertSuccess).toHaveBeenCalledWith('Caso Clínico', 'Se ha guardado correctamente');
     await waitFor(() => expect(mockGoBack).toHaveBeenCalledTimes(1)); // Assuming it calls goBack after success alert
   });
 
@@ -257,7 +257,7 @@ describe('CasoContainer Component', () => {
 
     // NUEVO: Aserciones para AlertService.alertError
     await waitFor(() => expect(alertError).toHaveBeenCalledTimes(1));
-    expect(alertError).toHaveBeenCalledWith('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
+    expect(alertError).toHaveBeenCalledWith('Caso Clínico', 'Ha ocurrido un error, no se pudo guardar');
   });
 
   test('cancel button calls history.goBack', () => {

@@ -62,3 +62,7 @@
 ## 2025-06-05 - [Exam Orientation and Progress Feedback]
 **Learning:** For multi-step assessments or exams, providing clear orientation through question numbering (e.g., "1. ¿Cuál es el diagnóstico?") and visual progress feedback (using a determinate progress bar) significantly improves user confidence and reduces cognitive load. Using Materialize's `progress` and `determinate` classes with CSS transitions ensures the feedback feels smooth and professional.
 **Action:** Always include sequential numbering for ordered lists of interactive items and provide a visual indicator of overall completion for multi-step processes.
+
+## 2025-06-06 - [Standardized Required Indicators and Spanish UI Quality]
+**Learning:** Centralizing the visual and semantic treatment of required fields (e.g., a red asterisk `*` and `aria-required="true"`) in base components like `CustomTextInput` ensures a consistent and accessible experience across all forms without duplicating logic. Additionally, meticulous attention to Spanish orthography (e.g., 'Clínico' vs 'Clinico', 'Ocurrió' vs 'Ocurrio') significantly elevates the professional feel of the application for native speakers.
+**Action:** Always provide standardized visual cues for mandatory fields in base components and maintain strict linguistic standards for localized interfaces.

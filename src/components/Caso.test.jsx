@@ -82,7 +82,7 @@ describe('Caso Component', () => {
     // Check for preloader initially
     expect(screen.getByRole('progressbar', { hidden: true })).toBeInTheDocument();
 
-    await waitFor(() => expect(screen.getByText('Caso Clinico:')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/Caso Clínico:/i)).toBeInTheDocument());
     expect(ExamService.getQuestions).toHaveBeenCalledWith(1);
     expect(screen.getByText(mockClinicalCase.description)).toBeInTheDocument();
 
