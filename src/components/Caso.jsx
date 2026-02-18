@@ -70,7 +70,7 @@ const Caso = (props) => {
       setGoNext(shouldGoNext);
       setShowAnswers(shouldGoNext);
       if (!shouldGoNext) {
-        alertError('Espera', 'No has respondido todas las preguntas, respondelas para poder continuar');
+        alertError('Espera', 'No has respondido todas las preguntas, respóndelas para poder continuar');
       }
     }
   };
@@ -109,7 +109,7 @@ const Caso = (props) => {
         Util.showToast('<div class="valign-wrapper"><i class="material-icons left">check_circle</i> Respuestas guardadas</div>');
       })
       .catch((error) => {
-        alertError('Enarm simulator', 'Ocurrio un erro al guardar las respuestas');
+        alertError('Enarm simulator', 'Ocurrió un error al guardar las respuestas');
         console.log("tronadera", error);
       })
       .finally(() => {
@@ -128,7 +128,7 @@ const Caso = (props) => {
       .then((response) => {
         var responseData = response.data;
         if (responseData.length === 0) {
-          alertError('Opps', 'No Se encontraron mas preguntas!');
+          alertError('Oops', 'No se encontraron más preguntas!');
           return;
         }
 
@@ -145,7 +145,7 @@ const Caso = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log("OCurrio un error", error);
+        console.error("Ocurrió un error", error);
         setLoading(false);
       });
   };
@@ -187,7 +187,7 @@ const Caso = (props) => {
   return (
     <div className="col s12 m12 l12">
       <div className="col s12 m9 l9 offset-m1 offset-l1">
-        <h6>Caso Clinico:</h6>
+        <h6>Caso Clínico:</h6>
         <p>{casoClinico}</p>
 
         {data.length > 0 && (

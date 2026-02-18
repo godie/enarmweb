@@ -47,7 +47,7 @@ describe('Navi Component', () => {
     // In actual Navi.jsx, links might be inside different structures due to CustomNavbar
     // Let's look for link text instead of strict selector if possible
     expect(screen.getAllByText('Inicio').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Caso Clinico').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Caso Clínico/i).length).toBeGreaterThan(0);
   });
 
   test('shows Admin link only for authenticated admins', () => {

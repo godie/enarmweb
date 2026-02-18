@@ -7,7 +7,7 @@ import CasoContext from "../../context/CasoContext";
 
 const INITIAL_CASO_STATE = {
   name: "",
-  description: "Un caso clinico nuevo",
+  description: "Un caso clínico nuevo",
   status: "pending",
   category_id: "",
   questions: [
@@ -57,12 +57,12 @@ const CasoContainer = () => {
     console.log(clinicalCaseToSave);
     try {
       await ExamService.saveCaso(clinicalCaseToSave);
-      await alertSuccess('Caso Clinico', 'Se ha guardado correctamente');
+      await alertSuccess('Caso Clínico', 'Se ha guardado correctamente');
       history.goBack()
       return null; // Success
     } catch (error) {
-      console.error("ocurrio un error", error);
-      alertError('Caso Clinico', 'Ha ocurrido un error, no se pudo guardar');
+      console.error("Ocurrió un error", error);
+      alertError('Caso Clínico', 'Ha ocurrido un error, no se pudo guardar');
       return 'Ha ocurrido un error, no se pudo guardar'; // Error message
     }
   };

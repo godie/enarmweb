@@ -104,11 +104,26 @@ const CustomSelect = ({
         multiple={multiple}
         className={finalSelectClassName}
         {...props} // Other props like 'name'
+        aria-required={props.required ? 'true' : undefined}
       >
         {placeholderOption}
         {children}
       </select>
-      {label && <label htmlFor={id} className={value || placeholder ? 'active' : ''}>{label}</label>}
+      {label && (
+        <label htmlFor={id} className={value || placeholder ? 'active' : ''}>
+          {label}
+          {props.required && (
+            <span
+              className="red-text"
+              style={{ marginLeft: '4px', fontWeight: 'bold' }}
+              aria-hidden="true"
+              title="Obligatorio"
+            >
+              *
+            </span>
+          )}
+        </label>
+      )}
     </div>
   );
 };

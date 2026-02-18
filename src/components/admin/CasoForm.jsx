@@ -26,23 +26,25 @@ const CasoForm = () => {
   return (
     <div className="col s12 m12 l12">
       <form className="" action={saveCasoAction}>
-        <h3 className="center">Caso Clinico</h3>
+        <h3 className="center">Caso Clínico</h3>
         <CustomCol s={12} m={6}>
           <CustomTextInput
             id="name"
-            label="Nombre Identificador del Caso *"
+            label="Nombre Identificador del Caso"
             value={caso.name}
             name="name"
             onChange={onChange}
+            required
           />
         </CustomCol>
         <CustomCol s={12} m={6}>
           <CustomSelect
             id="category_id"
-            label="Especialidad / Categoría *"
+            label="Especialidad / Categoría"
             name="category_id"
             value={caso.category_id}
             onChange={onChange}
+            required
           >
             <option value="" disabled>Selecciona Especialidad</option>
             {categories.map(cat => (
@@ -54,10 +56,11 @@ const CasoForm = () => {
           <CustomCol s={12} m={12}>
             <CustomSelect
               id="status"
-              label="Estado del Caso *"
+              label="Estado del Caso"
               name="status"
               value={caso.status}
               onChange={onChange}
+              required
             >
               <option value="pending">Pendiente de Revisión</option>
               <option value="published">Publicado</option>
@@ -70,7 +73,7 @@ const CasoForm = () => {
           <CustomCol s={12}>
             <CustomTextarea
               id="description"
-              label="Caso clinico(descripción del caso)"
+              label="Caso clínico (descripción del caso)"
               value={caso.description}
               onChange={onChange}
               name="description"
@@ -151,7 +154,7 @@ const CasoForm = () => {
                   iconPosition="right"
                   className="green darken-1"
                 >
-                  GUARDAR CASO CLINICO
+                  GUARDAR CASO CLÍNICO
                 </CustomButton>
               </p>
             </CustomCol>

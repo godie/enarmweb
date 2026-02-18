@@ -46,8 +46,8 @@ describe('EspecialidadForm Component', () => {
     test('renders form for new specialty', () => {
         renderComponent();
         expect(screen.getByText('Nueva Especialidad')).toBeInTheDocument();
-        expect(screen.getByLabelText('Especialidad')).toHaveValue('');
-        expect(screen.getByLabelText('Descripción')).toHaveValue('');
+        expect(screen.getByLabelText(/Especialidad/i)).toHaveValue('');
+        expect(screen.getByLabelText(/Descripción/i)).toHaveValue('');
     });
 
     test('loads data for editing an existing specialty', async () => {
@@ -63,14 +63,14 @@ describe('EspecialidadForm Component', () => {
 
     test('updates form data on input change', () => {
         renderComponent();
-        const nameInput = screen.getByLabelText('Especialidad');
+        const nameInput = screen.getByLabelText(/Especialidad/i);
         fireEvent.change(nameInput, { target: { value: 'Neurologia' } });
         expect(nameInput).toHaveValue('Neurologia');
     });
 
     test('submits form successfully', async () => {
         renderComponent();
-        const nameInput = screen.getByLabelText('Especialidad');
+        const nameInput = screen.getByLabelText(/Especialidad/i);
         fireEvent.change(nameInput, { target: { value: 'Neurologia' } });
 
         const submitButton = screen.getByRole('button', { name: /guardar/i });
