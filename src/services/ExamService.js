@@ -121,4 +121,25 @@ export default class ExamService extends BaseService {
     return axios.get(BaseService.getURL(url), headers);
   }
 
+  /**
+   * Sugerencia para Backend: Agregar endpoint que devuelva las contribuciones del usuario actual.
+   * GET /users/me/contributions
+   */
+  static getUserContributions() {
+    const headers = this.getHeaders();
+    let url = "users/me/contributions";
+    return axios.get(BaseService.getURL(url), headers);
+  }
+
+  static saveQuestion(question) {
+    const headers = this.getHeaders();
+    let url = "questions";
+    if (question.id > 0) {
+      url = url + "/" + question.id;
+      return axios.put(BaseService.getURL(url), { question }, headers);
+    } else {
+      return axios.post(BaseService.getURL(url), { question }, headers);
+    }
+  }
+
 }
