@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef, useActionState } from "react";
 import CasoForm from "./admin/CasoForm";
+import PlayerQuestionForm from "./PlayerQuestionForm";
 import ExamService from "../services/ExamService";
 import { useHistory } from 'react-router-dom';
 import { alertError, alertSuccess } from "../services/AlertService";
 import CasoContext from "../context/CasoContext";
+import { CustomButton } from "./custom";
 
 const PlayerCasoContainer = () => {
     const history = useHistory();
     const currentIdRef = useRef(null);
+    const [contributionType, setContributionType] = useState('caso');
 
     const [caso, setCaso] = useState({
         name: "",
@@ -193,11 +196,36 @@ const PlayerCasoContainer = () => {
     };
 
     return (
-        <CasoContext.Provider value={value}>
-            <div className="" style={{ padding: '2rem' }}>
-                <CasoForm />
+        <div className="" style={{ padding: '2rem' }}>
+            <div className="center-align mb-4" style={{ marginBottom: '2rem' }}>
+                <h4 className="grey-text text-darken-3">¿Qué deseas contribuir hoy?</h4>
+                <CustomButton
+                    flat={contributionType !== 'caso'}
+                    className={contributionType === 'caso' ? 'green darken-1 white-text' : 'green-text'}
+                    onClick={() => setContributionType('caso')}
+                    waves="light"
+                >
+                    Caso Clínico
+                </CustomButton>
+                <CustomButton
+                    flat={contributionType !== 'pregunta'}
+                    className={contributionType === 'pregunta' ? 'green darken-1 white-text' : 'green-text'}
+                    onClick={() => setContributionType('pregunta')}
+                    style={{ marginLeft: '10px' }}
+                    waves="light"
+                >
+                    Pregunta Individual
+                </CustomButton>
             </div>
-        </CasoContext.Provider>
+
+            {contributionType === 'caso' ? (
+                <CasoContext.Provider value={value}>
+                    <CasoForm />
+                </CasoContext.Provider>
+            ) : (
+                <PlayerQuestionForm />
+            )}
+        </div>
     );
 };
 

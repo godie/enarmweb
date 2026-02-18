@@ -25,7 +25,12 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
     <>
       <li><Link to="/">Inicio</Link></li>
       <li><Link to="/caso/1">Caso Clínico</Link></li>
-      {Auth.isPlayerAuthenticated() && <li><Link to="/contribuir">Contribuir</Link></li>}
+      {Auth.isPlayerAuthenticated() && (
+        <>
+          <li><Link to="/contribuir">Contribuir</Link></li>
+          <li><Link to="/mis-contribuciones">Mis Contribuciones</Link></li>
+        </>
+      )}
       {Auth.isUserAuthenticated() && Auth.isAdmin() && <li><Link to="/dashboard">Admin</Link></li>}
       {Auth.isUserAuthenticated() && !Auth.isAdmin() && <li><Link to="/perfil">Perfil</Link></li>}
       <ThemeToggle />

@@ -22,6 +22,7 @@ import ExamenTable from "../components/admin/ExamenTable";
 import ExamenForm from "../components/admin/ExamenForm";
 import Onboarding from "../components/Onboarding";
 import EspecialidadCasos from "../pages/Player/EspecialidadCasos";
+import MyContributions from "../pages/Player/MyContributions";
 
 import PlayerDashboard from "../components/PlayerDashboard";
 import Landing from "../components/Landing";
@@ -174,6 +175,14 @@ export default function AppRoutes() {
         component={() => (
           <App>
             <PlayerCasoContainer />
+          </App>
+        )}
+      />
+      <PlayerRoute
+        path="/mis-contribuciones"
+        component={() => (
+          <App>
+            <MyContributions />
           </App>
         )}
       />
