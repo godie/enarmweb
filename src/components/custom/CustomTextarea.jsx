@@ -98,7 +98,7 @@ const CustomTextarea = ({
       <textarea
         ref={textareaRef}
         id={id}
-        className={`materialize-textarea tm-5 ${textareaClassName}`.trim()}
+        className={`materialize-textarea  ${textareaClassName}`.trim()}
         style={computedStyle}
         value={value}
         onChange={onChange}
