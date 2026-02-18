@@ -28,7 +28,7 @@ const Pregunta = ({
       if (answer.is_correct) {
         extraClass = "green lighten-4"; // Lighter green for better text visibility
         if (answer.description !== null && answer.description !== "") {
-          answerFeedbackDescription = <p className="feedback-description">{answer.description}</p>;
+          answerFeedbackDescription = <p className="feedback-description" style={{ marginTop: '8px', fontStyle: 'italic' }}>{answer.description}</p>;
         }
       }
 
@@ -54,21 +54,41 @@ const Pregunta = ({
       extraClass = "blue lighten-5"; // Highlight selected option during exam
     }
 
+    // Generate unique ID for accessibility and grouping
+    const inputId = `q-${questionIndex}-ans-${answer.id || ansIndex}`;
+
     return (
-      <li className={`collection-item ${extraClass}`} key={ansIndex}>
-        <label htmlFor={`${questionDescription}-${answer.id}`} className="black-text">
+      <li
+        className={`collection-item hoverable ${extraClass}`}
+        key={ansIndex}
+        style={{
+          transition: 'background-color 0.2s ease, box-shadow 0.2s ease',
+          padding: 0 // Remove li padding to allow label to fill entire area
+        }}
+      >
+        <label
+          htmlFor={inputId}
+          className="black-text"
+          style={{
+            display: 'block',
+            padding: '12px 20px',
+            cursor: 'pointer',
+            width: '100%',
+            transition: 'background-color 0.2s ease'
+          }}
+        >
           <input
             type={isMultiple ? "checkbox" : "radio"}
-            value={answer.id} // Corrected: use answer.id for value
-            name={questionDescription} // Group radio buttons by question description
-            id={`${questionDescription}-${answer.id}`} // Make ID more unique combining question and answer
+            value={answer.id}
+            name={`pregunta-${questionIndex}`} // Unique grouping by question index
+            id={inputId}
             className={isMultiple ? "filled-in" : "with-gap"}
             checked={isSelected}
             onChange={(event) =>
               handleSelectOption(questionIndex, ansIndex, event)
             }
           />
-          <span>{answer.text}</span>
+          <span style={{ fontSize: '1.1rem' }}>{answer.text}</span>
           {answerIcon}
           {answerFeedbackDescription}
         </label>
