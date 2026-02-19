@@ -52,6 +52,8 @@ const QuestionForm = ({
                         value={question.text}
                         onChange={(event) => onChangeQuestion(questionIndex, event)}
                         textareaClassName="z-depth-1"
+                        maxLength={1000}
+                        data-length={1000}
                     />
                 </CustomCol>
             </CustomRow>

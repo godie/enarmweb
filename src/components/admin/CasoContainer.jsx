@@ -67,7 +67,7 @@ const CasoContainer = () => {
     }
   };
 
-  const [error, submitCasoAction] = useActionState(handleSaveCaso, null);
+  const [, submitCasoAction, isPending] = useActionState(handleSaveCaso, null);
 
   useEffect(() => {
     let isMounted = true; // Para evitar actualizar estado si el componente se desmonta
@@ -226,13 +226,6 @@ const CasoContainer = () => {
   // A simple way is to depend on `caso` but that might run too often.
   // For now, focusing on new questions and answers should be covered if `currentIdRef.current` has the right ID.
 
-  // Display error from useActionState if it exists
-  useEffect(() => {
-    if (error) {
-      // alertError('Error al Guardar', error); // Already handled in the action
-    }
-  }, [error]);
-
   const value = {
     caso,
     addQuestion,
@@ -244,6 +237,7 @@ const CasoContainer = () => {
     onChange: changeCaso,
     saveCasoAction: submitCasoAction,
     onCancel,
+    isPending,
     isAdmin: true
   };
 

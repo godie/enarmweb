@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useActionState } from "react";
+import { useState, useEffect, useRef, useActionState, startTransition } from "react";
 import { CustomButton, CustomRow, CustomCol, CustomSelect } from "./custom";
 import ExamService from "../services/ExamService";
 import QuestionForm from "./admin/QuestionForm";
@@ -59,7 +59,7 @@ const PlayerQuestionForm = () => {
         }
     };
 
-    const [, submitAction] = useActionState(handleSaveQuestion, null);
+    const [, submitAction, isPending] = useActionState(handleSaveQuestion, null);
 
     const onChangeQuestion = (index, event) => {
         const value = event.target.value;
@@ -98,6 +98,13 @@ const PlayerQuestionForm = () => {
         history.goBack();
     };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        startTransition(() => {
+            submitAction();
+        });
+    };
+
     useEffect(() => {
         if (currentIdRef.current) {
             const elementToFocus = document.getElementById(currentIdRef.current);
@@ -123,7 +130,7 @@ const PlayerQuestionForm = () => {
     return (
         <CasoContext.Provider value={value}>
             <div className="col s12">
-                <form action={submitAction} role="form">
+                <form onSubmit={handleSubmit} role="form">
                     <h3 className="center">Pregunta Individual</h3>
                     <CustomRow>
                         <CustomCol s={12}>
@@ -161,6 +168,8 @@ const PlayerQuestionForm = () => {
                                     icon="save"
                                     iconPosition="right"
                                     waves="light"
+                                    isPending={isPending}
+                                    isPendingText="GUARDANDO..."
                                 >
                                     GUARDAR PREGUNTA
                                 </CustomButton>
