@@ -34,18 +34,18 @@ describe('QuestionForm Component', () => {
 
     test('renders question text input', () => {
         renderWithContext(<QuestionForm {...mockProps} />);
-        expect(screen.getByLabelText('Texto de la pregunta')).toBeInTheDocument();
+        expect(screen.getByLabelText(/Texto de la pregunta/i)).toBeInTheDocument();
         expect(screen.getByDisplayValue('Question Text')).toBeInTheDocument();
     });
 
     test('renders correct number of answers', () => {
         renderWithContext(<QuestionForm {...mockProps} />);
-        expect(screen.getAllByLabelText(/Respuesta \d/)).toHaveLength(2);
+        expect(screen.getAllByLabelText(/Respuesta \d/i)).toHaveLength(2);
     });
 
     test('calls onChangeQuestion when text changes', () => {
         renderWithContext(<QuestionForm {...mockProps} />);
-        const input = screen.getByLabelText('Texto de la pregunta');
+        const input = screen.getByLabelText(/Texto de la pregunta/i);
         fireEvent.change(input, { target: { value: 'New Question' } });
         expect(contextValue.onChangeQuestion).toHaveBeenCalledWith(0, expect.anything());
     });
