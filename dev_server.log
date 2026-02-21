@@ -1,0 +1,12 @@
+
+> enarmweb@0.9.3 start /app
+> vite
+
+
+  VITE v7.2.2  ready in 313 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+5:52:38 PM [vite] (client) hmr update /src/components/Navi.jsx
+5:52:48 PM [vite] (client) hmr update /src/components/Navi.jsx
+ ELIFECYCLE  Command failed with exit code 143.
