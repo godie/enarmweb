@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const CustomNavbar = ({
   brand,
@@ -43,9 +43,7 @@ const CustomNavbar = ({
         </ul>
         <ul id="nav-mobile-r" className='right hide-on-med-and-down'>
           {userName !== '' && (
-            <li>
-              <Link to="/profile">{userName}</Link>
-            </li>
+            <ProfileLink userName={userName} />
           )}
         </ul>
       </div>
@@ -79,6 +77,19 @@ const Brand = ({ brand, brandLogoClasses }) => {
   }
   // Default to rendering as a span if it's just text and doesn't need to be a link
   return <span className={brandLogoClasses}>{brand}</span>;
+};
+
+const ProfileLink = ({ userName }) => {
+  const location = useLocation();
+  const isActive = location.pathname === '/profile';
+
+  return (
+    <li className={isActive ? 'active' : ''}>
+      <Link to="/profile" aria-current={isActive ? 'page' : undefined}>
+        {userName}
+      </Link>
+    </li>
+  );
 };
 
 export default CustomNavbar;
