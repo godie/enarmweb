@@ -1,8 +1,10 @@
 
 import PropTypes from "prop-types";
 
+const EMPTY_ANSWERS = [];
+
 const Pregunta = ({
-  answers: answerList = [], // Default to empty array for answers if not provided initially
+  answers: answerList = EMPTY_ANSWERS, // Default to empty array for answers if not provided initially
   index: questionIndex,
   description: questionDescription = "Pregunta", // Default for description
   handleSelectOption,
@@ -116,7 +118,7 @@ const Pregunta = ({
 // Default props defined via default parameters in function signature.
 Pregunta.defaultProps = {
   showCorrectAnswer: false, // This is now handled by default param
-  answers: [], // Added for safety, though also handled by default param
+  answers: EMPTY_ANSWERS, // Added for safety, though also handled by default param
   description: "Pregunta" // Added for safety, also handled by default param
 };
 

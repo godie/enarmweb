@@ -15,10 +15,6 @@ const CasoTable = () => {
   const history = useHistory();
   const { page: pageParam } = useParams();
 
-  const [casesData, setCasesData] = useState([]);
-  const [totalCases, setTotalCases] = useState(0);
-  const [loading, setLoading] = useState(true);
- 
   const currentPage = (() => {
     const pageNum = parseInt(pageParam, 10);
     return !isNaN(pageNum) && pageNum > 0 ? pageNum : 1;
@@ -29,7 +25,15 @@ const CasoTable = () => {
     return cached ? JSON.parse(cached) : [];
   });
 
-  const [loadingError, setLoadingError] = useState(false);
+  const [state, setState] = useState({
+    casesData: [],
+    totalCases: 0,
+    loading: true,
+    loadingError: false,
+    lastPage: currentPage
+  });
+
+  const { casesData, totalCases, loading, loadingError, lastPage } = state;
   const perPage = ITEMS_PER_PAGE;
 
   useEffect(() => {
@@ -48,38 +52,45 @@ const CasoTable = () => {
     categories.map((esp) => [`${esp.id}`, esp.name])
   ), [categories]);
 
-  // Track last page to reset state during render (avoids useEffect setState warning)
-  const [lastPage, setLastPage] = useState(currentPage);
+  // Track last page to reset state during render
   if (currentPage !== lastPage) {
-    setLastPage(currentPage);
-    setCasesData([]);
-    setLoadingError(false);
+    setState(prev => ({
+      ...prev,
+      lastPage: currentPage,
+      casesData: [],
+      loadingError: false,
+      loading: true
+    }));
   }
 
   useEffect(() => {
     // Load cases data
     ExamService.getClinicalCases(currentPage)
       .then((response) => {
-        setLoadingError(false);
-        setCasesData(response.data.clinical_cases);
-        setTotalCases(response.data.total_entries);
-        setLoadingError(false);
+        setState(prev => ({
+          ...prev,
+          loadingError: false,
+          casesData: response.data.clinical_cases,
+          totalCases: response.data.total_entries,
+          loading: false
+        }));
       })
       .catch((error) => {
-        setCasesData([]);
-        setTotalCases(0);
-        setLoadingError(true);
         console.error("Error loading exams", error);
+        setState(prev => ({
+          ...prev,
+          casesData: [],
+          totalCases: 0,
+          loadingError: true,
+          loading: false
+        }));
         Util.showToast("Error al cargar los casos clínicos.");
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, [currentPage]);
 
   const handlePageClick = (newPage) => {
     if (newPage === currentPage) return;
-    setLoading(true);
+    setState(prev => ({ ...prev, loading: true }));
     history.push(`/dashboard/casos/${newPage}`);
   };
 

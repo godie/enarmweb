@@ -13,14 +13,18 @@ const Caso = (props) => {
   const { clinicCaseId } = props;
   const history = useHistory();
 
-  const [next, setNext] = useState(2);
-  const [data, setData] = useState([]);
-  const [casoClinico, setCasoClinico] = useState("");
-  const [selectedAnswers, setSelectedAnswers] = useState([]);
-  const [goNext, setGoNext] = useState(false);
-  const [showAnswers, setShowAnswers] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [state, setState] = useState({
+    next: 2,
+    data: [],
+    casoClinico: "",
+    selectedAnswers: [],
+    goNext: false,
+    showAnswers: false,
+    loading: true,
+    isSaving: false
+  });
+
+  const { next, data, casoClinico, selectedAnswers, goNext, showAnswers, loading, isSaving } = state;
 
   const handleSelectOption = (questionIndex, answerIndex) => {
     let newSelectedAnswers = [...selectedAnswers];
@@ -40,7 +44,7 @@ const Caso = (props) => {
       newSelectedAnswers[questionIndex] = answer;
     }
 
-    setSelectedAnswers(newSelectedAnswers);
+    setState(prev => ({ ...prev, selectedAnswers: newSelectedAnswers }));
   };
 
   // componentDidMount and componentWillReceiveProps will be replaced by useEffect
@@ -48,8 +52,7 @@ const Caso = (props) => {
   const checkAnswers = (e) => {
     e.preventDefault();
     if (goNext) {
-      setGoNext(false);
-      setShowAnswers(false);
+      setState(prev => ({ ...prev, goNext: false, showAnswers: false }));
       history.push("/caso/" + next);
       return;
     } else {
@@ -67,8 +70,7 @@ const Caso = (props) => {
       if (shouldGoNext) {
         sendAnswers(selectedAnswers);
       }
-      setGoNext(shouldGoNext);
-      setShowAnswers(shouldGoNext);
+      setState(prev => ({ ...prev, goNext: shouldGoNext, showAnswers: shouldGoNext }));
       if (!shouldGoNext) {
         alertError('Espera', 'No has respondido todas las preguntas, respóndelas para poder continuar');
       }
@@ -82,7 +84,7 @@ const Caso = (props) => {
       return;
     }
 
-    setIsSaving(true);
+    setState(prev => ({ ...prev, isSaving: true }));
     const userAnswers = [];
     answers.forEach(answer => {
       if (Array.isArray(answer)) {
@@ -113,16 +115,14 @@ const Caso = (props) => {
         console.log("tronadera", error);
       })
       .finally(() => {
-        setIsSaving(false);
+        setState(prev => ({ ...prev, isSaving: false }));
       });
   };
 
   const loadPreguntas = (currentClinicCaseId) => {
-    setLoading(true);
+    setState(prev => ({ ...prev, loading: true }));
     let caseIdToLoad = currentClinicCaseId;
     var newNext = parseInt(caseIdToLoad) + 1;
-
-    setNext(newNext);
 
     ExamService.getQuestions(caseIdToLoad)
       .then((response) => {
@@ -139,14 +139,18 @@ const Caso = (props) => {
           initialSelectedAnswers.push(isMultiple ? [] : { id: 0 });
         }
 
-        setData(questions);
-        setSelectedAnswers(initialSelectedAnswers);
-        setCasoClinico(description);
-        setLoading(false);
+        setState(prev => ({
+          ...prev,
+          next: newNext,
+          data: questions,
+          selectedAnswers: initialSelectedAnswers,
+          casoClinico: description,
+          loading: false
+        }));
       })
       .catch((error) => {
         console.error("Ocurrió un error", error);
-        setLoading(false);
+        setState(prev => ({ ...prev, loading: false }));
       });
   };
 
@@ -165,7 +169,7 @@ const Caso = (props) => {
   var preguntas = data.map((pregunta, index) => {
     return (
       <Pregunta
-        key={index}
+        key={pregunta.id || `pregunta-${index}`}
         index={index}
         description={pregunta.text}
         answers={pregunta.answers}

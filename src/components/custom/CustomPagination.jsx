@@ -19,102 +19,113 @@ const CustomPagination = ({
     }
   };
 
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    if (items <= 0) return pageNumbers;
-
-    // Simplified logic for displaying page numbers
-    // Always show first and last page, and pages around activePage.
-    // A more complex logic would involve actual ellipses '...'
-
-    let startPage = Math.max(1, activePage - Math.floor(maxButtons / 2));
-    let endPage = Math.min(items, startPage + maxButtons - 1);
-
-    if (endPage - startPage + 1 < maxButtons && startPage > 1) {
-      startPage = Math.max(1, endPage - maxButtons + 1);
-    }
-
-    // Add first page if not in range
-    if (startPage > 1) {
-      const isActive = 1 === activePage;
-      pageNumbers.push(
-        <li key={1} className={isActive ? 'active' : 'waves-effect'}>
-          <a
-            href="#!"
-            onClick={(e) => { e.preventDefault(); handlePageSelect(1); }}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            1
-          </a>
-        </li>
-      );
-      if (startPage > 2) { // Add ellipsis if there's a gap
-        pageNumbers.push(<li key="ellipsis-start" className="disabled"><span aria-hidden="true">...</span></li>);
-      }
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      const isActive = i === activePage;
-      pageNumbers.push(
-        <li key={i} className={isActive ? 'active' : 'waves-effect'}>
-          <a
-            href="#!"
-            onClick={(e) => { e.preventDefault(); handlePageSelect(i); }}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {i}
-          </a>
-        </li>
-      );
-    }
-
-    // Add last page if not in range
-    if (endPage < items) {
-      if (endPage < items - 1) { // Add ellipsis if there's a gap
-        pageNumbers.push(<li key="ellipsis-end" className="disabled"><span aria-hidden="true">...</span></li>);
-      }
-      const isActive = items === activePage;
-      pageNumbers.push(
-        <li key={items} className={isActive ? 'active' : 'waves-effect'}>
-          <a
-            href="#!"
-            onClick={(e) => { e.preventDefault(); handlePageSelect(items); }}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {items}
-          </a>
-        </li>
-      );
-    }
-    return pageNumbers;
-  };
-
   const paginationClassName = `pagination ${className}`.trim();
 
   return (
     <ul className={paginationClassName} role="navigation" aria-label="Paginación" {...props}>
       <li className={activePage === 1 ? 'disabled' : 'waves-effect'} aria-disabled={activePage === 1}>
-        <a
-          href="#!"
-          onClick={(e) => { e.preventDefault(); handlePageSelect(activePage - 1); }}
+        <button
+          type="button"
+          onClick={() => handlePageSelect(activePage - 1)}
           aria-label="Anterior"
+          className="btn-flat"
+          style={{ padding: '0 10px' }}
+          disabled={activePage === 1}
         >
           {leftBtn}
-        </a>
+        </button>
       </li>
-      {renderPageNumbers()}
+      <PageNumbers
+        items={items}
+        activePage={activePage}
+        maxButtons={maxButtons}
+        onSelect={handlePageSelect}
+      />
       <li className={activePage === items ? 'disabled' : 'waves-effect'} aria-disabled={activePage === items}>
-        <a
-          href="#!"
-          onClick={(e) => { e.preventDefault(); handlePageSelect(activePage + 1); }}
+        <button
+          type="button"
+          onClick={() => handlePageSelect(activePage + 1)}
           aria-label="Siguiente"
+          className="btn-flat"
+          style={{ padding: '0 10px' }}
+          disabled={activePage === items}
         >
           {rightBtn}
-        </a>
+        </button>
       </li>
     </ul>
   );
 };
+
+const PageNumbers = ({ items, activePage, maxButtons, onSelect }) => {
+  const pageNumbers = [];
+  if (items <= 0) return null;
+
+  let startPage = Math.max(1, activePage - Math.floor(maxButtons / 2));
+  let endPage = Math.min(items, startPage + maxButtons - 1);
+
+  if (endPage - startPage + 1 < maxButtons && startPage > 1) {
+    startPage = Math.max(1, endPage - maxButtons + 1);
+  }
+
+  // Add first page if not in range
+  if (startPage > 1) {
+    const isActive = 1 === activePage;
+    pageNumbers.push(
+      <li key="page-1" className={isActive ? 'active' : 'waves-effect'}>
+        <button
+          type="button"
+          className="btn-flat"
+          onClick={() => onSelect(1)}
+          aria-current={isActive ? 'page' : undefined}
+        >
+          1
+        </button>
+      </li>
+    );
+    if (startPage > 2) {
+      pageNumbers.push(<li key="ellipsis-start" className="disabled"><span aria-hidden="true">...</span></li>);
+    }
+  }
+
+  for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
+    const isActive = pageNum === activePage;
+    pageNumbers.push(
+      <li key={`page-${pageNum}`} className={isActive ? 'active' : 'waves-effect'}>
+        <button
+          type="button"
+          className="btn-flat"
+          onClick={() => onSelect(pageNum)}
+          aria-current={isActive ? 'page' : undefined}
+        >
+          {pageNum}
+        </button>
+      </li>
+    );
+  }
+
+  // Add last page if not in range
+  if (endPage < items) {
+    if (endPage < items - 1) {
+      pageNumbers.push(<li key="ellipsis-end" className="disabled"><span aria-hidden="true">...</span></li>);
+    }
+    const isActive = items === activePage;
+    pageNumbers.push(
+      <li key={`page-${items}`} className={isActive ? 'active' : 'waves-effect'}>
+        <button
+          type="button"
+          className="btn-flat"
+          onClick={() => onSelect(items)}
+          aria-current={isActive ? 'page' : undefined}
+        >
+          {items}
+        </button>
+      </li>
+    );
+  }
+  return pageNumbers;
+};
+
 
 CustomPagination.propTypes = {
   items: PropTypes.number.isRequired, // Total number of pages

@@ -5,26 +5,33 @@ import CustomPreloader from "./custom/CustomPreloader";
 import styles from "./Profile.module.css";
 
 const Profile = () => {
-  const [user] = useState(() => Auth.getUserInfo() || { id: null });
-  const [achievements, setAchievements] = useState([]);
-  const [loading, setLoading] = useState(() => (user && user.id ? true : false));
-  const [error, setError] = useState(() =>
-    (user && user.id) ? null : "No se encontró información del usuario. Por favor inicia sesión."
-  );
+  const user = Auth.getUserInfo() || { id: null };
+  const [state, setState] = useState({
+    achievements: [],
+    loading: !!user.id,
+    error: user.id ? null : "No se encontró información del usuario. Por favor inicia sesión."
+  });
+
+  const { achievements, loading, error } = state;
 
   useEffect(() => {
-
     if (!user.id) return;
 
     UserService.getAchievements(user.id)
       .then(response => {
-        setAchievements(response.data);
-        setLoading(false);
+        setState({
+          achievements: response.data,
+          loading: false,
+          error: null
+        });
       })
       .catch(err => {
         console.error("Error fetching achievements:", err);
-        setError("Error fetching achievements.");
-        setLoading(false);
+        setState({
+          achievements: [],
+          error: "Error fetching achievements.",
+          loading: false
+        });
       });
   }, [user.id]);
 

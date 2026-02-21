@@ -23,32 +23,21 @@ const CustomNavbar = ({
 
   const navClasses = fixed ? 'navbar-fixed' : '';
 
-  const renderBrand = () => {
-    if (React.isValidElement(brand)) {
-      // If brand is a React element, clone it to add classes
-      return React.cloneElement(brand, {
-        className: `${brandLogoClasses} ${brand.props.className || ''}`.trim()
-      });
-    }
-    // Default to rendering as an <a> tag if it's a string or other non-element
-    return <a href="#!" className={brandLogoClasses}>{brand}</a>;
-  };
-
   const navbarClasses = `nav navbar ${className}`.trim();
 
   const mainNav = (
     <nav {...props} className={navbarClasses}> {/* Main nav classes like color go here */}
       <div className={navWrapperClasses}>
-        {renderBrand()}
-        <a
-          href="#"
-          onClick={(e) => e.preventDefault()}
+        <Brand brand={brand} brandLogoClasses={brandLogoClasses} />
+        <button
+          type="button"
           data-target={sidenavTriggerId}
-          className="sidenav-trigger"
+          className="sidenav-trigger btn-flat"
           aria-label="Abrir menú de navegación"
+          style={{ padding: 0, margin: 0, height: 'auto', lineHeight: 'inherit' }}
         >
           <i className="material-icons">menu</i>
-        </a>
+        </button>
         <ul id="nav-mobile" className={`${alignLinks === 'left' ? 'left' : 'right'} hide-on-med-and-down`}>
           {children}
         </ul>
@@ -79,6 +68,17 @@ CustomNavbar.propTypes = {
   fixed: PropTypes.bool,
   sidenavTriggerId: PropTypes.string,
   centerLogo: PropTypes.bool,
+};
+
+const Brand = ({ brand, brandLogoClasses }) => {
+  if (React.isValidElement(brand)) {
+    // If brand is a React element, clone it to add classes
+    return React.cloneElement(brand, {
+      className: `${brandLogoClasses} ${brand.props.className || ''}`.trim()
+    });
+  }
+  // Default to rendering as a span if it's just text and doesn't need to be a link
+  return <span className={brandLogoClasses}>{brand}</span>;
 };
 
 export default CustomNavbar;
