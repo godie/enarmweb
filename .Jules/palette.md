@@ -74,3 +74,7 @@
 ## 2025-06-13 - [Required Indicators and Character Counters for Improved Form Guidance]
 **Learning:** Adding standardized required indicators (red asterisk and `aria-required`) and character counters (via `data-length`) to contribution forms provides essential guidance for users, reducing uncertainty and improving data quality. When these visual cues are added, automated tests using `getByLabelText` must be updated to use regex matching to accommodate the newly added asterisk in the label text.
 **Action:** Always provide visual and semantic cues for required fields and character limits in user-facing forms, and ensure test locators are robust to these UI decorations.
+
+## 2025-06-14 - [Active Navigation Highlighting and Logo Conflict Prevention]
+**Learning:** Implementing active state highlighting in Materialize CSS navigation bars requires applying the `active` class to the `<li>` element and `aria-current="page"` to the inner `<a>`. Using `useLocation` from `react-router-dom` enables robust route detection for both exact and partial matches. Crucially, when links are right-aligned, avoiding the `center` class for the brand logo prevents visual overlap on wider viewports.
+**Action:** Always implement semantic and visual active states for navigation and audit logo positioning against link density to prevent UI collision.
