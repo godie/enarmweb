@@ -195,7 +195,7 @@ export default function AppRoutes() {
         )}
       />
       <PlayerRoute
-        path="/profile"
+        path="/perfil"
         component={() => (
           <App>
             <Profile />
