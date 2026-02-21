@@ -10,15 +10,19 @@ import { Link } from 'react-router-dom';
 import RecentSummaryTable from './RecentSummaryTable';
 
 const Summary = () => {
-    const [stats, setStats] = useState({
-        categories: 0,
-        clinicalCases: 0,
-        questions: 0,
-        exams: 0
+    const [state, setState] = useState({
+        stats: {
+            categories: 0,
+            clinicalCases: 0,
+            questions: 0,
+            exams: 0
+        },
+        loading: true,
+        recentCategories: [],
+        recentCases: []
     });
-    const [loading, setLoading] = useState(true);
-    const [recentCategories, setRecentCategories] = useState([]);
-    const [recentCases, setRecentCases] = useState([]);
+
+    const { stats, loading, recentCategories, recentCases } = state;
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -31,19 +35,20 @@ const Summary = () => {
 
                 // Assuming getClinicalCases returns { clinical_cases: [], total_entries: N }
                 // and loadCategories returns array directly in data
-                setStats({
-                    categories: cats.data.length || 0,
-                    clinicalCases: cases.data.total_entries || 0,
-                    questions: 150, // This seems hardcoded in original, ideally should come from API
-                    exams: 8 // Hardcoded in original
+                setState({
+                    stats: {
+                        categories: cats.data.length || 0,
+                        clinicalCases: cases.data.total_entries || 0,
+                        questions: 150, // This seems hardcoded in original, ideally should come from API
+                        exams: 8 // Hardcoded in original
+                    },
+                    recentCategories: (cats.data || []).slice(0, 5),
+                    recentCases: (cases.data.clinical_cases || []).slice(0, 5),
+                    loading: false
                 });
-
-                setRecentCategories((cats.data || []).slice(0, 5));
-                setRecentCases((cases.data.clinical_cases || []).slice(0, 5));
-                setLoading(false);
             } catch (error) {
                 console.error("Error fetching dashboard stats", error);
-                setLoading(false);
+                setState(prev => ({ ...prev, loading: false }));
             }
         };
 

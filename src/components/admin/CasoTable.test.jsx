@@ -354,7 +354,7 @@ describe('CasoTable Component', () => {
       expect(screen.getByText(`Casos Clínicos (30)`)).toBeInTheDocument();
     });
 
-    const paginationLinks = container.querySelectorAll('.pagination li a');
+    const paginationLinks = container.querySelectorAll('.pagination li button');
     const page2Button = Array.from(paginationLinks).find(
       (el) => el.textContent === '2',
     );

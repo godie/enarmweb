@@ -14,30 +14,40 @@ import styles from './Onboarding.module.css';
 
 const Onboarding = () => {
     const history = useHistory();
-    const [categories, setCategories] = useState([]);
-    const [selected, setSelected] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+    const [state, setState] = useState({
+        categories: [],
+        selected: [],
+        loading: true,
+        saving: false
+    });
+    const { categories, selected, loading, saving } = state;
     const user = Auth.getUserInfo();
 
     useEffect(() => {
         ExamService.loadCategories()
             .then(res => {
-                setCategories(res.data);
-                setLoading(false);
+                setState(prev => ({
+                    ...prev,
+                    categories: res.data,
+                    loading: false
+                }));
             })
             .catch(err => {
                 console.error(err);
-                setLoading(false);
+                setState(prev => ({ ...prev, loading: false }));
             });
     }, []);
 
     const toggleSpecialty = (id) => {
-        if (selected.includes(id)) {
-            setSelected(selected.filter(s => s !== id));
-        } else {
-            setSelected([...selected, id]);
-        }
+        setState(prev => {
+            const isSelected = prev.selected.includes(id);
+            return {
+                ...prev,
+                selected: isSelected
+                    ? prev.selected.filter(s => s !== id)
+                    : [...prev.selected, id]
+            };
+        });
     };
 
     const handleKeyDown = (e, id) => {
@@ -53,7 +63,7 @@ const Onboarding = () => {
             return;
         }
 
-        setSaving(true);
+        setState(prev => ({ ...prev, saving: true }));
         try {
             const updatedPreferences = { ...user.preferences, specialties: selected };
             await UserService.updateUser(user.id, { preferences: updatedPreferences });
@@ -69,8 +79,7 @@ const Onboarding = () => {
         } catch (error) {
             console.error(error);
             alertError("Error", "No se pudieron guardar tus preferencias.");
-        } finally {
-            setSaving(false);
+            setState(prev => ({ ...prev, saving: false }));
         }
     };
 
