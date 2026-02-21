@@ -53,6 +53,8 @@ const AnswerForm = ({
                         onChangeAnswer(questionIndex, answerIndex, "text", event)
                     }
                     name={answerTextName}
+                    required
+                    data-length={255}
                 />
             </CustomCol>
             <CustomCol s={1} className="right-align" style={{ marginTop: '10px' }}>
@@ -82,6 +84,7 @@ const AnswerForm = ({
                         }
                         name={answerDescriptionName}
                         textareaClassName="z-depth-1"
+                        data-length={1000}
                     />
                 </CustomCol>
             )}

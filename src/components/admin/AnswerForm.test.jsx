@@ -30,14 +30,14 @@ describe('AnswerForm Component', () => {
 
     test('renders answer input fields', () => {
         renderWithContext(<AnswerForm {...mockProps} />);
-        expect(screen.getByLabelText('Respuesta 2')).toBeInTheDocument();
+        expect(screen.getByLabelText(/Respuesta 2/i)).toBeInTheDocument();
         expect(screen.getByDisplayValue('Answer Text')).toBeInTheDocument();
-        expect(screen.getByLabelText('¿Correcta?')).toBeInTheDocument();
+        expect(screen.getByLabelText(/¿Correcta?/i)).toBeInTheDocument();
     });
 
     test('calls onChangeAnswer with text change', () => {
         renderWithContext(<AnswerForm {...mockProps} />);
-        const input = screen.getByLabelText('Respuesta 2');
+        const input = screen.getByLabelText(/Respuesta 2/i);
         fireEvent.change(input, { target: { value: 'New Answer' } });
         expect(contextValue.onChangeAnswer).toHaveBeenCalledWith(0, 1, 'text', expect.anything());
     });

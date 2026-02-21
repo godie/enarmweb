@@ -70,3 +70,7 @@
 ## 2025-06-12 - [Maximizing Clickable Areas and Robust Input Grouping]
 **Learning:** In collection-based form inputs (like exam questions), moving padding from the `<li>` to a full-width block `label` maximizes the interactive hit area, significantly improving the user experience on both desktop and touch devices. Furthermore, using indices (e.g., `questionIndex`) instead of text for input `name` and `id` attributes ensures robust grouping and accessibility even when multiple questions share identical text.
 **Action:** Always wrap collection-item inputs in full-width block labels and use stable, unique indices for input grouping.
+
+## 2025-06-13 - [Required Indicators and Character Counters for Improved Form Guidance]
+**Learning:** Adding standardized required indicators (red asterisk and `aria-required`) and character counters (via `data-length`) to contribution forms provides essential guidance for users, reducing uncertainty and improving data quality. When these visual cues are added, automated tests using `getByLabelText` must be updated to use regex matching to accommodate the newly added asterisk in the label text.
+**Action:** Always provide visual and semantic cues for required fields and character limits in user-facing forms, and ensure test locators are robust to these UI decorations.
