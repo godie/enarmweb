@@ -1,8 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Auth from "../modules/Auth";
-import UserService from "../services/UserService";
 import ExamService from "../services/ExamService";
-import EnarmUtil from "../modules/EnarmUtil";
 import {
     CustomPreloader,
     CustomRow,
@@ -11,10 +9,8 @@ import {
     StatCard,
     CustomButton,
     CustomTextInput,
-    CustomSelect,
-    CustomCheckbox
+    CustomSelect
 } from "./custom";
-import styles from "./Profile.module.css";
 
 const Profile = () => {
     const user = Auth.getUserInfo() || { id: null, name: '', email: '', role: 'player' };

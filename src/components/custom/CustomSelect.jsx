@@ -18,6 +18,9 @@ const CustomSelect = ({
   iconClassName = '',
   options = DEFAULT_OPTIONS, // Materialize FormSelect options
   placeholder, // Placeholder text for the first disabled option
+  s, m, l, xl,
+  offset,
+  helperText,
   ...props
 }) => {
   const selectRef = useRef(null);
@@ -69,7 +72,17 @@ const CustomSelect = ({
     }
   };
 
-  const wrapperClasses = `input-field ${className}`.trim();
+  let wrapperClasses = `input-field ${className}`.trim();
+  if (s) wrapperClasses += ` col s${s}`;
+  if (m) wrapperClasses += ` col m${m}`;
+  if (l) wrapperClasses += ` col l${l}`;
+  if (xl) wrapperClasses += ` col xl${xl}`;
+  if (offset) {
+    offset.split(' ').forEach(off => {
+      if (off) wrapperClasses += ` offset-${off}`;
+    });
+  }
+
   const finalSelectClassName = `${selectClassName}`.trim();
 
   // Add a placeholder option if a placeholder is provided and it's not a multiple select
@@ -79,8 +92,8 @@ const CustomSelect = ({
 
 
   return (
-    <div className={wrapperClasses}>
-      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
+    <div className={wrapperClasses.trim()}>
+      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       <select
         ref={selectRef}
         id={id}
@@ -110,6 +123,7 @@ const CustomSelect = ({
           )}
         </label>
       )}
+      {helperText && <span className="helper-text">{helperText}</span>}
     </div>
   );
 };
@@ -128,6 +142,12 @@ CustomSelect.propTypes = {
   iconClassName: PropTypes.string,
   options: PropTypes.object, // Materialize FormSelect options
   placeholder: PropTypes.string,
+  s: PropTypes.number,
+  m: PropTypes.number,
+  l: PropTypes.number,
+  xl: PropTypes.number,
+  offset: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 export default CustomSelect;
