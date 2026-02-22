@@ -14,6 +14,10 @@ const CustomSelect = ({
   multiple = false,
   className = '', // For the wrapping div.input-field
   selectClassName = '', // For the <select> element itself
+  s,
+  m,
+  l,
+  xl,
   icon,
   iconClassName = '',
   options = DEFAULT_OPTIONS, // Materialize FormSelect options
@@ -69,7 +73,12 @@ const CustomSelect = ({
     }
   };
 
-  const wrapperClasses = `input-field ${className}`.trim();
+  let wrapperClasses = `input-field col ${className}`.trim();
+  if (s) wrapperClasses += ` s${s}`;
+  if (m) wrapperClasses += ` m${m}`;
+  if (l) wrapperClasses += ` l${l}`;
+  if (xl) wrapperClasses += ` xl${xl}`;
+
   const finalSelectClassName = `${selectClassName}`.trim();
 
   // Add a placeholder option if a placeholder is provided and it's not a multiple select
@@ -79,7 +88,7 @@ const CustomSelect = ({
 
 
   return (
-    <div className={wrapperClasses}>
+    <div className={wrapperClasses.trim()}>
       {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
       <select
         ref={selectRef}
@@ -124,6 +133,10 @@ CustomSelect.propTypes = {
   multiple: PropTypes.bool,
   className: PropTypes.string, // For the wrapper div
   selectClassName: PropTypes.string, // For the <select> element
+  s: PropTypes.number,
+  m: PropTypes.number,
+  l: PropTypes.number,
+  xl: PropTypes.number,
   icon: PropTypes.string,
   iconClassName: PropTypes.string,
   options: PropTypes.object, // Materialize FormSelect options
