@@ -29,7 +29,7 @@ const AuthForm = ({
     const errorBlock = error && (
         <p className="red-text center-align valign-wrapper" role="alert" aria-live="assertive" style={{ justifyContent: "center" }}>
             <CustomIcon tiny className="red-text">highlight_off</CustomIcon>
-            <span className="ml-2">{error}</span>
+            <span className="enarm-valign-gap">{error}</span>
         </p>
     );
 
@@ -109,7 +109,7 @@ const AuthForm = ({
                                     type="submit"
                                     large
                                     waves="light"
-                                    className="white-text text"
+                                    className="white-text"
                                     isPending={isPending}
                                     isPendingText={isPendingText}
                                 >

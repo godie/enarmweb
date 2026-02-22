@@ -79,6 +79,7 @@ const CustomTextarea = ({
 
   return (
     <div className={wrapperClasses.trim()}>
+      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       {label && (
         <label htmlFor={id} className="active">
           {label}
@@ -94,7 +95,6 @@ const CustomTextarea = ({
           )}
         </label>
       )}
-      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
       <textarea
         ref={textareaRef}
         id={id}

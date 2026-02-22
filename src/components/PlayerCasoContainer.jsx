@@ -5,7 +5,7 @@ import ExamService from "../services/ExamService";
 import { useHistory } from 'react-router-dom';
 import { alertError, alertSuccess } from "../services/AlertService";
 import CasoContext from "../context/CasoContext";
-import { CustomButton, CustomTable, CustomRow, CustomCol, CustomPreloader } from "./custom";
+import { CustomButton, CustomTable, CustomPreloader } from "./custom";
 import EnarmUtil from "../modules/EnarmUtil";
 
 const STATUS_LABELS = {

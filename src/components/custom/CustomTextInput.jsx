@@ -79,7 +79,7 @@ const CustomTextInput = ({
 
   return (
     <div className={wrapperClasses.trim()}>
-      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
+      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       
       <input
         ref={inputRef}

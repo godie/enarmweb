@@ -3,7 +3,6 @@ import Auth from "../modules/Auth";
 import UserService from "../services/UserService";
 import ExamService from "../services/ExamService";
 import { alertSuccess, alertError } from "../services/AlertService";
-import EnarmUtil from "../modules/EnarmUtil";
 import {
     CustomPreloader,
     CustomRow,
@@ -18,7 +17,6 @@ import {
     CustomCollectionItem,
     CustomProgressBar
 } from "./custom";
-import styles from "./Profile.module.css";
 
 const Profile = () => {
     const user = Auth.getUserInfo() || { id: null, name: '', email: '', role: 'player', preferences: { specialties: [] } };
@@ -135,7 +133,7 @@ const Profile = () => {
                         <i className="material-icons">edit</i>
                     </span>
                 </div>
-                <h4 style={{ marginTop: '1rem', fontWeight: 600 }}>@{formData.nickname}</h4>
+                <h4 style={{ marginTop: '1rem', fontWeight: 600 }}>{`@${formData.nickname}`}</h4>
                 <h5 className="grey-text text-darken-1">{formData.name}</h5>
                 <div style={{ marginTop: '0.5rem' }}>
                     <span className="badge green white-text enarm-badge-pill" style={{ float: 'none', padding: '5px 15px', height: 'auto' }}>

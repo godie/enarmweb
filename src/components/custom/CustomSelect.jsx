@@ -20,12 +20,17 @@ const CustomSelect = ({
   xl,
   icon,
   iconClassName = '',
-  options = DEFAULT_OPTIONS, // Materialize FormSelect options
+  options = DEFAULT_OPTIONS, // Materialize FormSelect options or array of {value, label}
   placeholder, // Placeholder text for the first disabled option
   ...props
 }) => {
   const selectRef = useRef(null);
   const instanceRef = useRef(null);
+
+  // Determine if 'options' is used for Materialize config or for rendering items
+  const isOptionsArray = Array.isArray(options);
+  const materializeOptions = isOptionsArray ? DEFAULT_OPTIONS : options;
+  const selectData = isOptionsArray ? options : [];
 
   useEffect(() => {
     if (selectRef.current) {
@@ -35,8 +40,7 @@ const CustomSelect = ({
       }
       // Initialize new instance
       instanceRef.current = FormSelect.init(selectRef.current, {
-        ...options,
-        // dropdownOptions: options.dropdownOptions || {} // Default if not provided
+        ...materializeOptions,
       });
     }
 
@@ -47,7 +51,7 @@ const CustomSelect = ({
       }
     };
     // Re-initialize if disabled, multiple, or children change (options structure might change)
-  }, [disabled, multiple, children, options]);
+  }, [disabled, multiple, children, materializeOptions]);
 
 
   // This effect tries to handle programmatic value changes after initialization
@@ -62,9 +66,9 @@ const CustomSelect = ({
       if (instanceRef.current && instanceRef.current.destroy) {
         instanceRef.current.destroy();
       }
-      instanceRef.current = FormSelect.init(selectRef.current, options);
+      instanceRef.current = FormSelect.init(selectRef.current, materializeOptions);
     }
-  }, [value, options]); // Dependency on `value` is crucial here
+  }, [value, materializeOptions]); // Dependency on `materializeOptions` is crucial here
 
 
   const handleChange = (event) => {
@@ -86,10 +90,12 @@ const CustomSelect = ({
     <option value="" disabled={value !== ""}>{placeholder}</option>
   ) : null;
 
+  // label active if value exists or placeholder is present (other than space)
+  const isLabelActive = (value !== undefined && value !== '') || (props.defaultValue !== undefined && props.defaultValue !== '') || (placeholder && placeholder !== ' ');
 
   return (
     <div className={wrapperClasses.trim()}>
-      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
+      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       <select
         ref={selectRef}
         id={id}
@@ -102,10 +108,15 @@ const CustomSelect = ({
         aria-required={props.required ? 'true' : undefined}
       >
         {placeholderOption}
+        {selectData.map(opt => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
         {children}
       </select>
       {label && (
-        <label htmlFor={id} className={value || placeholder ? 'active' : ''}>
+        <label htmlFor={id} className={isLabelActive ? 'active' : ''}>
           {label}
           {props.required && (
             <span
