@@ -1,9 +1,11 @@
-import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
+import { vi, describe, beforeEach, test, expect } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Profile from './Profile';
 import Auth from '../modules/Auth';
 import ExamService from '../services/ExamService';
+import UserService from '../services/UserService';
+import AlertService from '../services/AlertService';
 
 // Mock modules
 vi.mock('../modules/Auth', () => ({
@@ -18,10 +20,17 @@ vi.mock('../services/ExamService', () => ({
   }
 }));
 
-// Mock modules that might be used by children
 vi.mock('../services/UserService', () => ({
   default: {
+    getUserStats: vi.fn(),
     updateUser: vi.fn(),
+  }
+}));
+
+vi.mock('../services/AlertService', () => ({
+  default: {
+    success: vi.fn(),
+    error: vi.fn(),
   }
 }));
 
@@ -31,13 +40,23 @@ describe('Profile Component', () => {
     name: 'Test Doctor',
     email: 'test@example.com',
     role: 'player',
-    nickname: 'test_doc'
+    nickname: 'test_doc',
+    preferences: {
+        specialties: [1]
+    }
   };
 
   const mockCategories = [
     { id: 1, name: 'Cardiología' },
     { id: 2, name: 'Pediatría' },
   ];
+
+  const mockStats = {
+    total_answers: 150,
+    points: 450,
+    accuracy: 75.5,
+    streak: 5
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -46,14 +65,17 @@ describe('Profile Component', () => {
   test('renders loading state initially', () => {
     vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
     vi.mocked(ExamService.loadCategories).mockReturnValue(new Promise(() => { }));
+    vi.mocked(UserService.getUserStats).mockReturnValue(new Promise(() => { }));
 
-    render(<Profile />);
-    expect(screen.getByRole('progressbar') || screen.getByTestId('preloader')).toBeInTheDocument();
+    const { container } = render(<Profile />);
+    // In our new Profile, we use CustomPreloader
+    expect(container.querySelector('.enarm-loading-wrapper')).toBeInTheDocument();
   });
 
   test('displays user information correctly', async () => {
     vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
     vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
+    vi.mocked(UserService.getUserStats).mockResolvedValue({ data: mockStats });
 
     render(<Profile />);
 
@@ -63,30 +85,53 @@ describe('Profile Component', () => {
       expect(screen.getByText(/Test Doctor/i)).toBeInTheDocument();
 
       // Check for stats
-      expect(screen.getByText(/Casos Resueltos/i)).toBeInTheDocument();
-      expect(screen.getByText(/Precisión/i)).toBeInTheDocument();
+      expect(screen.getByText(/Respuestas Totales/i)).toBeInTheDocument();
+      expect(screen.getByText(/Puntos/i)).toBeInTheDocument();
+      expect(screen.getByText('150')).toBeInTheDocument();
+      expect(screen.getByText('450')).toBeInTheDocument();
+      expect(screen.getByText('75.5%')).toBeInTheDocument();
+      expect(screen.getByText('5 días')).toBeInTheDocument();
     });
   });
 
   test('renders specialty progress bars', async () => {
     vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
     vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
+    vi.mocked(UserService.getUserStats).mockResolvedValue({ data: mockStats });
 
     render(<Profile />);
 
     await waitFor(() => {
-      expect(screen.getByText('Cardiología')).toBeInTheDocument();
-      expect(screen.getByText('Pediatría')).toBeInTheDocument();
+      // Use getAllByText as there are multiple occurrences (progress and selection)
+      expect(screen.getAllByText('Cardiología').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Pediatría').length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  test('renders specialty selection checkboxes', async () => {
+    vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
+    vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
+    vi.mocked(UserService.getUserStats).mockResolvedValue({ data: mockStats });
+
+    render(<Profile />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Selección de Especialidades/i)).toBeInTheDocument();
+      const checkboxes = screen.getAllByRole('checkbox');
+      // leaderboardVisible switch + 2 specialties
+      expect(checkboxes.length).toBeGreaterThanOrEqual(3);
     });
   });
 
   test('renders form fields', async () => {
     vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
     vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
+    vi.mocked(UserService.getUserStats).mockResolvedValue({ data: mockStats });
 
     render(<Profile />);
 
     await waitFor(() => {
+      // Use label regex to match correctly
       expect(screen.getByLabelText(/Nombre Completo/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Nickname/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/Correo Electrónico/i)).toBeInTheDocument();
@@ -96,6 +141,7 @@ describe('Profile Component', () => {
   test('renders subscription section', async () => {
     vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
     vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
+    vi.mocked(UserService.getUserStats).mockResolvedValue({ data: mockStats });
 
     render(<Profile />);
 

@@ -10,6 +10,10 @@ const CustomTextInput = ({
   disabled = false,
   className = '',
   inputClassName = '',
+  s,
+  m,
+  l,
+  xl,
   icon,
   iconClassName = '',
   type = 'text',
@@ -20,6 +24,7 @@ const CustomTextInput = ({
   'data-length': dataLength,
   passwordToggle = false,
   passwordToggleClassName = 'grey-text text-darken-2',
+  helperText,
   ...props
 }) => {
   const inputRef = useRef(null);
@@ -60,12 +65,20 @@ const CustomTextInput = ({
     setShowPassword(prev => !prev);
   };
 
-  // Construir clases
-  const wrapperClasses = `input-field${className ? ` ${className}` : ''}`;
+  // Construir clases del wrapper
+  let wrapperClasses = `input-field col${className ? ` ${className}` : ''}`;
+  if (s) wrapperClasses += ` s${s}`;
+  if (m) wrapperClasses += ` m${m}`;
+  if (l) wrapperClasses += ` l${l}`;
+  if (xl) wrapperClasses += ` xl${xl}`;
+
   const finalInputClassName = `${inputClassName}${validate ? ' validate' : ''}`.trim();
 
+  // label active if value exists or placeholder is present (other than space)
+  const isLabelActive = (value !== undefined && value !== '') || (props.defaultValue !== undefined && props.defaultValue !== '') || (placeholder && placeholder !== ' ');
+
   return (
-    <div className={wrapperClasses}>
+    <div className={wrapperClasses.trim()}>
       {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
       
       <input
@@ -114,7 +127,7 @@ const CustomTextInput = ({
       )}
 
       {label && (
-        <label htmlFor={id}>
+        <label htmlFor={id} className={isLabelActive ? 'active' : ''}>
           {label}
           {props.required && (
             <span
@@ -128,6 +141,11 @@ const CustomTextInput = ({
           )}
         </label>
       )}
+      {helperText && (
+        <span className="helper-text" data-error="error" data-success="success">
+          {helperText}
+        </span>
+      )}
     </div>
   );
 };
@@ -140,6 +158,10 @@ CustomTextInput.propTypes = {
   disabled: PropTypes.bool,
   className: PropTypes.string,
   inputClassName: PropTypes.string,
+  s: PropTypes.number,
+  m: PropTypes.number,
+  l: PropTypes.number,
+  xl: PropTypes.number,
   icon: PropTypes.string,
   iconClassName: PropTypes.string,
   type: PropTypes.string,
@@ -150,6 +172,7 @@ CustomTextInput.propTypes = {
   placeholder: PropTypes.string,
   passwordToggle: PropTypes.bool,
   passwordToggleClassName: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 export default CustomTextInput;
