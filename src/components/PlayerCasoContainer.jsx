@@ -86,10 +86,7 @@ const PlayerCasoContainer = () => {
         }
     };
 
-    const [error, submitCasoAction] = useActionState(handleSaveCaso, null);
-    if (error) {
-        alertError('Error', 'No se pudo enviar el caso para revisión.');
-    }
+    const [, submitCasoAction, isPending] = useActionState(handleSaveCaso, null);
 
     const addQuestion = () => {
         let newQuestion = {
@@ -238,6 +235,7 @@ const PlayerCasoContainer = () => {
         onChange: changeCaso,
         saveCasoAction: submitCasoAction,
         onCancel,
+        isPending,
         isAdmin: false
     };
 

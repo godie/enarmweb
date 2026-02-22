@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { CustomButton, CustomTextInput, CustomTextarea, CustomRow, CustomCol, CustomSelect } from "../custom";
 import ExamService from "../../services/ExamService";
 import QuestionForm from "./QuestionForm";
@@ -12,10 +12,18 @@ const CasoForm = () => {
     addQuestion,
     onCancel,
     saveCasoAction,
+    isPending,
     isAdmin = false
   } = useCaso();
 
   const [categories, setCategories] = useState([]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    startTransition(() => {
+      saveCasoAction();
+    });
+  };
 
   useEffect(() => {
     ExamService.loadCategories().then(res => {
@@ -25,7 +33,7 @@ const CasoForm = () => {
 
   return (
     <div className="col s12 m12 l12">
-      <form className="" action={saveCasoAction}>
+      <form className="" onSubmit={handleSubmit}>
         <h3 className="center">Caso Clínico</h3>
         <CustomCol s={12} m={6}>
           <CustomTextInput
@@ -35,6 +43,8 @@ const CasoForm = () => {
             name="name"
             onChange={onChange}
             required
+            maxLength={100}
+            data-length={100}
           />
         </CustomCol>
         <CustomCol s={12} m={6}>
@@ -78,6 +88,8 @@ const CasoForm = () => {
               onChange={onChange}
               name="description"
               textareaClassName="z-depth-1 mt-3"
+              maxLength={2000}
+              data-length={2000}
             />
           </CustomCol>
         </CustomRow>
@@ -153,6 +165,8 @@ const CasoForm = () => {
                   icon="save"
                   iconPosition="right"
                   className="green darken-1"
+                  isPending={isPending}
+                  isPendingText="GUARDANDO..."
                 >
                   GUARDAR CASO CLÍNICO
                 </CustomButton>
