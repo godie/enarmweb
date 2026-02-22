@@ -20,6 +20,9 @@ const CustomTextInput = ({
   'data-length': dataLength,
   passwordToggle = false,
   passwordToggleClassName = 'grey-text text-darken-2',
+  s, m, l, xl,
+  offset,
+  helperText,
   ...props
 }) => {
   const inputRef = useRef(null);
@@ -61,12 +64,22 @@ const CustomTextInput = ({
   };
 
   // Construir clases
-  const wrapperClasses = `input-field${className ? ` ${className}` : ''}`;
+  let wrapperClasses = `input-field ${className}`.trim();
+  if (s) wrapperClasses += ` col s${s}`;
+  if (m) wrapperClasses += ` col m${m}`;
+  if (l) wrapperClasses += ` col l${l}`;
+  if (xl) wrapperClasses += ` col xl${xl}`;
+  if (offset) {
+    offset.split(' ').forEach(off => {
+      if (off) wrapperClasses += ` offset-${off}`;
+    });
+  }
+
   const finalInputClassName = `${inputClassName}${validate ? ' validate' : ''}`.trim();
 
   return (
-    <div className={wrapperClasses}>
-      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()}>{icon}</i>}
+    <div className={wrapperClasses.trim()}>
+      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       
       <input
         ref={inputRef}
@@ -128,6 +141,8 @@ const CustomTextInput = ({
           )}
         </label>
       )}
+
+      {helperText && <span className="helper-text">{helperText}</span>}
     </div>
   );
 };
@@ -150,6 +165,12 @@ CustomTextInput.propTypes = {
   placeholder: PropTypes.string,
   passwordToggle: PropTypes.bool,
   passwordToggleClassName: PropTypes.string,
+  s: PropTypes.number,
+  m: PropTypes.number,
+  l: PropTypes.number,
+  xl: PropTypes.number,
+  offset: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 export default CustomTextInput;

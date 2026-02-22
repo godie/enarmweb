@@ -78,3 +78,7 @@
 ## 2025-06-14 - [Active Navigation Highlighting and Logo Conflict Prevention]
 **Learning:** Implementing active state highlighting in Materialize CSS navigation bars requires applying the `active` class to the `<li>` element and `aria-current="page"` to the inner `<a>`. Using `useLocation` from `react-router-dom` enables robust route detection for both exact and partial matches. Crucially, when links are right-aligned, avoiding the `center` class for the brand logo prevents visual overlap on wider viewports.
 **Action:** Always implement semantic and visual active states for navigation and audit logo positioning against link density to prevent UI collision.
+
+## 2025-06-16 - [Standardized Grid Props and Helper Text Guidance]
+**Learning:** Adding explicit support for Materialize grid props (`s`, `m`, `l`, `xl`, `offset`) and `helperText` guidance to core input components (`CustomTextInput`, `CustomSelect`, `CustomTextarea`) significantly improves both the developer experience and user clarity. Ensuring prefix icons are marked with `aria-hidden="true"` prevents redundant announcements in screen readers, maintaining a clean accessibility tree.
+**Action:** Always include standardized grid and instructional props in base form components to enable consistent, accessible, and flexible UI layouts.
