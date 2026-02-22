@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
     CustomRow,
@@ -27,7 +27,9 @@ const PlayerDashboard = () => {
     });
     const [focusedId, setFocusedId] = useState(null);
     const { stats, categories, loading } = state;
-    const user = Auth.getUserInfo();
+
+    // Memoize user info to avoid infinite loops in useEffect
+    const user = useMemo(() => Auth.getUserInfo(), []);
     const userId = user?.id;
     const specialties = user?.preferences?.specialties;
 
