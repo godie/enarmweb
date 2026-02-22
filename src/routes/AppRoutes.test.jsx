@@ -216,9 +216,9 @@ describe('AppRoutes', () => {
       await waitFor(() => expect(screen.getByTestId('examen-mock')).toBeInTheDocument());
     });
 
-    it('renders Profile component for /profile when Facebook authenticated', async () => {
+    it('renders Profile component for /perfil when Facebook authenticated', async () => {
       mockIsFacebookAuthenticated = true;
-      renderWithRouter(['/profile']);
+      renderWithRouter(['/perfil']);
       await waitFor(() => expect(screen.getByTestId('profile-mock')).toBeInTheDocument());
     });
   });

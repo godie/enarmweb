@@ -1,16 +1,29 @@
-import { useState, useEffect, useRef, useActionState } from "react";
+import { useState, useEffect, useRef, useActionState, useMemo } from "react";
 import CasoForm from "./admin/CasoForm";
 import PlayerQuestionForm from "./PlayerQuestionForm";
 import ExamService from "../services/ExamService";
 import { useHistory } from 'react-router-dom';
 import { alertError, alertSuccess } from "../services/AlertService";
 import CasoContext from "../context/CasoContext";
-import { CustomButton } from "./custom";
+import { CustomButton, CustomTable, CustomRow, CustomCol, CustomPreloader } from "./custom";
+import EnarmUtil from "../modules/EnarmUtil";
+
+const STATUS_LABELS = {
+    pending: <span className="badge yellow darken-1 white-text" style={{ borderRadius: '4px', float: 'none', marginLeft: 0 }}>Pendiente</span>,
+    published: <span className="badge green darken-1 white-text" style={{ borderRadius: '4px', float: 'none', marginLeft: 0 }}>Publicado</span>,
+    rejected: <span className="badge red darken-1 white-text" style={{ borderRadius: '4px', float: 'none', marginLeft: 0 }}>Rechazado</span>,
+};
 
 const PlayerCasoContainer = () => {
     const history = useHistory();
     const currentIdRef = useRef(null);
     const [contributionType, setContributionType] = useState('caso');
+    const [contributions, setContributions] = useState({ clinical_cases: [], questions: [] });
+    const [loadingContribs, setLoadingContribs] = useState(true);
+    const [categories, setCategories] = useState(() => {
+        const cached = EnarmUtil.getCategories();
+        return cached ? JSON.parse(cached) : [];
+    });
 
     const [caso, setCaso] = useState({
         name: "",
@@ -178,6 +191,39 @@ const PlayerCasoContainer = () => {
         }
     }, [caso.questions]);
 
+    useEffect(() => {
+        const fetchContributions = async () => {
+            try {
+                const [contribRes, catRes] = await Promise.all([
+                    ExamService.getUserContributions(),
+                    categories.length === 0 ? ExamService.loadCategories() : Promise.resolve({ data: categories })
+                ]);
+                setContributions(contribRes.data);
+                if (categories.length === 0) {
+                    setCategories(catRes.data);
+                    EnarmUtil.setCategories(JSON.stringify(catRes.data));
+                }
+            } catch (err) {
+                console.error("Error fetching contributions summary:", err);
+            } finally {
+                setLoadingContribs(false);
+            }
+        };
+        fetchContributions();
+    }, []);
+
+    const especialidadesMap = useMemo(() => new Map(
+        categories.map((esp) => [`${esp.id}`, esp.name])
+    ), [categories]);
+
+    const lastContributions = useMemo(() => {
+        const all = [
+            ...(contributions.clinical_cases || []).map(c => ({ ...c, type: 'Caso Clínico', display_name: c.name, date: new Date(c.created_at || 0) })),
+            ...(contributions.questions || []).map(q => ({ ...q, type: 'Pregunta Individual', display_name: q.text, date: new Date(q.created_at || 0) }))
+        ];
+        return all.sort((a, b) => b.date - a.date).slice(0, 5);
+    }, [contributions]);
+
     const value = {
         caso,
         addQuestion,
@@ -223,6 +269,53 @@ const PlayerCasoContainer = () => {
             ) : (
                 <PlayerQuestionForm />
             )}
+
+            <div className="divider" style={{ margin: '3rem 0' }}></div>
+
+            <div className="contributions-summary">
+                <h5 className="grey-text text-darken-3">Tus últimas contribuciones</h5>
+                {loadingContribs ? (
+                    <div className="center-align"><CustomPreloader size="small" /></div>
+                ) : (
+                    <>
+                        <CustomTable striped hoverable className="z-depth-1">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Nombre / Texto</th>
+                                    <th>Especialidad</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {lastContributions.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="4" className="center-align grey-text">No has realizado contribuciones aún.</td>
+                                    </tr>
+                                ) : (
+                                    lastContributions.map((item, idx) => (
+                                        <tr key={`${item.type}-${item.id || idx}`}>
+                                            <td><strong>{item.type}</strong></td>
+                                            <td className="truncate" style={{ maxWidth: '300px' }}>{item.display_name}</td>
+                                            <td>
+                                                <span className="badge white border darken-1" style={{ float: 'none', marginLeft: 0 }}>
+                                                    {especialidadesMap.get(item.category_id?.toString()) || 'N/A'}
+                                                </span>
+                                            </td>
+                                            <td>{STATUS_LABELS[item.status] || item.status}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </CustomTable>
+                        <div className="right-align" style={{ marginTop: '1rem' }}>
+                            <CustomButton flat className="green-text" onClick={() => history.push('/mis-contribuciones')}>
+                                Ver todas <i className="material-icons right">arrow_forward</i>
+                            </CustomButton>
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 };

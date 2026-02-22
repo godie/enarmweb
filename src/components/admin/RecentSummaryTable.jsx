@@ -17,7 +17,7 @@ const RecentSummaryTable = ({ title, items, headers, renderRow, addItemLink, vie
                 <thead>
                     <tr>
                         {headers.map((header, index) => (
-                            <th key={index} className={index > 0 && index === headers.length - 1 ? "right-align" : ""}>
+                            <th key={`header-${header}`} className={index > 0 && index === headers.length - 1 ? "right-align" : ""}>
                                 {header}
                             </th>
                         ))}

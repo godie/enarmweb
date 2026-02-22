@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FormSelect } from "@materializecss/materialize";
+
+const DEFAULT_OPTIONS = {};
 
 const CustomSelect = ({
   id,
@@ -14,18 +16,12 @@ const CustomSelect = ({
   selectClassName = '', // For the <select> element itself
   icon,
   iconClassName = '',
-  options = {}, // Materialize FormSelect options
+  options = DEFAULT_OPTIONS, // Materialize FormSelect options
   placeholder, // Placeholder text for the first disabled option
   ...props
 }) => {
   const selectRef = useRef(null);
   const instanceRef = useRef(null);
-  // Internal state to track value, helps with Materialize updates
-  const [internalValue, setInternalValue] = useState(value);
-
-  useEffect(() => {
-    setInternalValue(value);
-  }, [value]);
 
   useEffect(() => {
     if (selectRef.current) {
@@ -68,16 +64,6 @@ const CustomSelect = ({
 
 
   const handleChange = (event) => {
-    let newValue;
-    if (multiple) {
-      // For multiple select, get all selected options
-      const selectedOptions = Array.from(event.target.selectedOptions).map(opt => opt.value);
-      newValue = selectedOptions;
-    } else {
-      // For single select
-      newValue = event.target.value;
-    }
-    setInternalValue(newValue); // Update internal state
     if (onChange) {
       onChange(event); // Pass the event to the parent for Consistency
     }
@@ -98,7 +84,7 @@ const CustomSelect = ({
       <select
         ref={selectRef}
         id={id}
-        value={internalValue} // Use internalValue to control the select element
+        value={value} // Use value directly from props
         onChange={handleChange}
         disabled={disabled}
         multiple={multiple}

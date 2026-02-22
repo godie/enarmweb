@@ -15,15 +15,18 @@ import styles from './PlayerDashboard.module.css';
 
 const PlayerDashboard = () => {
     const history = useHistory();
-    const [stats, setStats] = useState({
-        completedCases: 0,
-        accuracy: 0,
-        streak: 0,
-        recentAchievements: []
+    const [state, setState] = useState({
+        stats: {
+            completedCases: 0,
+            accuracy: 0,
+            streak: 0,
+            recentAchievements: []
+        },
+        categories: [],
+        loading: true
     });
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [focusedId, setFocusedId] = useState(null);
+    const { stats, categories, loading } = state;
     const user = Auth.getUserInfo();
     const userId = user?.id;
     const specialties = user?.preferences?.specialties;
@@ -44,18 +47,19 @@ const PlayerDashboard = () => {
                     UserService.getAchievements(userId)
                 ]);
 
-                setCategories(catRes.data);
-                setStats(prev => ({
-                    ...prev,
-                    recentAchievements: achRes.data.slice(0, 3),
-                    completedCases: 12, // Mock
-                    accuracy: 75, // Mock
-                    streak: 3 // Mock
-                }));
-                setLoading(false);
+                setState({
+                    categories: catRes.data,
+                    stats: {
+                        recentAchievements: achRes.data.slice(0, 3),
+                        completedCases: 12, // Mock
+                        accuracy: 75, // Mock
+                        streak: 3 // Mock
+                    },
+                    loading: false
+                });
             } catch (error) {
                 console.error("Error loading dashboard data", error);
-                setLoading(false);
+                setState(prev => ({ ...prev, loading: false }));
             }
         };
         fetchData();
@@ -89,6 +93,7 @@ const PlayerDashboard = () => {
                             onClick={() => history.push('/caso/random')}
                             tooltip="Comienza un caso aleatorio para practicar"
                             aria-label="Comenzar entrenamiento rápido con un caso aleatorio"
+                            icon="bolt"
                         >
                             Entrenamiento Rápido
                         </CustomButton>

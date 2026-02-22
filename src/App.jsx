@@ -18,9 +18,11 @@ const App = ({ children }) => {
   }, []);
 
   return (
-    <div className="App container">
+    <div className="App">
       <Navi />
-      {children}
+      <div className="container">
+        {children}
+      </div>
     </div>
   );
 };

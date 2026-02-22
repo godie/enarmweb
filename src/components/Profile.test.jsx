@@ -1,118 +1,107 @@
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
-
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Profile from './Profile';
 import Auth from '../modules/Auth';
-import UserService from '../services/UserService';
+import ExamService from '../services/ExamService';
 
-// Mock Auth module
+// Mock modules
 vi.mock('../modules/Auth', () => ({
   default: {
-    isFacebookUser: vi.fn(),
-    getFacebookUser: vi.fn(),
-    isUserAuthenticated: vi.fn(),
-    getToken: vi.fn(),
     getUserInfo: vi.fn(),
   }
 }));
 
-// Mock UserService
+vi.mock('../services/ExamService', () => ({
+  default: {
+    loadCategories: vi.fn(),
+  }
+}));
+
+// Mock modules that might be used by children
 vi.mock('../services/UserService', () => ({
   default: {
-    getAchievements: vi.fn(),
+    updateUser: vi.fn(),
   }
 }));
 
 describe('Profile Component', () => {
-  const mockFbUser = { facebook_id: 'fb123', name: 'Facebook User', email: 'fb@example.com', id: 'fb123' };
-  //const mockRegularUser = { facebook_id: 'user456', name: 'Regular User', email: 'user@example.com', id: 'user456' };
-  const mockAchievements = [
-    { id: 'ach1', name: 'First Step', description: 'Completed tutorial', achieved_at: '2023-01-01T12:00:00Z' },
-    { id: 'ach2', name: 'Explorer', description: 'Visited 10 pages', achieved_at: null },
+  const mockUser = {
+    id: 'user123',
+    name: 'Test Doctor',
+    email: 'test@example.com',
+    role: 'player',
+    nickname: 'test_doc'
+  };
+
+  const mockCategories = [
+    { id: 1, name: 'Cardiología' },
+    { id: 2, name: 'Pediatría' },
   ];
 
-  let getItemSpy;
-
   beforeEach(() => {
-    // Reset mocks for Auth and UserService
     vi.clearAllMocks();
-
-    // Spy on localStorage.getItem
-    getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
-  });
-
-  afterEach(() => {
-    // Restore the original localStorage.getItem behavior
-    getItemSpy.mockRestore();
   });
 
   test('renders loading state initially', () => {
-    vi.mocked(Auth.getUserInfo).mockReturnValue(mockFbUser);
-    vi.mocked(UserService.getAchievements).mockReturnValue(new Promise(() => { })); // Promise that never resolves
+    vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
+    vi.mocked(ExamService.loadCategories).mockReturnValue(new Promise(() => { }));
 
-    const { container } = render(<Profile />);
-    expect(container.querySelector('.preloader-wrapper')).toBeInTheDocument();
+    render(<Profile />);
+    expect(screen.getByRole('progressbar') || screen.getByTestId('preloader')).toBeInTheDocument();
   });
 
-  test('renders error message if user data is missing/null', async () => {
-    vi.mocked(Auth.getUserInfo).mockReturnValue(null);
+  test('displays user information correctly', async () => {
+    vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
+    vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
 
     render(<Profile />);
 
     await waitFor(() => {
-      expect(screen.getByText(/No se encontró información del usuario/i)).toBeInTheDocument();
+      // Check for nickname and name
+      expect(screen.getByText(/@test_doc/i)).toBeInTheDocument();
+      expect(screen.getByText(/Test Doctor/i)).toBeInTheDocument();
+
+      // Check for stats
+      expect(screen.getByText(/Casos Resueltos/i)).toBeInTheDocument();
+      expect(screen.getByText(/Precisión/i)).toBeInTheDocument();
     });
   });
 
-  test('renders error message if fetching achievements fails', async () => {
-    vi.mocked(Auth.getUserInfo).mockReturnValue(mockFbUser);
-    vi.mocked(UserService.getAchievements).mockRejectedValue(new Error('Failed to fetch achievements'));
+  test('renders specialty progress bars', async () => {
+    vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
+    vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
 
     render(<Profile />);
 
     await waitFor(() => {
-      expect(screen.getByText('Error fetching achievements.')).toBeInTheDocument();
+      expect(screen.getByText('Cardiología')).toBeInTheDocument();
+      expect(screen.getByText('Pediatría')).toBeInTheDocument();
     });
   });
 
-  test('displays user information and achievements correctly', async () => {
-    vi.mocked(Auth.getUserInfo).mockReturnValue(mockFbUser);
-    vi.mocked(UserService.getAchievements).mockResolvedValue({ data: mockAchievements });
+  test('renders form fields', async () => {
+    vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
+    vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
 
     render(<Profile />);
 
     await waitFor(() => {
-      expect(screen.getByText(mockFbUser.name)).toBeInTheDocument();
-      expect(screen.getByText(mockFbUser.email)).toBeInTheDocument();
-
-      const listItems = screen.getAllByRole('listitem');
-      expect(listItems.length).toBe(mockAchievements.length);
-
-      expect(listItems[0].querySelector('.material-icons')).toHaveTextContent('check_circle');
-      expect(listItems[1].querySelector('.material-icons')).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/Nombre Completo/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/Nickname/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/Correo Electrónico/i)).toBeInTheDocument();
     });
   });
 
-  test('displays "No achievements yet." when no achievements are found', async () => {
-    vi.mocked(Auth.getUserInfo).mockReturnValue(mockFbUser);
-    vi.mocked(UserService.getAchievements).mockResolvedValue({ data: [] });
+  test('renders subscription section', async () => {
+    vi.mocked(Auth.getUserInfo).mockReturnValue(mockUser);
+    vi.mocked(ExamService.loadCategories).mockResolvedValue({ data: mockCategories });
 
     render(<Profile />);
 
     await waitFor(() => {
-      expect(screen.getByText(/Aún no has desbloqueado logros/i)).toBeInTheDocument();
-    });
-  });
-
-  test('handles case where user has no ID for fetching achievements', async () => {
-    vi.mocked(Auth.getUserInfo).mockReturnValue({ name: "Test User No ID", email: "test@example.com", id: null });
-
-    render(<Profile />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/No se encontró información del usuario/i)).toBeInTheDocument();
-      expect(UserService.getAchievements).not.toHaveBeenCalled();
+      expect(screen.getByText(/Suscripción/i)).toBeInTheDocument();
+      expect(screen.getByText(/Suscribirse ahora/i)).toBeInTheDocument();
     });
   });
 });

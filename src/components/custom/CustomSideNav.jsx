@@ -2,11 +2,13 @@ import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Sidenav } from "@materializecss/materialize";
 
+const DEFAULT_OPTIONS = {};
+
 const CustomSideNav = ({
   id,
   children, // Expect <li> elements, typically CustomSideNavItem
   className = '',
-  options = {}, // To pass to M.Sidenav.init
+  options = DEFAULT_OPTIONS, // To pass to M.Sidenav.init
   ...props
 }) => {
   const sidenavRef = useRef(null);
