@@ -24,6 +24,7 @@ const PlayerCasoContainer = () => {
         const cached = EnarmUtil.getCategories();
         return cached ? JSON.parse(cached) : [];
     });
+    const initialCategoriesRef = useRef(categories);
 
     const [caso, setCaso] = useState({
         name: "",
@@ -193,13 +194,14 @@ const PlayerCasoContainer = () => {
 
     useEffect(() => {
         const fetchContributions = async () => {
+            const initialCategories = initialCategoriesRef.current;
             try {
                 const [contribRes, catRes] = await Promise.all([
                     ExamService.getUserContributions(),
-                    categories.length === 0 ? ExamService.loadCategories() : Promise.resolve({ data: categories })
+                    initialCategories.length === 0 ? ExamService.loadCategories() : Promise.resolve({ data: initialCategories })
                 ]);
                 setContributions(contribRes.data);
-                if (categories.length === 0) {
+                if (initialCategories.length === 0) {
                     setCategories(catRes.data);
                     EnarmUtil.setCategories(JSON.stringify(catRes.data));
                 }

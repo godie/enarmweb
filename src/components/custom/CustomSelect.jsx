@@ -22,7 +22,6 @@ const CustomSelect = ({
   iconClassName = '',
   options = DEFAULT_OPTIONS, // Materialize FormSelect options or array of {value, label}
   placeholder, // Placeholder text for the first disabled option
-  s, m, l, xl,
   offset,
   helperText,
   ...props
@@ -159,12 +158,8 @@ CustomSelect.propTypes = {
   xl: PropTypes.number,
   icon: PropTypes.string,
   iconClassName: PropTypes.string,
-  options: PropTypes.object, // Materialize FormSelect options
+  options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]), // Materialize options or array of option items
   placeholder: PropTypes.string,
-  s: PropTypes.number,
-  m: PropTypes.number,
-  l: PropTypes.number,
-  xl: PropTypes.number,
   offset: PropTypes.string,
   helperText: PropTypes.string,
 };

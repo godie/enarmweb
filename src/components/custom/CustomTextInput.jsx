@@ -24,7 +24,6 @@ const CustomTextInput = ({
   'data-length': dataLength,
   passwordToggle = false,
   passwordToggleClassName = 'grey-text text-darken-2',
-  s, m, l, xl,
   offset,
   helperText,
   ...props

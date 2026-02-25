@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Auth from "../modules/Auth";
 import ExamService from "../services/ExamService";
+import UserService from "../services/UserService";
+import { alertError, alertSuccess } from "../services/AlertService";
 import {
     CustomPreloader,
     CustomRow,
@@ -9,7 +11,11 @@ import {
     StatCard,
     CustomButton,
     CustomTextInput,
-    CustomSelect
+    CustomSelect,
+    CustomCollection,
+    CustomCollectionItem,
+    CustomProgressBar,
+    CustomCheckbox
 } from "./custom";
 
 const Profile = () => {
