@@ -109,7 +109,7 @@ const AuthForm = ({
                                     type="submit"
                                     large
                                     waves="light"
-                                    className="white-text text"
+                                    className="white-text"
                                     isPending={isPending}
                                     isPendingText={isPendingText}
                                 >

@@ -86,6 +86,7 @@ const CustomTextarea = ({
 
   return (
     <div className={wrapperClasses.trim()}>
+      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       {label && (
         <label htmlFor={id} className="active">
           {label}
@@ -111,6 +112,8 @@ const CustomTextarea = ({
         onChange={onChange}
         disabled={disabled}
         rows={rows}
+        maxLength={maxLength}
+        data-length={dataLength ?? maxLength}
         {...props}
         aria-required={props.required ? 'true' : undefined}
       />

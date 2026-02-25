@@ -20,6 +20,12 @@ class UserService extends BaseService {
     return axios.post(BaseService.getURL("users/google_login"), params);
   }
 
+  // Estadísticas del usuario
+  static getUserStats() {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL("users/me/stats"), headers);
+  }
+
   // Logros unificados
   static getAchievements(userId) {
     const headers = this.getHeaders();

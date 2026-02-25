@@ -72,6 +72,19 @@ const Caso = (props) => {
       }
       setState(prev => ({ ...prev, goNext: shouldGoNext, showAnswers: shouldGoNext }));
       if (!shouldGoNext) {
+        const firstUnansweredIndex = selectedAnswers.findIndex(answer => {
+          if (Array.isArray(answer)) {
+            return answer.length === 0;
+          }
+          return !answer || !answer.id || answer.id === 0;
+        });
+
+        if (firstUnansweredIndex !== -1) {
+          const element = document.getElementById(`question-wrapper-${firstUnansweredIndex}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
         alertError('Espera', 'No has respondido todas las preguntas, respóndelas para poder continuar');
       }
     }
@@ -196,7 +209,15 @@ const Caso = (props) => {
 
         {data.length > 0 && (
           <div style={{ marginBottom: '20px' }}>
-            <div className="progress green lighten-4" style={{ height: '8px', borderRadius: '4px', margin: '15px 0 5px' }}>
+            <div
+              className="progress green lighten-4"
+              style={{ height: '8px', borderRadius: '4px', margin: '15px 0 5px' }}
+              role="progressbar"
+              aria-valuenow={Math.round(progress)}
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-label="Progreso del examen"
+            >
               <div
                 className="determinate green"
                 style={{

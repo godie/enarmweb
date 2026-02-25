@@ -10,6 +10,10 @@ const CustomTextInput = ({
   disabled = false,
   className = '',
   inputClassName = '',
+  s,
+  m,
+  l,
+  xl,
   icon,
   iconClassName = '',
   type = 'text',
@@ -77,6 +81,9 @@ const CustomTextInput = ({
 
   const finalInputClassName = `${inputClassName}${validate ? ' validate' : ''}`.trim();
 
+  // label active if value exists or placeholder is present (other than space)
+  const isLabelActive = (value !== undefined && value !== '') || (props.defaultValue !== undefined && props.defaultValue !== '') || (placeholder && placeholder !== ' ');
+
   return (
     <div className={wrapperClasses.trim()}>
       {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
@@ -90,7 +97,7 @@ const CustomTextInput = ({
         autoComplete={autocomplete}
         placeholder={placeholder}
         maxLength={maxLength}
-        data-length={dataLength}
+        data-length={dataLength ?? maxLength}
         style={isPasswordWithToggle ? { paddingRight: '2.5rem' } : undefined}
         {...(isControlled ? { value, onChange } : {})}
         {...props}
@@ -127,7 +134,7 @@ const CustomTextInput = ({
       )}
 
       {label && (
-        <label htmlFor={id}>
+        <label htmlFor={id} className={isLabelActive ? 'active' : ''}>
           {label}
           {props.required && (
             <span
