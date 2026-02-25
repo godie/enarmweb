@@ -24,6 +24,7 @@ const CustomTextInput = ({
   'data-length': dataLength,
   passwordToggle = false,
   passwordToggleClassName = 'grey-text text-darken-2',
+  offset,
   helperText,
   ...props
 }) => {
@@ -65,12 +66,17 @@ const CustomTextInput = ({
     setShowPassword(prev => !prev);
   };
 
-  // Construir clases del wrapper
-  let wrapperClasses = `input-field col${className ? ` ${className}` : ''}`;
-  if (s) wrapperClasses += ` s${s}`;
-  if (m) wrapperClasses += ` m${m}`;
-  if (l) wrapperClasses += ` l${l}`;
-  if (xl) wrapperClasses += ` xl${xl}`;
+  // Construir clases
+  let wrapperClasses = `input-field ${className}`.trim();
+  if (s) wrapperClasses += ` col s${s}`;
+  if (m) wrapperClasses += ` col m${m}`;
+  if (l) wrapperClasses += ` col l${l}`;
+  if (xl) wrapperClasses += ` col xl${xl}`;
+  if (offset) {
+    offset.split(' ').forEach(off => {
+      if (off) wrapperClasses += ` offset-${off}`;
+    });
+  }
 
   const finalInputClassName = `${inputClassName}${validate ? ' validate' : ''}`.trim();
 
@@ -141,11 +147,8 @@ const CustomTextInput = ({
           )}
         </label>
       )}
-      {helperText && (
-        <span className="helper-text" data-error="error" data-success="success">
-          {helperText}
-        </span>
-      )}
+
+      {helperText && <span className="helper-text">{helperText}</span>}
     </div>
   );
 };
@@ -158,10 +161,6 @@ CustomTextInput.propTypes = {
   disabled: PropTypes.bool,
   className: PropTypes.string,
   inputClassName: PropTypes.string,
-  s: PropTypes.number,
-  m: PropTypes.number,
-  l: PropTypes.number,
-  xl: PropTypes.number,
   icon: PropTypes.string,
   iconClassName: PropTypes.string,
   type: PropTypes.string,
@@ -172,6 +171,11 @@ CustomTextInput.propTypes = {
   placeholder: PropTypes.string,
   passwordToggle: PropTypes.bool,
   passwordToggleClassName: PropTypes.string,
+  s: PropTypes.number,
+  m: PropTypes.number,
+  l: PropTypes.number,
+  xl: PropTypes.number,
+  offset: PropTypes.string,
   helperText: PropTypes.string,
 };
 

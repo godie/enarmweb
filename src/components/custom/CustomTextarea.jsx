@@ -25,6 +25,8 @@ const CustomTextarea = ({
   icon,
   iconClassName = '',
   s, m, l, xl, // Grid size props
+  offset,
+  helperText,
   rows,
   maxLength,
   'data-length': dataLength,
@@ -72,6 +74,11 @@ const CustomTextarea = ({
   if (m) wrapperClasses += ` col m${m}`;
   if (l) wrapperClasses += ` col l${l}`;
   if (xl) wrapperClasses += ` col xl${xl}`;
+  if (offset) {
+    offset.split(' ').forEach(off => {
+      if (off) wrapperClasses += ` offset-${off}`;
+    });
+  }
 
   const computedStyle = rows
     ? { ...TEXTAREA_STYLE, minHeight: `${rows * 1.6 + 1.5}em` }
@@ -95,6 +102,7 @@ const CustomTextarea = ({
           )}
         </label>
       )}
+      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       <textarea
         ref={textareaRef}
         id={id}
@@ -109,6 +117,7 @@ const CustomTextarea = ({
         {...props}
         aria-required={props.required ? 'true' : undefined}
       />
+      {helperText && <span className="helper-text">{helperText}</span>}
     </div>
   );
 };
@@ -127,8 +136,8 @@ CustomTextarea.propTypes = {
   m: PropTypes.number,
   l: PropTypes.number,
   xl: PropTypes.number,
-  maxLength: PropTypes.number,
-  'data-length': PropTypes.number,
+  offset: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 export default CustomTextarea;

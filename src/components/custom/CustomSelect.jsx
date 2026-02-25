@@ -22,6 +22,8 @@ const CustomSelect = ({
   iconClassName = '',
   options = DEFAULT_OPTIONS, // Materialize FormSelect options or array of {value, label}
   placeholder, // Placeholder text for the first disabled option
+  offset,
+  helperText,
   ...props
 }) => {
   const selectRef = useRef(null);
@@ -77,11 +79,16 @@ const CustomSelect = ({
     }
   };
 
-  let wrapperClasses = `input-field col ${className}`.trim();
-  if (s) wrapperClasses += ` s${s}`;
-  if (m) wrapperClasses += ` m${m}`;
-  if (l) wrapperClasses += ` l${l}`;
-  if (xl) wrapperClasses += ` xl${xl}`;
+  let wrapperClasses = `input-field ${className}`.trim();
+  if (s) wrapperClasses += ` col s${s}`;
+  if (m) wrapperClasses += ` col m${m}`;
+  if (l) wrapperClasses += ` col l${l}`;
+  if (xl) wrapperClasses += ` col xl${xl}`;
+  if (offset) {
+    offset.split(' ').forEach(off => {
+      if (off) wrapperClasses += ` offset-${off}`;
+    });
+  }
 
   const finalSelectClassName = `${selectClassName}`.trim();
 
@@ -130,6 +137,7 @@ const CustomSelect = ({
           )}
         </label>
       )}
+      {helperText && <span className="helper-text">{helperText}</span>}
     </div>
   );
 };
@@ -150,8 +158,10 @@ CustomSelect.propTypes = {
   xl: PropTypes.number,
   icon: PropTypes.string,
   iconClassName: PropTypes.string,
-  options: PropTypes.object, // Materialize FormSelect options
+  options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]), // Materialize options or array of option items
   placeholder: PropTypes.string,
+  offset: PropTypes.string,
+  helperText: PropTypes.string,
 };
 
 export default CustomSelect;
