@@ -104,6 +104,8 @@ const CustomTextarea = ({
         onChange={onChange}
         disabled={disabled}
         rows={rows}
+        maxLength={maxLength}
+        data-length={dataLength ?? maxLength}
         {...props}
         aria-required={props.required ? 'true' : undefined}
       />
@@ -125,6 +127,8 @@ CustomTextarea.propTypes = {
   m: PropTypes.number,
   l: PropTypes.number,
   xl: PropTypes.number,
+  maxLength: PropTypes.number,
+  'data-length': PropTypes.number,
 };
 
 export default CustomTextarea;

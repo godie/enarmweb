@@ -90,7 +90,7 @@ const CustomTextInput = ({
         autoComplete={autocomplete}
         placeholder={placeholder}
         maxLength={maxLength}
-        data-length={dataLength}
+        data-length={dataLength ?? maxLength}
         style={isPasswordWithToggle ? { paddingRight: '2.5rem' } : undefined}
         {...(isControlled ? { value, onChange } : {})}
         {...props}

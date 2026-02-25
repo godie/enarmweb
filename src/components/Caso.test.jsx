@@ -86,8 +86,8 @@ describe('Caso Component', () => {
     expect(ExamService.getQuestions).toHaveBeenCalledWith(1);
     expect(screen.getByText(mockClinicalCase.description)).toBeInTheDocument();
 
-    // Preloader should be gone
-    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    // Preloader should be gone, but the exam progress bar should be present
+    expect(screen.getByRole('progressbar', { name: /Progreso del examen/i })).toBeInTheDocument();
   });
 
   test('clicking "Siguiente" when all questions answered calls sendAnswers', async () => {
