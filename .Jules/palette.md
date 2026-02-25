@@ -86,3 +86,7 @@
 ## 2025-06-16 - [Standardized Grid Props and Helper Text Guidance]
 **Learning:** Adding explicit support for Materialize grid props (`s`, `m`, `l`, `xl`, `offset`) and `helperText` guidance to core input components (`CustomTextInput`, `CustomSelect`, `CustomTextarea`) significantly improves both the developer experience and user clarity. Ensuring prefix icons are marked with `aria-hidden="true"` prevents redundant announcements in screen readers, maintaining a clean accessibility tree.
 **Action:** Always include standardized grid and instructional props in base form components to enable consistent, accessible, and flexible UI layouts.
+
+## 2025-06-16 - [Functional Matchers for Complex Buttons and Utility-First Layout]
+**Learning:** React Testing Library's `findByText` can fail on buttons containing Materialize icons due to text node fragmentation and the icon's name being part of the `textContent`. Using a functional matcher that checks for partial content and tag name is more robust. Additionally, strictly adhering to utility classes (e.g., 'center-align') instead of inline styles ensures compliance with repository constraints and theme consistency.
+**Action:** Always use functional matchers for testing interactive elements with icons and avoid inline styles by leveraging existing CSS utility classes.

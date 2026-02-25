@@ -57,6 +57,9 @@ const Onboarding = () => {
         }
     };
 
+    const selectAll = () => setState(prev => ({ ...prev, selected: prev.categories.map(c => c.id) }));
+    const deselectAll = () => setState(prev => ({ ...prev, selected: [] }));
+
     const handleSave = async () => {
         if (selected.length === 0) {
             alertError("Selección vacía", "Por favor elige al menos una especialidad para comenzar.");
@@ -101,6 +104,10 @@ const Onboarding = () => {
                     <p className="grey-text text-darken-1 enarm-subtitle-mb">
                         Para personalizar tu experiencia, selecciona las especialidades que más te interesan practicar.
                     </p>
+                    <div className="center-align">
+                        <CustomButton flat small onClick={selectAll} icon="done_all" className="grey-text text-darken-1">Seleccionar todas</CustomButton>
+                        <CustomButton flat small onClick={deselectAll} icon="remove_done" className="grey-text text-darken-1">Deseleccionar todas</CustomButton>
+                    </div>
                 </CustomCol>
             </CustomRow>
 
