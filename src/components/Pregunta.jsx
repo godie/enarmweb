@@ -99,7 +99,7 @@ const Pregunta = ({
   });
 
   return (
-    <div className="col s12 m12 l12">
+    <div className="col s12 m12 l12" id={`question-wrapper-${questionIndex}`}>
       <ul className="collection with-header">
         <li className="collection-header">
           <h5 style={{ display: 'flex', alignItems: 'flex-start' }}>
