@@ -82,3 +82,7 @@
 ## 2025-06-15 - [RTL Matchers and Text Node Fragmentation]
 **Learning:** React Testing Library's `getByText` matcher can fail when text is split into multiple DOM nodes (e.g., `<span>@</span>${nickname}`), even if it visually appears as one string. Using a functional matcher or `findByText` with a custom predicate that checks `element.textContent` is more robust for these cases.
 **Action:** Use functional matchers in RTL tests when dealing with dynamic text concatenation to avoid brittle failures caused by text node fragmentation.
+
+## 2024-06-16 - [Functional Matchers for Complex Buttons and Utility-First Layout]
+**Learning:** React Testing Library's `findByText` can fail on buttons containing Materialize icons due to text node fragmentation and the icon's name being part of the `textContent`. Using a functional matcher that checks for partial content and tag name is more robust. Additionally, strictly adhering to utility classes (e.g., 'center-align') instead of inline styles ensures compliance with repository constraints and theme consistency.
+**Action:** Always use functional matchers for testing interactive elements with icons and avoid inline styles by leveraging existing CSS utility classes.
