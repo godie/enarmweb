@@ -104,12 +104,12 @@ const AuthForm = ({
                                 required
                             />
                             {errorBlock}
-                            <div className="center btn-brand mt-5">
+                            <div className="center mt-5">
                                 <CustomButton
                                     type="submit"
                                     large
                                     waves="light"
-                                    className="white-text"
+                                    className="btn-brand white-text"
                                     isPending={isPending}
                                     isPendingText={isPendingText}
                                 >
@@ -198,7 +198,7 @@ const AuthForm = ({
                                 type="submit"
                                 large
                                 waves="light"
-                                className="grey lighten-3 green-text"
+                                className="btn-brand white-text"
                                 isPending={isPending}
                                 isPendingText={isPendingText}
                                 pendingColor="green"

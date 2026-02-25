@@ -104,7 +104,7 @@
 }
 
 /* Botón principal Entrar – estilo Material Filled button (elevación 2dp → 4dp hover) */
-.login-page .btn-brand {
+.btn-brand {
   background: var(--md-sys-color-primary, #0f9d58) !important;
   color: #fff !important;
   width: 100%;
@@ -119,7 +119,7 @@
     0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
-.login-page .btn-brand:hover {
+.btn-brand:hover {
   background: var(--md-ref-palette-primary35, #005f35) !important;
   box-shadow:
     0 4px 5px 0 rgba(0, 0, 0, 0.14),
