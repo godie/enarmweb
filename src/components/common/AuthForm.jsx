@@ -109,9 +109,10 @@ const AuthForm = ({
                                     type="submit"
                                     large
                                     waves="light"
-                                    className="btn-brand white-text"
+                                    className="btn-brand"
                                     isPending={isPending}
                                     isPendingText={isPendingText}
+                                    pendingColor="white"
                                 >
                                     {submitText}
                                 </CustomButton>
@@ -198,10 +199,10 @@ const AuthForm = ({
                                 type="submit"
                                 large
                                 waves="light"
-                                className="btn-brand white-text"
+                                className="btn-brand"
                                 isPending={isPending}
                                 isPendingText={isPendingText}
-                                pendingColor="green"
+                                pendingColor="white"
                             >
                                 {submitText}
                             </CustomButton>

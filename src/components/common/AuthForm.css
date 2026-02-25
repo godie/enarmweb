@@ -105,6 +105,9 @@
 
 /* Botón principal Entrar – estilo Material Filled button (elevación 2dp → 4dp hover) */
 .btn-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: var(--md-sys-color-primary, #0f9d58) !important;
   color: #fff !important;
   width: 100%;
