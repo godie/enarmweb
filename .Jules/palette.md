@@ -28,6 +28,10 @@
 **Learning:** Adding Material Icons as prefixes to form inputs provides immediate visual context and improves scanability, especially in authentication forms. For dark-themed or colored containers, ensuring these icons have the correct contrast (e.g., `white-text`) is crucial. Standardizing loading feedback using `CustomPreloader` across different parts of the app (like Onboarding and Auth) creates a more cohesive and professional user experience.
 **Action:** Always include relevant prefix icons in high-visibility forms and use `CustomPreloader` for all async button states to maintain UI consistency.
 
+## 2025-02-26 - [Global Accessibility with Scroll-to-Top and Component Hygiene]
+**Learning:** Adding a global "Scroll to Top" button improves UX on long pages like exams and lists. Placing such components in `AppRoutes.jsx` outside the `Switch` ensures they are available on all pages regardless of the layout used. Additionally, regularly auditing core components like `CustomTextarea` for visual redundancy (e.g., duplicate icons) and maintaining repository hygiene by removing development logs is essential for production quality.
+**Action:** Use global route wrappers for cross-cutting UI features and always audit shared components for accidental code duplication during development.
+
 ## 2025-05-26 - [Visual Selection Feedback and Linter Hygiene]
 **Learning:** Adding a subtle background highlight (e.g., `blue lighten-5`) to selected options in lists or collections improves clarity for users during interactive tasks like taking an exam. Furthermore, maintaining strict linter hygiene (like removing unused imports) is essential for CI/CD success, even if the change itself is small.
 **Action:** Always provide clear visual states for selection and ensure touched files are lint-clean.

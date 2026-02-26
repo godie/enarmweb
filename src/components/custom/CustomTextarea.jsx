@@ -102,7 +102,6 @@ const CustomTextarea = ({
           )}
         </label>
       )}
-      {icon && <i className={`material-icons prefix ${iconClassName}`.trim()} aria-hidden="true">{icon}</i>}
       <textarea
         ref={textareaRef}
         id={id}
