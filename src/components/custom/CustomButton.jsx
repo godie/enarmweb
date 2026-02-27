@@ -130,7 +130,7 @@ const CustomButton = ({
         </a>
         <ul>
           {Children.map(children, (child, index) => (
-            <li key={index}>{child}</li>
+            <li key={child.props?.id || `fab-item-${index}`}>{child}</li>
           ))}
         </ul>
       </div>
