@@ -27,6 +27,7 @@ import MyContributions from "../pages/Player/MyContributions";
 import PlayerDashboard from "../components/PlayerDashboard";
 import Landing from "../components/Landing";
 import Auth from "../modules/Auth";
+import { ScrollToTop } from "../components/custom";
 
 function DashboardCases(props) {
   return (
@@ -136,6 +137,7 @@ function AppExamen(props) {
 
 export default function AppRoutes() {
   return (
+    <>
     <Switch>
       {/* — Player login flow (no Navi, full-page green + card) — */}
       <Route path="/login" exact component={() => <PlayerLogin />} />
@@ -249,5 +251,7 @@ export default function AppRoutes() {
         <Redirect to="/" />
       </Route>
     </Switch>
+    <ScrollToTop />
+    </>
   );
 }

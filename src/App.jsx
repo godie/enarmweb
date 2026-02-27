@@ -3,7 +3,6 @@ import "./App.css";
 import "./theme.css";
 import Navi from "./components/Navi";
 import Auth from "./modules/Auth";
-
 const App = ({ children }) => {
   useEffect(() => {
     const user = Auth.getUserInfo();
