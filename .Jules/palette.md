@@ -94,3 +94,7 @@
 ## 2025-06-16 - [Functional Matchers for Complex Buttons and Utility-First Layout]
 **Learning:** React Testing Library's `findByText` can fail on buttons containing Materialize icons due to text node fragmentation and the icon's name being part of the `textContent`. Using a functional matcher that checks for partial content and tag name is more robust. Additionally, strictly adhering to utility classes (e.g., 'center-align') instead of inline styles ensures compliance with repository constraints and theme consistency.
 **Action:** Always use functional matchers for testing interactive elements with icons and avoid inline styles by leveraging existing CSS utility classes.
+
+## 2025-06-17 - [Accessible Checkboxes and Consistent Prop Spreading]
+**Learning:** Enhancing base form components like `CustomCheckbox` with standardized `required` indicators (visual asterisk and `aria-required`) and grid support (`s`, `m`, `l`, `xl`, `offset`) improves both accessibility and developer productivity. Ensuring that `...props` are consistently applied to the inner `input` regardless of the presence of a wrapper `div` maintains a predictable component API.
+**Action:** Always provide visual and semantic cues for mandatory fields and ensure consistent prop-spreading behavior in multi-layered components.
