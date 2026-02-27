@@ -7,6 +7,7 @@ import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
 import { MemoryRouter } from "react-router-dom"; // Removed useHistory, useLocation direct import
 import { alertError } from "../services/AlertService";
+import { MOCK_TOKEN } from "../test/testConstants";
 
 // Mock services and modules
 vi.mock("../services/UserService");
@@ -64,8 +65,7 @@ describe("Login Component", () => {
   });
 
   it("should call UserService.login and Auth.authenticateUser on successful login, then redirect", async () => {
-    const mockToken = "fake_token";
-    vi.mocked(UserService.login).mockResolvedValue({ data: { token: mockToken } });
+    vi.mocked(UserService.login).mockResolvedValue({ data: { token: MOCK_TOKEN } });
     vi.mocked(Auth.authenticateUser).mockImplementation(() => { });
 
     renderLogin();
@@ -83,7 +83,7 @@ describe("Login Component", () => {
         email: "test@example.com",
         password: "password123",
       });
-      expect(Auth.authenticateUser).toHaveBeenCalledWith(mockToken);
+      expect(Auth.authenticateUser).toHaveBeenCalledWith(MOCK_TOKEN);
       expect(mockHistoryReplace).toHaveBeenCalledWith({ pathname: "/dashboard" });
     });
   });
@@ -118,8 +118,7 @@ describe("Login Component", () => {
   });
 
   it("should use 'from' location from router state if available", async () => {
-    const mockToken = "another_fake_token";
-    vi.mocked(UserService.login).mockResolvedValue({ data: { token: mockToken } });
+    vi.mocked(UserService.login).mockResolvedValue({ data: { token: MOCK_TOKEN } });
     vi.mocked(Auth.authenticateUser).mockImplementation(() => { });
 
     // Key change here: using mockImplementation instead of mockImplementationOnce

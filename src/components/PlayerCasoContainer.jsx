@@ -5,14 +5,10 @@ import ExamService from "../services/ExamService";
 import { useHistory } from 'react-router-dom';
 import { alertError, alertSuccess } from "../services/AlertService";
 import CasoContext from "../context/CasoContext";
-import { CustomButton, CustomTable, CustomPreloader } from "./custom";
+import { CustomButton } from "./custom";
 import EnarmUtil from "../modules/EnarmUtil";
-
-const STATUS_LABELS = {
-    pending: <span className="badge yellow darken-1 white-text" style={{ borderRadius: '4px', float: 'none', marginLeft: 0 }}>Pendiente</span>,
-    published: <span className="badge green darken-1 white-text" style={{ borderRadius: '4px', float: 'none', marginLeft: 0 }}>Publicado</span>,
-    rejected: <span className="badge red darken-1 white-text" style={{ borderRadius: '4px', float: 'none', marginLeft: 0 }}>Rechazado</span>,
-};
+import ContributionTypeSelector from "./ContributionTypeSelector";
+import ContributionsSummary from "./ContributionsSummary";
 
 const PlayerCasoContainer = () => {
     const history = useHistory();
@@ -243,26 +239,10 @@ const PlayerCasoContainer = () => {
 
     return (
         <div className="" style={{ padding: '2rem' }}>
-            <div className="center-align mb-4" style={{ marginBottom: '2rem' }}>
-                <h4 className="grey-text text-darken-3">¿Qué deseas contribuir hoy?</h4>
-                <CustomButton
-                    flat={contributionType !== 'caso'}
-                    className={contributionType === 'caso' ? 'green darken-1 white-text' : 'green-text'}
-                    onClick={() => setContributionType('caso')}
-                    waves="light"
-                >
-                    Caso Clínico
-                </CustomButton>
-                <CustomButton
-                    flat={contributionType !== 'pregunta'}
-                    className={contributionType === 'pregunta' ? 'green darken-1 white-text' : 'green-text'}
-                    onClick={() => setContributionType('pregunta')}
-                    style={{ marginLeft: '10px' }}
-                    waves="light"
-                >
-                    Pregunta Individual
-                </CustomButton>
-            </div>
+            <ContributionTypeSelector
+                contributionType={contributionType}
+                setContributionType={setContributionType}
+            />
 
             {contributionType === 'caso' ? (
                 <CasoContext.Provider value={value}>
@@ -274,50 +254,12 @@ const PlayerCasoContainer = () => {
 
             <div className="divider" style={{ margin: '3rem 0' }}></div>
 
-            <div className="contributions-summary">
-                <h5 className="grey-text text-darken-3">Tus últimas contribuciones</h5>
-                {loadingContribs ? (
-                    <div className="center-align"><CustomPreloader size="small" /></div>
-                ) : (
-                    <>
-                        <CustomTable striped hoverable className="z-depth-1">
-                            <thead>
-                                <tr>
-                                    <th>Tipo</th>
-                                    <th>Nombre / Texto</th>
-                                    <th>Especialidad</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {lastContributions.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="4" className="center-align grey-text">No has realizado contribuciones aún.</td>
-                                    </tr>
-                                ) : (
-                                    lastContributions.map((item, idx) => (
-                                        <tr key={`${item.type}-${item.id || idx}`}>
-                                            <td><strong>{item.type}</strong></td>
-                                            <td className="truncate" style={{ maxWidth: '300px' }}>{item.display_name}</td>
-                                            <td>
-                                                <span className="badge white border darken-1" style={{ float: 'none', marginLeft: 0 }}>
-                                                    {especialidadesMap.get(item.category_id?.toString()) || 'N/A'}
-                                                </span>
-                                            </td>
-                                            <td>{STATUS_LABELS[item.status] || item.status}</td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </CustomTable>
-                        <div className="right-align" style={{ marginTop: '1rem' }}>
-                            <CustomButton flat className="green-text" onClick={() => history.push('/mis-contribuciones')}>
-                                Ver todas <i className="material-icons right">arrow_forward</i>
-                            </CustomButton>
-                        </div>
-                    </>
-                )}
-            </div>
+            <ContributionsSummary
+                loading={loadingContribs}
+                contributions={lastContributions}
+                especialidadesMap={especialidadesMap}
+                onViewAll={() => history.push('/mis-contribuciones')}
+            />
         </div>
     );
 };

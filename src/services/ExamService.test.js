@@ -3,21 +3,21 @@ import axios from "axios";
 import ExamService from "./ExamService";
 import BaseService from "./BaseService";
 import Auth from "../modules/Auth";
+import { MOCK_TOKEN } from "../test/testConstants";
 
 // Mock dependencies
 vi.mock("./BaseService");
 vi.mock("../modules/Auth");
 vi.mock("axios");
 
-const mockToken = "test_token";
 const baseApiUrl = "http://api.example.com";
 
 describe("ExamService", () => {
   beforeEach(() => {
     // Setup mocks before each test
-    vi.mocked(Auth.getToken).mockReturnValue(mockToken);
+    vi.mocked(Auth.getToken).mockReturnValue(MOCK_TOKEN);
     vi.mocked(BaseService.getURL).mockImplementation(path => `${baseApiUrl}/${path}`);
-    vi.mocked(BaseService.getHeaders).mockReturnValue({ headers: { Authorization: `bearer ${mockToken}`, "Content-Type": "application/json", accept: "application/json" } });
+    vi.mocked(BaseService.getHeaders).mockReturnValue({ headers: { Authorization: `bearer ${MOCK_TOKEN}`, "Content-Type": "application/json", accept: "application/json" } });
     vi.mocked(axios.get).mockResolvedValue({ data: {} });
     vi.mocked(axios.post).mockResolvedValue({ data: {} });
     vi.mocked(axios.put).mockResolvedValue({ data: {} });
@@ -29,7 +29,7 @@ describe("ExamService", () => {
   });
 
   const expectedHeaders = {
-    headers: { Authorization: `bearer ${mockToken}`, "Content-Type": "application/json", accept: "application/json" },
+    headers: { Authorization: `bearer ${MOCK_TOKEN}`, "Content-Type": "application/json", accept: "application/json" },
   };
 
 
@@ -119,7 +119,7 @@ describe("ExamService", () => {
     const answersExisting = { id: 1, questionId: 1, answer: "B" };
 
     const simpleHeaders = {
-      headers: { Authorization: `bearer ${mockToken}` }
+      headers: { Authorization: `bearer ${MOCK_TOKEN}` }
     }
 
     it("should call axios.post for new answers", async () => {

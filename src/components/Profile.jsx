@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import Auth from "../modules/Auth";
 import ExamService from "../services/ExamService";
 import UserService from "../services/UserService";
@@ -18,30 +18,69 @@ import {
     CustomCheckbox
 } from "./custom";
 
+const profileReducer = (state, action) => {
+    switch (action.type) {
+        case 'FETCH_SUCCESS':
+            return {
+                ...state,
+                categories: action.payload.categories,
+                stats: action.payload.stats,
+                loading: false
+            };
+        case 'FETCH_ERROR':
+            return {
+                ...state,
+                loading: false
+            };
+        case 'UPDATE_FORM':
+            return {
+                ...state,
+                formData: {
+                    ...state.formData,
+                    [action.payload.name]: action.payload.value
+                }
+            };
+        case 'TOGGLE_SPECIALTY':
+            return {
+                ...state,
+                selectedSpecialties: state.selectedSpecialties.includes(action.payload)
+                    ? state.selectedSpecialties.filter(id => id !== action.payload)
+                    : [...state.selectedSpecialties, action.payload]
+            };
+        case 'SET_SAVING':
+            return {
+                ...state,
+                saving: action.payload
+            };
+        default:
+            return state;
+    }
+};
+
 const Profile = () => {
     const user = Auth.getUserInfo() || { id: null, name: '', email: '', role: 'player', preferences: { specialties: [] } };
-    const [loading, setLoading] = useState(true);
-    const [categories, setCategories] = useState([]);
 
-    // Form state
-    const [formData, setFormData] = useState({
-        name: user.name || '',
-        nickname: user.nickname || user.name?.toLowerCase().replace(/\s/g, '_') || 'doctor_anonimo',
-        leaderboardVisible: user.preferences?.leaderboardVisible !== false,
-        displayNameType: user.preferences?.displayNameType || 'nickname'
+    const [state, dispatch] = useReducer(profileReducer, {
+        loading: true,
+        categories: [],
+        formData: {
+            name: user.name || '',
+            nickname: user.nickname || user.name?.toLowerCase().replace(/\s/g, '_') || 'doctor_anonimo',
+            leaderboardVisible: user.preferences?.leaderboardVisible !== false,
+            displayNameType: user.preferences?.displayNameType || 'nickname'
+        },
+        stats: {
+            total_answers: 0,
+            accuracy: 0,
+            points: 0,
+            streak: 0,
+            ranking: 0
+        },
+        selectedSpecialties: user.preferences?.specialties || [],
+        saving: false
     });
 
-    // User stats
-    const [stats, setStats] = useState({
-        total_answers: 0,
-        accuracy: 0,
-        points: 0,
-        streak: 0,
-        ranking: 0
-    });
-
-    const [selectedSpecialties, setSelectedSpecialties] = useState(user.preferences?.specialties || []);
-    const [saving, setSaving] = useState(false);
+    const { loading, categories, formData, stats, selectedSpecialties, saving } = state;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,12 +89,13 @@ const Profile = () => {
                     ExamService.loadCategories(),
                     UserService.getUserStats()
                 ]);
-                setCategories(catRes.data);
-                setStats(statsRes.data);
+                dispatch({
+                    type: 'FETCH_SUCCESS',
+                    payload: { categories: catRes.data, stats: statsRes.data }
+                });
             } catch (err) {
                 console.error("Error loading profile data", err);
-            } finally {
-                setLoading(false);
+                dispatch({ type: 'FETCH_ERROR' });
             }
         };
         fetchData();
@@ -63,20 +103,18 @@ const Profile = () => {
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+        dispatch({
+            type: 'UPDATE_FORM',
+            payload: { name, value: type === 'checkbox' ? checked : value }
+        });
     };
 
     const toggleSpecialty = (id) => {
-        setSelectedSpecialties(prev =>
-            prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
-        );
+        dispatch({ type: 'TOGGLE_SPECIALTY', payload: id });
     };
 
     const handleSave = async () => {
-        setSaving(true);
+        dispatch({ type: 'SET_SAVING', payload: true });
         try {
             const updatedPreferences = {
                 ...user.preferences,
@@ -106,7 +144,7 @@ const Profile = () => {
             console.error("Error saving profile", error);
             alertError("Error", "No se pudieron guardar los cambios.");
         } finally {
-            setSaving(false);
+            dispatch({ type: 'SET_SAVING', payload: false });
         }
     };
 

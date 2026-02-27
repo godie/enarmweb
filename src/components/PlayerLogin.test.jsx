@@ -6,6 +6,7 @@ import PlayerLogin from "./PlayerLogin";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
 import { MemoryRouter } from "react-router-dom";
+import { MOCK_PLAYER_TOKEN } from "../test/testConstants";
 
 
 // Mock services and modules
@@ -79,8 +80,7 @@ describe("PlayerLogin Component", () => {
     });
 
     it("should call UserService.loginPlayer on successful login", async () => {
-        const mockToken = "fake_player_token";
-        UserService.loginPlayer.mockResolvedValue({ data: { token: mockToken, id: 1, email: "p1@ex.com", name: "P1", role: 'player' } });
+        UserService.loginPlayer.mockResolvedValue({ data: { token: MOCK_PLAYER_TOKEN, id: 1, email: "p1@ex.com", name: "P1", role: 'player' } });
 
         renderPlayerLogin();
 
@@ -90,15 +90,14 @@ describe("PlayerLogin Component", () => {
 
         await waitFor(() => {
             expect(UserService.loginPlayer).toHaveBeenCalled();
-            expect(Auth.authenticatePlayer).toHaveBeenCalledWith(mockToken);
+            expect(Auth.authenticatePlayer).toHaveBeenCalledWith(MOCK_PLAYER_TOKEN);
             expect(Auth.savePlayerInfo).toHaveBeenCalled();
             expect(mockHistoryReplace).toHaveBeenCalled();
         });
     });
 
     it("should call UserService.createUser on successful signup", async () => {
-        const mockToken = "new_player_token";
-        UserService.createUser.mockResolvedValue({ data: { token: mockToken, id: 2, email: "new@ex.com", name: "New", role: 'player' } });
+        UserService.createUser.mockResolvedValue({ data: { token: MOCK_PLAYER_TOKEN, id: 2, email: "new@ex.com", name: "New", role: 'player' } });
 
         renderPlayerLogin();
         fireEvent.click(screen.getByText(/regístrate aquí/i));
@@ -111,7 +110,7 @@ describe("PlayerLogin Component", () => {
 
         await waitFor(() => {
             expect(UserService.createUser).toHaveBeenCalled();
-            expect(Auth.authenticatePlayer).toHaveBeenCalledWith(mockToken);
+            expect(Auth.authenticatePlayer).toHaveBeenCalledWith(MOCK_PLAYER_TOKEN);
         });
     });
 });

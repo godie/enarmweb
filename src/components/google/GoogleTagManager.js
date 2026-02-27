@@ -51,7 +51,7 @@ GoogleTagManager.propTypes = {
 };
 
 // Hook para enviar eventos a GTM
-export const useGTMEvent = () => {
+const useGTMEvent = () => {
   const pushEvent = (eventData) => {
     if (typeof window !== 'undefined' && window.dataLayer) {
       window.dataLayer.push(eventData);

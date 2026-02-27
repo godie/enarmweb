@@ -10,12 +10,14 @@ import PropTypes from 'prop-types';
  * @param {object} style - Additional styles for the progress wrapper.
  * @param {string} height - Height of the progress bar (e.g., '8px').
  */
+const EMPTY_STYLE = {};
+
 const CustomProgressBar = ({
   progress,
   color = 'green',
   wrapperColor = 'grey lighten-3',
   className = '',
-  style = {},
+  style = EMPTY_STYLE,
   height
 }) => {
   const isIndeterminate = progress === undefined || progress === null;

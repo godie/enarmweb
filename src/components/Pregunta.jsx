@@ -62,7 +62,7 @@ const Pregunta = ({
     return (
       <li
         className={`collection-item hoverable ${extraClass}`}
-        key={ansIndex}
+        key={answer.id || ansIndex}
         style={{
           transition: 'background-color 0.2s ease, box-shadow 0.2s ease',
           padding: 0 // Remove li padding to allow label to fill entire area
