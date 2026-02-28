@@ -40,7 +40,9 @@ describe('MyContributions Component', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByText(/No has realizado ninguna contribución todavía/i)).toBeDefined();
+            expect(screen.getByText(/¿Aún no has contribuido\?/i)).toBeDefined();
+            expect(screen.getByText(/Tus aportaciones ayudan a miles de médicos/i)).toBeDefined();
+            expect(screen.getByText(/Nueva Contribución/i)).toBeDefined();
         });
     });
 
