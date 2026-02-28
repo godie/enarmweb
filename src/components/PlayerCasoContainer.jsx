@@ -5,7 +5,6 @@ import ExamService from "../services/ExamService";
 import { useHistory } from 'react-router-dom';
 import { alertError, alertSuccess } from "../services/AlertService";
 import CasoContext from "../context/CasoContext";
-import { CustomButton } from "./custom";
 import EnarmUtil from "../modules/EnarmUtil";
 import ContributionTypeSelector from "./ContributionTypeSelector";
 import ContributionsSummary from "./ContributionsSummary";
