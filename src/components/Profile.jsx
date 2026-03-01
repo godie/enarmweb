@@ -302,14 +302,17 @@ const Profile = () => {
                             {categories.map(cat => {
                                 const isSelected = selectedSpecialties.includes(cat.id);
                                 return (
-                                    <div key={cat.id} className="col s12 m6 l4" style={{ marginBottom: '1rem' }}>
-                                        <CustomCheckbox
-                                            id={`spec-${cat.id}`}
-                                            label={cat.name}
-                                            checked={isSelected}
-                                            onChange={() => toggleSpecialty(cat.id)}
-                                        />
-                                    </div>
+                                    <CustomCheckbox
+                                        key={cat.id}
+                                        id={`spec-${cat.id}`}
+                                        label={cat.name}
+                                        checked={isSelected}
+                                        onChange={() => toggleSpecialty(cat.id)}
+                                        s={12}
+                                        m={6}
+                                        l={4}
+                                        style={{ marginBottom: '1rem' }}
+                                    />
                                 );
                             })}
                         </div>

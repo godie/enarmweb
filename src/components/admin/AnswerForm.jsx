@@ -25,25 +25,24 @@ const AnswerForm = ({
 
     return (
         <CustomRow className="answer-wrapper" style={{ marginBottom: '15px', alignItems: 'center' }}>
-            <CustomCol s={3} m={2}>
-                <div style={{ marginTop: '20px' }}>
-                    <CustomCheckbox
-                        id={`answer-iscorrect-${keyId}`}
-                        label="¿Correcta?"
-                        checked={answer.is_correct}
-                        onChange={(event) => {
-                            onChangeAnswer(
-                                questionIndex,
-                                answerIndex,
-                                "is_correct",
-                                event
-                            );
-                        }}
-                        name={answerIsCorrectName}
-                        value="true"
-                    />
-                </div>
-            </CustomCol>
+            <CustomCheckbox
+                s={3}
+                m={2}
+                style={{ marginTop: '20px' }}
+                id={`answer-iscorrect-${keyId}`}
+                label="¿Correcta?"
+                checked={answer.is_correct}
+                onChange={(event) => {
+                    onChangeAnswer(
+                        questionIndex,
+                        answerIndex,
+                        "is_correct",
+                        event
+                    );
+                }}
+                name={answerIsCorrectName}
+                value="true"
+            />
             <CustomCol s={8} m={9}>
                 <CustomTextInput
                     id={`answer-text-${keyId}`}
