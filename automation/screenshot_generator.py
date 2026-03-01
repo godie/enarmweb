@@ -9,11 +9,10 @@ BASE_URL = os.environ.get("APP_URL", "http://localhost:5173")
 SCREENSHOT_DIR = "automation/screenshots"
 
 # Mock de datos para simular sesión
-# TODO: Cambiar por credenciales reales y flujo de login automatizado en el futuro
 MOCK_USER = {
     "id": 1,
     "nickname": "TestUser",
-    "role": "admin", # Para capturar pantallas de admin también
+    "role": "admin",
     "email": "test@enarmweb.com"
 }
 MOCK_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MX0.mock_signature"
@@ -43,12 +42,16 @@ ROUTES = [
     {"path": "/#/dashboard/new/exam", "name": "17_Admin_Nuevo_Examen", "auth": True},
 ]
 
-async def inject_auth(context):
-    """Simula la autenticación inyectando datos en LocalStorage."""
-    await context.add_init_script(f"""
+async def set_auth(page):
+    """Establece los datos de autenticación en LocalStorage."""
+    await page.evaluate(f"""
         localStorage.setItem('token', '{MOCK_TOKEN}');
         localStorage.setItem('userInfo', '{json.dumps(MOCK_USER)}');
     """)
+
+async def clear_auth(page):
+    """Limpia los datos de autenticación de LocalStorage."""
+    await page.evaluate("localStorage.clear();")
 
 async def run():
     if not os.path.exists(SCREENSHOT_DIR):
@@ -62,20 +65,24 @@ async def run():
 
         page = await context.new_page()
 
+        # Primero navegamos a la base para que el dominio esté establecido y podamos tocar LocalStorage
+        await page.goto(BASE_URL)
+
         for route in ROUTES:
             url = f"{BASE_URL}{route['path']}"
-            print(f"Capturando {route['name']} desde {url}...")
+            print(f"Capturando {route['name']}...")
 
             if route.get("auth"):
-                await inject_auth(context)
+                await set_auth(page)
             else:
-                # Limpiar storage para rutas públicas si es necesario
-                await context.add_init_script("localStorage.clear();")
+                await clear_auth(page)
 
             try:
+                # Navegamos a la ruta deseada DESPUÉS de setear el localStorage
                 await page.goto(url, wait_until="networkidle")
-                # Pequeña espera adicional para animaciones de Materialize
-                await page.wait_for_timeout(1000)
+
+                # Pequeña espera adicional para que React cargue los componentes basados en el storage
+                await page.wait_for_timeout(2000)
 
                 screenshot_path = os.path.join(SCREENSHOT_DIR, f"{route['name']}.png")
                 await page.screenshot(path=screenshot_path, full_page=True)
