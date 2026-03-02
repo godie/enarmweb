@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 const CustomCheckbox = ({
   id,
   label,
-  checked = false, // Renamed from 'value' for clarity with checkbox 'checked' attribute
+  checked = false,
   onChange,
   disabled = false,
   className = '', // Applied to the input element
   labelClassName = '', // Applied to the label element
   indeterminate = false,
-  value, // HTML value attribute, not for checked state
+  value, // HTML value attribute
+  required = false,
   ...props
 }) => {
   const inputRef = useRef(null);
@@ -37,9 +38,23 @@ const CustomCheckbox = ({
         onChange={onChange}
         disabled={disabled}
         className={inputClasses.trim()}
-        value={value} // HTML value attribute
+        value={value}
+        required={required}
+        aria-required={required ? 'true' : undefined}
       />
-      <span>{label}</span>
+      <span>
+        {label}
+        {required && (
+          <span
+            className="red-text"
+            style={{ marginLeft: '4px', fontWeight: 'bold' }}
+            aria-hidden="true"
+            title="Obligatorio"
+          >
+            *
+          </span>
+        )}
+      </span>
     </label>
   );
 };
@@ -54,6 +69,7 @@ CustomCheckbox.propTypes = {
   labelClassName: PropTypes.string, // For the label element
   indeterminate: PropTypes.bool,
   value: PropTypes.string, // HTML value attribute for the checkbox
+  required: PropTypes.bool,
 };
 
 export default CustomCheckbox;
