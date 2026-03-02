@@ -17,7 +17,7 @@ const CasoRow = ({ caso, especialidadesOptions }) => {
         <tr>
             <td>{caso.name}</td>
             <td>
-                <span className="badge white border darken-1">{especialidadesOptions.get(caso.category_id.toString())}</span>
+                <span className="badge green white-text darken-1">{especialidadesOptions.get(caso.category_id.toString())}</span>
             </td>
             <td>{STATUS_LABELS[caso.status]}</td>
             <td className="center-align">{questionsCount}</td>

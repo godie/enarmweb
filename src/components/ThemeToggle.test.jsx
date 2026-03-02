@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi, describe, test, expect } from 'vitest';
-import ThemeToggle from './ThemeToggle';
+import ThemeToggle from './layout/ThemeToggle';
 
 vi.mock('../modules/Auth', () => ({
     default: {

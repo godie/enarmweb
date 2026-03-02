@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import ExamService from "../../services/ExamService";
 import EnarmUtil from "../../modules/EnarmUtil";
 import Util from "../../commons/Util";
-import { CustomRow, CustomCol, CustomTable } from "../custom";
+import { CustomRow, CustomCol, CustomTable, CustomSelect, CustomTextInput, CustomButton } from "../custom";
 import CustomPagination from "../custom/CustomPagination";
 import CustomPreloader from "../custom/CustomPreloader";
 import CasoRow from "./CasoRow";
@@ -27,14 +27,25 @@ const CasoTable = () => {
 
   const [state, setState] = useState({
     casesData: [],
+    allCasesData: [],
     totalCases: 0,
     loading: true,
     loadingError: false,
     lastPage: currentPage
   });
 
-  const { casesData, totalCases, loading, loadingError, lastPage } = state;
+  const { casesData, allCasesData, totalCases, loading, loadingError, lastPage } = state;
   const perPage = ITEMS_PER_PAGE;
+  const [filters, setFilters] = useState({
+    categoryId: "",
+    status: "",
+    questionsCount: ""
+  });
+
+  const hasActiveFilters = useMemo(
+    () => Boolean(filters.categoryId || filters.status || filters.questionsCount !== ""),
+    [filters]
+  );
 
   useEffect(() => {
     // Load categories
@@ -88,11 +99,51 @@ const CasoTable = () => {
       });
   }, [currentPage]);
 
+  useEffect(() => {
+    const loadAllCasesForFiltering = async () => {
+      if (!hasActiveFilters || totalCases <= 0 || allCasesData.length >= totalCases) return;
+
+      try {
+        const pages = Math.ceil(totalCases / perPage);
+        const requests = [];
+        for (let page = 1; page <= pages; page += 1) {
+          requests.push(ExamService.getClinicalCases(page));
+        }
+
+        const responses = await Promise.all(requests);
+        const allCases = responses.flatMap((res) => res.data?.clinical_cases || []);
+
+        setState(prev => ({
+          ...prev,
+          allCasesData: allCases
+        }));
+      } catch (error) {
+        console.error("Error loading all cases for filters", error);
+        Util.showToast("No se pudo cargar el total de casos para filtrar.");
+      }
+    };
+
+    loadAllCasesForFiltering();
+  }, [hasActiveFilters, totalCases, allCasesData.length, perPage]);
+
   const handlePageClick = (newPage) => {
     if (newPage === currentPage) return;
     setState(prev => ({ ...prev, loading: true }));
     history.push(`/dashboard/casos/${newPage}`);
   };
+
+  const filteredCases = useMemo(() => {
+    const sourceCases = hasActiveFilters && allCasesData.length > 0 ? allCasesData : casesData;
+    return sourceCases.filter((caso) => {
+      const categoryMatch = !filters.categoryId || String(caso.category_id) === filters.categoryId;
+      const statusMatch = !filters.status || caso.status === filters.status;
+      const questionsCount = caso.questions?.length ?? 0;
+      const questionsMatch =
+        filters.questionsCount === "" || questionsCount === Number(filters.questionsCount);
+
+      return categoryMatch && statusMatch && questionsMatch;
+    });
+  }, [casesData, allCasesData, hasActiveFilters, filters]);
 
   const numPages = Math.ceil(totalCases / perPage);
 
@@ -116,7 +167,67 @@ const CasoTable = () => {
     <div className="caso-table-container">
       <CustomRow>
         <CustomCol s={12}>
-          <h4 className="grey-text text-darken-3">{`Casos Clínicos (${totalCases})`}</h4>
+          <h4 className="grey-text text-darken-3">{`Casos Clínicos (${filteredCases.length}/${totalCases})`}</h4>
+          <div className="right-align" style={{ marginBottom: "1rem" }}>
+            <CustomButton
+              node="a"
+              href="#/dashboard/add/caso"
+              className="green"
+              icon="add"
+              iconPosition="right"
+            >
+              Agregar un nuevo caso clínico
+            </CustomButton>
+          </div>
+
+          <CustomRow>
+            <CustomCol s={12} m={4}>
+              <CustomSelect
+                id="filter-category"
+                label="Filtrar por especialidad"
+                value={filters.categoryId}
+                onChange={(event) =>
+                  setFilters((prev) => ({ ...prev, categoryId: event.target.value }))
+                }
+              >
+                <option value="">Todas</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={String(cat.id)}>
+                    {cat.name}
+                  </option>
+                ))}
+              </CustomSelect>
+            </CustomCol>
+
+            <CustomCol s={12} m={4}>
+              <CustomSelect
+                id="filter-status"
+                label="Filtrar por status"
+                value={filters.status}
+                onChange={(event) =>
+                  setFilters((prev) => ({ ...prev, status: event.target.value }))
+                }
+              >
+                <option value="">Todos</option>
+                <option value="pending">Pendiente</option>
+                <option value="published">Publicado</option>
+                <option value="rejected">Rechazado</option>
+              </CustomSelect>
+            </CustomCol>
+
+            <CustomCol s={12} m={4}>
+              <CustomTextInput
+                id="filter-questions-count"
+                type="number"
+                min={0}
+                label="No. de preguntas (exacto)"
+                value={filters.questionsCount}
+                onChange={(event) =>
+                  setFilters((prev) => ({ ...prev, questionsCount: event.target.value }))
+                }
+              />
+            </CustomCol>
+          </CustomRow>
 
           <CustomPagination
             activePage={currentPage}
@@ -137,14 +248,14 @@ const CasoTable = () => {
               </tr>
             </thead>
             <tbody>
-              {casesData.length === 0 ? (
+              {filteredCases.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="center-align">
-                    No se encontraron casos clínicos.
+                    No se encontraron casos con los filtros seleccionados.
                   </td>
                 </tr>
               ) : (
-                casesData.map((caso) => (
+                filteredCases.map((caso) => (
                   <CasoRow
                     key={caso.id}
                     caso={caso}
@@ -155,15 +266,28 @@ const CasoTable = () => {
             </tbody>
           </CustomTable>
 
-          <CustomPagination
-            activePage={currentPage}
-            items={numPages}
-            maxButtons={8}
-            onSelect={handlePageClick}
-            className="green-text text-darken-1"
-          />
+          {!hasActiveFilters && (
+            <CustomPagination
+              activePage={currentPage}
+              items={numPages}
+              maxButtons={8}
+              onSelect={handlePageClick}
+              className="green-text text-darken-1"
+            />
+          )}
         </CustomCol>
       </CustomRow>
+      <CustomButton
+        node="a"
+        href="#/dashboard/add/caso"
+        className="red"
+        large
+        floating
+        fab
+        icon="add"
+        tooltip={{ text: "Agregar un nuevo caso clínico", position: "top" }}
+        waves="light"
+      />
     </div>
   );
 };
