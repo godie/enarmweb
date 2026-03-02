@@ -2,7 +2,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { vi, describe, beforeEach, it, expect } from 'vitest';
-import PlayerLogin from "./auth/PlayerLogin";
+import PlayerLogin from "./PlayerLogin";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
 import { MemoryRouter } from "react-router-dom";
@@ -30,11 +30,11 @@ vi.mock('../services/AlertService', () => ({
     alertError: vi.fn(),
 }));
 
-vi.mock('../components/google/GoogleLoginContainer', () => ({
+vi.mock('./google/GoogleLoginContainer', () => ({
     default: () => <div data-testid="google-login-mock">Google Login</div>
 }));
 
-vi.mock('../components/facebook/FacebookLoginContainer', () => ({
+vi.mock('./facebook/FacebookLoginContainer', () => ({
     default: () => <div data-testid="facebook-login-mock">Facebook Login</div>
 }));
 

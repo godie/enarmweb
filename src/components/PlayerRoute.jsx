@@ -1,5 +1,5 @@
 import { Route, Redirect } from "react-router-dom";
-import Auth from "../../modules/Auth";
+import Auth from "../modules/Auth";
 
 const PlayerRoute = ({ component: Component, ...rest }) => (
   <Route

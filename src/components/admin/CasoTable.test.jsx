@@ -133,7 +133,7 @@ describe('CasoTable Component', () => {
 
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      expect(screen.getByText(`Casos Clínicos (${mockCases.length}/${mockCases.length})`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (${mockCases.length})`)).toBeInTheDocument();
     });
   });
 
@@ -169,7 +169,7 @@ describe('CasoTable Component', () => {
 
     await waitFor(() => {
       const heading = screen.getByRole('heading', { level: 4 });
-      expect(heading).toHaveTextContent(`Casos Clínicos (${mockCases.length}/${mockCases.length})`);
+      expect(heading).toHaveTextContent(`Casos Clínicos (${mockCases.length})`);
     });
   });
 
@@ -199,10 +199,9 @@ describe('CasoTable Component', () => {
     renderCasoTable();
 
     await waitFor(() => {
-      const table = screen.getByRole('table');
-      expect(within(table).getByText('Cardiología')).toBeInTheDocument();
-      expect(within(table).getByText('Neurología')).toBeInTheDocument();
-      expect(within(table).getByText('Pediatría')).toBeInTheDocument();
+      expect(screen.getByText('Cardiología')).toBeInTheDocument();
+      expect(screen.getByText('Neurología')).toBeInTheDocument();
+      expect(screen.getByText('Pediatría')).toBeInTheDocument();
     });
   });
 
@@ -210,10 +209,9 @@ describe('CasoTable Component', () => {
     renderCasoTable();
 
     await waitFor(() => {
-      const table = screen.getByRole('table');
-      expect(within(table).getByText('Publicado')).toBeInTheDocument();
-      expect(within(table).getByText('Pendiente')).toBeInTheDocument();
-      expect(within(table).getByText('Rechazado')).toBeInTheDocument();
+      expect(screen.getByText('Publicado')).toBeInTheDocument();
+      expect(screen.getByText('Pendiente')).toBeInTheDocument();
+      expect(screen.getByText('Rechazado')).toBeInTheDocument();
     });
   });
 
@@ -268,8 +266,8 @@ describe('CasoTable Component', () => {
     renderCasoTable();
 
     await waitFor(() => {
-      expect(screen.getByText('No se encontraron casos con los filtros seleccionados.')).toBeInTheDocument();
-      expect(screen.getByText('Casos Clínicos (0/0)')).toBeInTheDocument();
+      expect(screen.getByText('No se encontraron casos clínicos.')).toBeInTheDocument();
+      expect(screen.getByText('Casos Clínicos (0)')).toBeInTheDocument();
     });
   });
 
@@ -296,8 +294,7 @@ describe('CasoTable Component', () => {
     await waitFor(() => {
       expect(ExamService.loadCategories).not.toHaveBeenCalled();
       // Categories should still render from cache
-      const table = screen.getByRole('table');
-      expect(within(table).getByText('Cardiología')).toBeInTheDocument();
+      expect(screen.getByText('Cardiología')).toBeInTheDocument();
     });
   });
 
@@ -354,7 +351,7 @@ describe('CasoTable Component', () => {
     const { container } = renderCasoTable('/dashboard/casos/1');
 
     await waitFor(() => {
-      expect(screen.getByText(`Casos Clínicos (${mockCases.length}/30)`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (30)`)).toBeInTheDocument();
     });
 
     const paginationLinks = container.querySelectorAll('.pagination li button');

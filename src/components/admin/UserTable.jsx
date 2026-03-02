@@ -3,8 +3,7 @@ import {
     CustomRow,
     CustomCol,
     CustomTable,
-    CustomPreloader,
-    CustomButton
+    CustomPreloader
 } from '../custom';
 import UserService from '../../services/UserService';
 import { alertError, alertSuccess, confirmDialog } from '../../services/AlertService';
@@ -66,17 +65,6 @@ const UserTable = () => {
             <CustomRow>
                 <CustomCol s={12}>
                     <h4 className="grey-text text-darken-3">Gestión de Jugadores</h4>
-                    <div className="right-align" style={{ marginBottom: "1rem" }}>
-                        <CustomButton
-                            node="a"
-                            href="#/dashboard/players/new"
-                            className="green"
-                            icon="person_add"
-                            iconPosition="right"
-                        >
-                            Agregar un nuevo jugador
-                        </CustomButton>
-                    </div>
                     <CustomTable className="highlight z-depth-1">
                         <thead>
                             <tr>
@@ -100,17 +88,6 @@ const UserTable = () => {
                     </CustomTable>
                 </CustomCol>
             </CustomRow>
-            <CustomButton
-                node="a"
-                href="#/dashboard/players/new"
-                className="red"
-                large
-                floating
-                fab
-                icon="add"
-                tooltip={{ text: "Agregar un nuevo jugador", position: 'top' }}
-                waves="light"
-            />
         </div>
     );
 };

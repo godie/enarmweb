@@ -1,35 +1,23 @@
-import { useHistory } from "react-router-dom";
-import Navi from "../layout/Navi";
+
+import Navi from "../Navi";
 import SideNavAdmin from './SideNavAdmin';
-import { CustomButton } from "../custom";
 
 export default function Dashboard(props) {
-  const history = useHistory();
-  const showSideNav = true;
+  // The CustomNavbar inside Navi needs its sidenavTriggerId prop set to "admin-dashboard-sidenav"
+  // for this SideNav to be triggered by the default menu icon in the navbar.
+  // This change would need to be made in Navi.js or where Navi's CustomNavbar is configured.
+  // For now, we ensure CustomSideNav has an ID.
 
   return (
     <div className="dashboard">
       <header>
         <div className="navbar-fixed">
-          <Navi sidenavTriggerId="admin-dashboard-sidenav" showSidenavTrigger={showSideNav} />
+          <Navi sidenavTriggerId="admin-dashboard-sidenav" />
         </div>
-        {showSideNav && <SideNavAdmin />}
+        <SideNavAdmin />
       </header>
       <main className="main-content">
         <div className="dashboard-content">
-          <div className="row" style={{ marginBottom: "0.5rem" }}>
-            <div className="col s12">
-              <CustomButton
-                flat
-                className="green-text text-darken-2"
-                icon="arrow_back"
-                onClick={() => history.goBack()}
-              >
-                Atrás
-              </CustomButton>
-              
-            </div>
-          </div>
           <div className="row">
             <div className="col s12">
               {props.children}

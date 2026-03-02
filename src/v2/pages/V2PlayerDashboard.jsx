@@ -1,65 +1,53 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import Auth from '../../modules/Auth';
-import ExamService from '../../services/ExamService';
 
 const V2PlayerDashboard = () => {
     const history = useHistory();
-    const [state, setState] = useState({
+    const [state] = useState({
         stats: { completedCases: 12, accuracy: 75, streak: 3 },
-        categories: [],
-        loading: true
+        categories: [
+            { id: 1, name: 'Medicina Interna', progress: 74 },
+            { id: 2, name: 'Pediatría', progress: 62 },
+            { id: 3, name: 'Cirugía General', progress: 48 },
+            { id: 4, name: 'Ginecología y Obstetricia', progress: 81 }
+        ],
+        loading: false
     });
 
-    const user = useMemo(() => Auth.getUserInfo(), []);
-    const userId = user?.id;
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const catRes = await ExamService.loadCategories();
-                // Add stable random progress for display
-                const categoriesWithProgress = catRes.data.map(cat => ({
-                    ...cat,
-                    progress: Math.floor((cat.id % 10) * 10) // Deterministic "random"
-                }));
-                setState(prev => ({
-                    ...prev,
-                    categories: categoriesWithProgress,
-                    loading: false
-                }));
-            } catch (error) {
-                console.error("Error loading dashboard data", error);
-                setState(prev => ({ ...prev, loading: false }));
-            }
-        };
-        fetchData();
-    }, [userId]);
-
-    if (state.loading) return <div className="center-align">Cargando...</div>;
+    const user = useMemo(() => {
+        try {
+            return Auth.getUserInfo() || { name: 'García' };
+        } catch {
+            return { name: 'García' };
+        }
+    }, []);
 
     return (
         <div className="v2-dashboard-grid">
             <header style={{ marginBottom: '32px' }}>
-                <h1 className="v2-headline-medium">¡Hola, <span className="v2-text-primary">Dr. {user?.name || 'García'}</span>!</h1>
+                <h1 className="v2-headline-medium">¡Hola, <span className="v2-text-primary">Dr. {user.name}</span>!</h1>
                 <p className="v2-body-large" style={{ opacity: 0.7 }}>Continúa tu preparación para el ENARM donde te quedaste.</p>
             </header>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
                 {/* Featured Challenge */}
-                <section className="v2-card v2-bg-primary" style={{ gridColumn: 'span 2' }}>
-                    <h2 className="v2-title-large">Reto del Día: Medicina Interna</h2>
-                    <p className="v2-body-large" style={{ margin: '16px 0 24px' }}>
-                        Pon a prueba tus conocimientos con casos clínicos curados sobre Endocrinología y Metabolismo.
-                        15 preguntas, 20 minutos.
-                    </p>
-                    <button
-                        className="v2-card-tonal"
-                        style={{ backgroundColor: 'white', color: 'var(--md-sys-color-primary)', fontWeight: 'bold', cursor: 'pointer' }}
-                        onClick={() => history.push('/v2/caso/random')}
-                    >
-                        Comenzar Ahora →
-                    </button>
+                <section className="v2-card v2-bg-primary" style={{ gridColumn: 'span 2', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        <h2 className="v2-title-large">Reto del Día: Medicina Interna</h2>
+                        <p className="v2-body-large" style={{ margin: '16px 0 24px' }}>
+                            Pon a prueba tus conocimientos con casos clínicos curados sobre Endocrinología y Metabolismo.
+                            15 preguntas, 20 minutos.
+                        </p>
+                        <button
+                            className="v2-card-tonal"
+                            style={{ backgroundColor: 'white', color: 'var(--md-sys-color-primary)', border: 'none', padding: '12px 24px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => history.push('/v2/caso/random')}
+                        >
+                            Comenzar Ahora →
+                        </button>
+                    </div>
+                    <i className="material-icons" style={{ position: 'absolute', right: '-20px', bottom: '-20px', fontSize: '150px', opacity: 0.1, color: 'white' }}>medical_information</i>
                 </section>
 
                 {/* Stats Section */}
@@ -83,7 +71,7 @@ const V2PlayerDashboard = () => {
                 {/* Specialties Progress */}
                 <section className="v2-card" style={{ gridColumn: 'span 2' }}>
                     <h3 className="v2-title-large" style={{ marginBottom: '24px' }}>Progreso de Especialidades</h3>
-                    {state.categories.slice(0, 4).map(cat => (
+                    {state.categories.map(cat => (
                         <div key={cat.id} style={{ marginBottom: '16px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                                 <span className="v2-body-large">{cat.name}</span>

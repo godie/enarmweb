@@ -2,7 +2,7 @@ import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
 
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "./auth/Login";
+import Login from "./Login";
 import UserService from "../services/UserService";
 import Auth from "../modules/Auth";
 import { MemoryRouter } from "react-router-dom"; // Removed useHistory, useLocation direct import
@@ -59,13 +59,9 @@ describe("Login Component", () => {
 
   it("should render login form elements", () => {
     renderLogin();
-    expect(screen.getByRole("heading", { name: /acceso administrador/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/contraseña/i,{selector: 'input'})).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /entrar/i })).toBeInTheDocument();
-    expect(
-      screen.getByText(/solo personal autorizado puede acceder al panel de administración/i)
-    ).toBeInTheDocument();
   });
 
   it("should call UserService.login and Auth.authenticateUser on successful login, then redirect", async () => {

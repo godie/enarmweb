@@ -5,12 +5,10 @@ import ExamService from "../services/ExamService";
 import { useHistory } from 'react-router-dom';
 import { alertError, alertSuccess } from "../services/AlertService";
 import CasoContext from "../context/CasoContext";
+
 import EnarmUtil from "../modules/EnarmUtil";
 import ContributionTypeSelector from "./ContributionTypeSelector";
 import ContributionsSummary from "./ContributionsSummary";
-
-const MAX_CASE_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
-const ALLOWED_CASE_IMAGE_TYPES = ["image/png", "image/jpeg"];
 
 const PlayerCasoContainer = () => {
     const history = useHistory();
@@ -28,7 +26,6 @@ const PlayerCasoContainer = () => {
         name: "",
         category_id: "",
         description: "",
-        image: null,
         status: "pending",
         questions: [
             {
@@ -66,7 +63,6 @@ const PlayerCasoContainer = () => {
             description: currentCaso.description,
             status: "pending",
             category_id: currentCaso.category_id,
-            ...(currentCaso.image instanceof File ? { image: currentCaso.image } : {}),
             questions_attributes: questions_attributes,
         };
     };
@@ -142,30 +138,6 @@ const PlayerCasoContainer = () => {
 
     const changeCaso = (event) => {
         const field = event.target.name;
-
-        if (event.target.type === "file") {
-            const file = event.target.files?.[0] || null;
-
-            if (file) {
-                if (!ALLOWED_CASE_IMAGE_TYPES.includes(file.type)) {
-                    alertError("Imagen inválida", "La imagen del caso clínico debe ser PNG o JPG.");
-                    event.target.value = "";
-                    setCaso(prevCaso => ({ ...prevCaso, [field]: null }));
-                    return;
-                }
-
-                if (file.size > MAX_CASE_IMAGE_SIZE_BYTES) {
-                    alertError("Imagen demasiado grande", "La imagen del caso clínico no debe superar 5 MB.");
-                    event.target.value = "";
-                    setCaso(prevCaso => ({ ...prevCaso, [field]: null }));
-                    return;
-                }
-            }
-
-            setCaso(prevCaso => ({ ...prevCaso, [field]: file }));
-            return;
-        }
-
         const value = event.target.value;
         setCaso(prevCaso => ({ ...prevCaso, [field]: value }));
     };

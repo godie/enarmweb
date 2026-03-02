@@ -42,16 +42,6 @@ export default function Especialidades({ title }) {
                     <h4 className="grey-text text-darken-3">{title}</h4>
                 </CustomCol>
                 <CustomCol s={12} m={4} className="right-align valign-wrapper" style={{ justifyContent: 'flex-end' }}>
-                    <CustomButton
-                        node="a"
-                        href="#/dashboard/new/especialidad"
-                        className="green"
-                        icon="add"
-                        iconPosition="right"
-                        style={{ marginRight: '0.5rem' }}
-                    >
-                        Agregar una nueva especialidad
-                    </CustomButton>
                     <CustomButton onClick={clearCache} className="green darken-1">
                         LIMPIAR CACHÉ
                     </CustomButton>
@@ -72,17 +62,6 @@ export default function Especialidades({ title }) {
                     ))}
                 </tbody>
             </CustomTable>
-            <CustomButton
-                node="a"
-                href="#/dashboard/new/especialidad"
-                className="red"
-                large
-                floating
-                fab
-                icon="add"
-                tooltip={{ text: "Agregar una nueva especialidad", position: 'top' }}
-                waves="light"
-            />
         </div>
     )
 

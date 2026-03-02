@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import "./App.css";
 import "./theme.css";
-import Navi from "./components/layout/Navi";
+import Navi from "./components/Navi";
 import Auth from "./modules/Auth";
 const App = ({ children }) => {
   useEffect(() => {
