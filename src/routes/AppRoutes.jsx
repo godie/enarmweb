@@ -33,6 +33,10 @@ import PlayerDashboard from "../components/PlayerDashboard";
 import Landing from "../components/Landing";
 import Auth from "../modules/Auth";
 import { ScrollToTop } from "../components/custom";
+import V2App from "../v2/layouts/V2App";
+import V2PlayerDashboard from "../v2/pages/V2PlayerDashboard";
+import V2Examen from "../v2/pages/V2Examen";
+import V2Profile from "../v2/pages/V2Profile";
 
 function DashboardCases(props) {
   return (
@@ -323,6 +327,33 @@ export default function AppRoutes() {
       <PrivateRoute path="/dashboard/logros" exact component={DashboardAchievements} />
       <PrivateRoute path="/dashboard/logros/new" component={DashboardAchievementCreate} />
       <PrivateRoute path="/dashboard/logros/edit/:id" component={DashboardAchievementEdit} />
+
+
+      {/* — V2 Routes — */}
+      <PlayerRoute
+        path="/v2/dashboard"
+        component={() => (
+          <V2App>
+            <V2PlayerDashboard />
+          </V2App>
+        )}
+      />
+      <PlayerRoute
+        path="/v2/caso/:identificador"
+        component={() => (
+          <V2App>
+            <V2Examen />
+          </V2App>
+        )}
+      />
+      <PlayerRoute
+        path="/v2/perfil"
+        component={() => (
+          <V2App>
+            <V2Profile />
+          </V2App>
+        )}
+      />
 
       {/* — Fallback: cualquier otra ruta, redirige a “/” — */}
       <Route path="*">
