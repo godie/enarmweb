@@ -12,9 +12,13 @@ export default class ExamService extends BaseService {
     return axios.get(BaseService.getURL(url), headers);
   }
 
-  static getClinicalCases(page) {
+  static getClinicalCases(pageOrParams = 1) {
     let headers = this.getHeaders();
-    headers.params = { page: page };
+    if (typeof pageOrParams === "object" && pageOrParams !== null) {
+      headers.params = { ...pageOrParams };
+    } else {
+      headers.params = { page: pageOrParams };
+    }
     let url = "clinical_cases";
     return axios.get(BaseService.getURL(url), headers);
   }
@@ -63,15 +67,54 @@ export default class ExamService extends BaseService {
   static saveCaso(caso) {
     let token = `bearer ${Auth.getToken()}`;
     let url = "clinical_cases";
-    let headers = { headers: { Authorization: token, 'Content-Type': 'application/json', accept: 'application/json' } };
-    //caso['name'] = caso.description.slice(0,10);
-    if (caso.id > 0) {
-      url = url + "/" + caso.id;
-      delete caso.id
-      return axios.put(BaseService.getURL(url), { clinical_case: caso }, headers);
-    } else {
-      return axios.post(BaseService.getURL(url), { clinical_case: caso }, headers);
+    const hasImageFile = typeof File !== "undefined" && caso.image instanceof File;
+
+    if (hasImageFile) {
+      const formData = new FormData();
+      formData.append("clinical_case[name]", caso.name || "");
+      formData.append("clinical_case[description]", caso.description || "");
+      formData.append("clinical_case[category_id]", caso.category_id || "");
+      if (caso.status) formData.append("clinical_case[status]", caso.status);
+      formData.append("clinical_case[image]", caso.image);
+
+      (caso.questions_attributes || []).forEach((question, qIndex) => {
+        if (question.id) {
+          formData.append(`clinical_case[questions_attributes][${qIndex}][id]`, question.id);
+        }
+        formData.append(`clinical_case[questions_attributes][${qIndex}][text]`, question.text || "");
+
+        (question.answers_attributes || []).forEach((answer, aIndex) => {
+          if (answer.id) {
+            formData.append(`clinical_case[questions_attributes][${qIndex}][answers_attributes][${aIndex}][id]`, answer.id);
+          }
+          formData.append(`clinical_case[questions_attributes][${qIndex}][answers_attributes][${aIndex}][text]`, answer.text || "");
+          formData.append(
+            `clinical_case[questions_attributes][${qIndex}][answers_attributes][${aIndex}][is_correct]`,
+            answer.is_correct ? "true" : "false"
+          );
+          formData.append(
+            `clinical_case[questions_attributes][${qIndex}][answers_attributes][${aIndex}][description]`,
+            answer.description || ""
+          );
+        });
+      });
+
+      const headers = { headers: { Authorization: token, accept: "application/json" } };
+      if (caso.id > 0) {
+        url = `${url}/${caso.id}`;
+        return axios.put(BaseService.getURL(url), formData, headers);
+      }
+      return axios.post(BaseService.getURL(url), formData, headers);
     }
+
+    const headers = { headers: { Authorization: token, "Content-Type": "application/json", accept: "application/json" } };
+    const payload = { ...caso };
+    if (payload.id > 0) {
+      url = `${url}/${payload.id}`;
+      delete payload.id;
+      return axios.put(BaseService.getURL(url), { clinical_case: payload }, headers);
+    }
+    return axios.post(BaseService.getURL(url), { clinical_case: payload }, headers);
   }
 
   static sendAnswers(playerAnswers) {
@@ -100,7 +143,7 @@ export default class ExamService extends BaseService {
 
   static getCategory(id) {
     const headers = this.getHeaders();
-    let url = `categories/${id}`;
+    let url = `categories/${id}/`;
     return axios.get(BaseService.getURL(url), headers);
   }
 
@@ -140,6 +183,33 @@ export default class ExamService extends BaseService {
     } else {
       return axios.post(BaseService.getURL(url), { question }, headers);
     }
+  }
+
+  static getAllQuestions(params = {}) {
+    const headers = this.getHeaders();
+    headers.params = params;
+    return axios.get(BaseService.getURL("questions"), headers);
+  }
+
+  static getQuestion(id) {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL(`questions/${id}`), headers);
+  }
+
+  static deleteQuestion(id) {
+    const headers = this.getHeaders();
+    return axios.delete(BaseService.getURL(`questions/${id}`), headers);
+  }
+
+  static getCategoryClinicalCases(categoryId, page) {
+    const headers = this.getHeaders();
+    headers.params = page ? { page } : {};
+    return axios.get(BaseService.getURL(`categories/${categoryId}/clinical_cases`), headers);
+  }
+
+  static getUserAnswers() {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL("user_answers"), headers);
   }
 
 }

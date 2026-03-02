@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, test, expect } from 'vitest';
 
-import Navi from './Navi';
+import Navi from './layout/Navi';
 import Auth from '../modules/Auth';
 
 // Mock the Auth module explicitly with Vitest

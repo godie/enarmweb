@@ -1,7 +1,6 @@
-// src/components/Logout.js
 import { useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import Auth from "../modules/Auth";
+import Auth from "../../modules/Auth";
 
 export default function Logout() {
   useEffect(() => {

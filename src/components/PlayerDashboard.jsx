@@ -91,6 +91,17 @@ const PlayerDashboard = () => {
                     <CustomCol s={12} m={4} className="right-align hide-on-small-only">
                         <CustomButton
                             large
+                            className="blue-grey darken-1"
+                            onClick={() => history.push('/flashcards')}
+                            tooltip="Repasa tarjetas pendientes con repetición espaciada"
+                            aria-label="Abrir repaso con flashcards"
+                            icon="style"
+                            style={{ marginRight: "0.75rem" }}
+                        >
+                            Flashcards
+                        </CustomButton>
+                        <CustomButton
+                            large
                             className="green pulse"
                             onClick={() => history.push('/caso/random')}
                             tooltip="Comienza un caso aleatorio para practicar"

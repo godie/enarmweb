@@ -109,7 +109,11 @@ describe("ExamService", () => {
       await ExamService.saveCaso(casoExisting);
       expect(BaseService.getURL).toHaveBeenCalledWith(`clinical_cases/${id}`);
       expect(Auth.getToken).toHaveBeenCalled();
-      expect(axios.put).toHaveBeenCalledWith(expectedUrl, { clinical_case: casoExisting }, expectedHeaders);
+      expect(axios.put).toHaveBeenCalledWith(
+        expectedUrl,
+        { clinical_case: { description: "Existing Case" } },
+        expectedHeaders,
+      );
       expect(axios.post).not.toHaveBeenCalled();
     });
   });
@@ -176,12 +180,12 @@ describe("ExamService", () => {
   describe("getCategory", () => {
     it("should call axios.get with correct URL and headers for a specific category", async () => {
       const categoryId = 123;
-      const expectedUrl = `${baseApiUrl}/categories/${categoryId}`;
+      const expectedUrl = `${baseApiUrl}/categories/${categoryId}/`;
       const getHeadersSpy = vi.spyOn(ExamService, 'getHeaders').mockReturnValue(expectedHeaders);
 
       await ExamService.getCategory(categoryId);
 
-      expect(BaseService.getURL).toHaveBeenCalledWith(`categories/${categoryId}`);
+      expect(BaseService.getURL).toHaveBeenCalledWith(`categories/${categoryId}/`);
       expect(getHeadersSpy).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedHeaders);
       getHeadersSpy.mockRestore();

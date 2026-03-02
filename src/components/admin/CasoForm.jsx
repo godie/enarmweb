@@ -95,6 +95,28 @@ const CasoForm = () => {
         </CustomRow>
         <CustomRow>
           <CustomCol s={12}>
+            <label htmlFor="image" className="active" style={{ display: "block", marginBottom: "0.5rem" }}>
+              Imagen del caso clínico
+            </label>
+            <input
+              id="image"
+              type="file"
+              name="image"
+              accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+              onChange={onChange}
+            />
+            <small className="grey-text" style={{ display: "block", marginTop: "0.5rem" }}>
+              Opcional. Solo PNG/JPG y tamaño máximo de 5 MB.
+            </small>
+            {caso.image instanceof File && (
+              <small className="green-text text-darken-2" style={{ display: "block", marginTop: "0.25rem" }}>
+                Archivo seleccionado: {caso.image.name}
+              </small>
+            )}
+          </CustomCol>
+        </CustomRow>
+        <CustomRow>
+          <CustomCol s={12}>
             <h4 className="center">Preguntas:</h4>
           </CustomCol>
           <CustomCol s={12} className="center">

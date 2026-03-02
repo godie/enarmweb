@@ -21,7 +21,7 @@ export default function FacebookLoginContainer() {
 
           // Persist in localStorage and backend
           Auth.saveFacebookUser(params);
-          UserService.createPlayer(params)
+          UserService.facebookLogin(params)
             .then((response) => {
               Auth.authenticatePlayer(response.data.token);
               Auth.savePlayerInfo({

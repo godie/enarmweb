@@ -53,10 +53,10 @@ vi.mock('../modules/Auth', () => {
 vi.mock('../components/Examen', () => ({ default: () => <div data-testid="examen-mock">Examen Component</div> }));
 vi.mock('../components/admin/CasoTable', () => ({ default: () => <div data-testid="casotable-mock">CasoTable Component</div> }));
 vi.mock('../components/admin/CasoContainer', () => ({ default: () => <div data-testid="casocontainer-mock">CasoContainer Component</div> }));
-vi.mock('../components/Login', () => ({ default: () => <div data-testid="login-mock">Login Component</div> }));
+vi.mock('../components/auth/Login', () => ({ default: () => <div data-testid="login-mock">Login Component</div> }));
 vi.mock('../components/facebook/FacebookLoginContainer', () => ({ default: () => <div data-testid="fb-login-container-mock">FacebookLoginContainer Component</div> }));
 vi.mock('../components/Profile', () => ({ default: () => <div data-testid="profile-mock">Profile Component</div> }));
-vi.mock('../components/Logout', () => ({
+vi.mock('../components/auth/Logout', () => ({
   default: () => <div data-testid="logout-mock">Logout Component</div>,
   AdminLogout: () => <div data-testid="admin-logout-mock">AdminLogout Component</div>,
 }));

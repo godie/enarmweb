@@ -3,7 +3,8 @@ import {
     CustomRow,
     CustomCol,
     CustomTable,
-    CustomPreloader
+    CustomPreloader,
+    CustomButton
 } from '../custom';
 import ExamService from '../../services/ExamService';
 import { alertError, alertSuccess, confirmDialog } from '../../services/AlertService';
@@ -58,6 +59,17 @@ const ExamenTable = () => {
             <CustomRow>
                 <CustomCol s={12}>
                     <h4 className="grey-text text-darken-3">Gestión de Exámenes</h4>
+                    <div className="right-align" style={{ marginBottom: "1rem" }}>
+                        <CustomButton
+                            node="a"
+                            href="#/dashboard/new/exam"
+                            className="green"
+                            icon="add"
+                            iconPosition="right"
+                        >
+                            Agregar un nuevo examen
+                        </CustomButton>
+                    </div>
                     <CustomTable className="highlight z-depth-1">
                         <thead>
                             <tr>
@@ -85,6 +97,17 @@ const ExamenTable = () => {
                     </CustomTable>
                 </CustomCol>
             </CustomRow>
+            <CustomButton
+                node="a"
+                href="#/dashboard/new/exam"
+                className="red"
+                large
+                floating
+                fab
+                icon="add"
+                tooltip={{ text: "Agregar un nuevo examen", position: 'top' }}
+                waves="light"
+            />
         </div>
     );
 };
