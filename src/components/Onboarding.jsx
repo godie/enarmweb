@@ -111,6 +111,31 @@ const Onboarding = () => {
                 </CustomCol>
             </CustomRow>
 
+            <CustomRow className="center-align enarm-mb-20">
+                <CustomCol s={12}>
+                    <CustomButton
+                        flat
+                        className="green-text text-darken-2"
+                        onClick={() => setState(prev => ({ ...prev, selected: categories.map(cat => cat.id) }))}
+                        icon="check_circle"
+                        iconPosition="left"
+                        small
+                    >
+                        Seleccionar todas
+                    </CustomButton>
+                    <CustomButton
+                        flat
+                        className="red-text text-darken-2 enarm-valign-gap"
+                        onClick={() => setState(prev => ({ ...prev, selected: [] }))}
+                        icon="highlight_off"
+                        iconPosition="left"
+                        small
+                    >
+                        Deseleccionar todas
+                    </CustomButton>
+                </CustomCol>
+            </CustomRow>
+
             <CustomRow>
                 {categories.map(cat => {
                     const isSelected = selected.includes(cat.id);
