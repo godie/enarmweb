@@ -32,7 +32,7 @@ describe('PlayerQuestionForm Component', () => {
 
         expect(screen.getByText('Pregunta Individual')).toBeDefined();
         await waitFor(() => {
-            expect(screen.getByLabelText(/Especialidad/i)).toBeDefined();
+            expect(screen.getByRole('combobox')).toBeDefined();
         });
         expect(screen.getByLabelText(/Texto de la pregunta/i)).toBeDefined();
     });

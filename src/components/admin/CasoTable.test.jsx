@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
+import { act } from 'react';
 import CasoTable from './CasoTable';
 import ExamService from '../../services/ExamService';
 import EnarmUtil from '../../modules/EnarmUtil';
@@ -112,24 +113,22 @@ describe('CasoTable Component', () => {
   });
 
   test('shows preloader then content once data resolves', async () => {
-    vi.useFakeTimers();
-
-    const delayed = new Promise((resolve) =>
-      setTimeout(
-        () =>
-          resolve({
-            data: { clinical_cases: mockCases, total_entries: mockCases.length },
-          }),
-        200,
-      ),
-    );
+    let resolveDelayed;
+    const delayed = new Promise((resolve) => {
+      resolveDelayed = resolve;
+    });
     ExamService.getClinicalCases.mockReturnValue(delayed);
 
     renderCasoTable();
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
 
-    vi.advanceTimersByTime(200);
+    await act(async () => {
+      resolveDelayed({
+        data: { clinical_cases: mockCases, total_entries: mockCases.length },
+      });
+      await delayed;
+    });
 
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
@@ -138,20 +137,24 @@ describe('CasoTable Component', () => {
   });
 
   test('shows error message and toast when API fails', async () => {
-    vi.useFakeTimers();
-
-    ExamService.getClinicalCases.mockImplementation(
-      () =>
-        new Promise((_resolve, reject) =>
-          setTimeout(() => reject(new Error('Network Timeout')), 100),
-        ),
-    );
+    let rejectDelayed;
+    const delayedError = new Promise((_resolve, reject) => {
+      rejectDelayed = reject;
+    });
+    ExamService.getClinicalCases.mockReturnValue(delayedError);
 
     renderCasoTable();
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
 
-    vi.advanceTimersByTime(100);
+    await act(async () => {
+      rejectDelayed(new Error('Network Timeout'));
+      try {
+        await delayedError;
+      } catch (_err) {
+        // expected rejection for this test
+      }
+    });
 
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();

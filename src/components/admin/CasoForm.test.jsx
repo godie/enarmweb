@@ -1,9 +1,16 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { vi, describe, test, expect } from 'vitest';
+import { vi, describe, test, expect, beforeEach } from 'vitest';
 import CasoForm from './CasoForm';
 import CasoContext from '../../context/CasoContext';
+import ExamService from '../../services/ExamService';
+
+vi.mock('../../services/ExamService', () => ({
+  default: {
+    loadCategories: vi.fn(),
+  },
+}));
 
 // Helper to provide default props and allow overriding
 const getDefaultContextValue = () => ({
@@ -35,6 +42,11 @@ const renderWithContext = (ui, contextValue) => {
 };
 
 describe('CasoForm Component', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    ExamService.loadCategories.mockResolvedValue({ data: [{ id: 1, name: 'Cardiología' }] });
+  });
+
   test('renders initial description and basic form elements', () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);

@@ -8,6 +8,11 @@ const __dirname = path.dirname(__filename)
 
 export default defineConfig({
   plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/test/setupTests.js'
+  },
   resolve: {
     alias: {
       "@materializecss-css": path.resolve(__dirname, "node_modules/@materializecss/materialize/dist/css/materialize.min.css"),
