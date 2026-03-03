@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
+import { act } from 'react';
 import CasoTable from './CasoTable';
 import ExamService from '../../services/ExamService';
 import EnarmUtil from '../../modules/EnarmUtil';
@@ -112,46 +113,48 @@ describe('CasoTable Component', () => {
   });
 
   test('shows preloader then content once data resolves', async () => {
-    vi.useFakeTimers();
-
-    const delayed = new Promise((resolve) =>
-      setTimeout(
-        () =>
-          resolve({
-            data: { clinical_cases: mockCases, total_entries: mockCases.length },
-          }),
-        200,
-      ),
-    );
+    let resolveDelayed;
+    const delayed = new Promise((resolve) => {
+      resolveDelayed = resolve;
+    });
     ExamService.getClinicalCases.mockReturnValue(delayed);
 
     renderCasoTable();
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
 
-    vi.advanceTimersByTime(200);
+    await act(async () => {
+      resolveDelayed({
+        data: { clinical_cases: mockCases, total_entries: mockCases.length },
+      });
+      await delayed;
+    });
 
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-      expect(screen.getByText(`Casos Clínicos (${mockCases.length}/${mockCases.length})`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (${mockCases.length})`)).toBeInTheDocument();
     });
   });
 
   test('shows error message and toast when API fails', async () => {
-    vi.useFakeTimers();
-
-    ExamService.getClinicalCases.mockImplementation(
-      () =>
-        new Promise((_resolve, reject) =>
-          setTimeout(() => reject(new Error('Network Timeout')), 100),
-        ),
-    );
+    let rejectDelayed;
+    const delayedError = new Promise((_resolve, reject) => {
+      rejectDelayed = reject;
+    });
+    ExamService.getClinicalCases.mockReturnValue(delayedError);
 
     renderCasoTable();
 
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
 
-    vi.advanceTimersByTime(100);
+    await act(async () => {
+      rejectDelayed(new Error('Network Timeout'));
+      try {
+        await delayedError;
+      } catch (_err) {
+        // expected rejection for this test
+      }
+    });
 
     await waitFor(() => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
@@ -169,7 +172,7 @@ describe('CasoTable Component', () => {
 
     await waitFor(() => {
       const heading = screen.getByRole('heading', { level: 4 });
-      expect(heading).toHaveTextContent(`Casos Clínicos (${mockCases.length}/${mockCases.length})`);
+      expect(heading).toHaveTextContent(`Casos Clínicos (${mockCases.length})`);
     });
   });
 
@@ -199,10 +202,9 @@ describe('CasoTable Component', () => {
     renderCasoTable();
 
     await waitFor(() => {
-      const table = screen.getByRole('table');
-      expect(within(table).getByText('Cardiología')).toBeInTheDocument();
-      expect(within(table).getByText('Neurología')).toBeInTheDocument();
-      expect(within(table).getByText('Pediatría')).toBeInTheDocument();
+      expect(screen.getByText('Cardiología')).toBeInTheDocument();
+      expect(screen.getByText('Neurología')).toBeInTheDocument();
+      expect(screen.getByText('Pediatría')).toBeInTheDocument();
     });
   });
 
@@ -210,10 +212,9 @@ describe('CasoTable Component', () => {
     renderCasoTable();
 
     await waitFor(() => {
-      const table = screen.getByRole('table');
-      expect(within(table).getByText('Publicado')).toBeInTheDocument();
-      expect(within(table).getByText('Pendiente')).toBeInTheDocument();
-      expect(within(table).getByText('Rechazado')).toBeInTheDocument();
+      expect(screen.getByText('Publicado')).toBeInTheDocument();
+      expect(screen.getByText('Pendiente')).toBeInTheDocument();
+      expect(screen.getByText('Rechazado')).toBeInTheDocument();
     });
   });
 
@@ -268,8 +269,8 @@ describe('CasoTable Component', () => {
     renderCasoTable();
 
     await waitFor(() => {
-      expect(screen.getByText('No se encontraron casos con los filtros seleccionados.')).toBeInTheDocument();
-      expect(screen.getByText('Casos Clínicos (0/0)')).toBeInTheDocument();
+      expect(screen.getByText('No se encontraron casos clínicos.')).toBeInTheDocument();
+      expect(screen.getByText('Casos Clínicos (0)')).toBeInTheDocument();
     });
   });
 
@@ -296,8 +297,7 @@ describe('CasoTable Component', () => {
     await waitFor(() => {
       expect(ExamService.loadCategories).not.toHaveBeenCalled();
       // Categories should still render from cache
-      const table = screen.getByRole('table');
-      expect(within(table).getByText('Cardiología')).toBeInTheDocument();
+      expect(screen.getByText('Cardiología')).toBeInTheDocument();
     });
   });
 
@@ -354,7 +354,7 @@ describe('CasoTable Component', () => {
     const { container } = renderCasoTable('/dashboard/casos/1');
 
     await waitFor(() => {
-      expect(screen.getByText(`Casos Clínicos (${mockCases.length}/30)`)).toBeInTheDocument();
+      expect(screen.getByText(`Casos Clínicos (30)`)).toBeInTheDocument();
     });
 
     const paginationLinks = container.querySelectorAll('.pagination li button');

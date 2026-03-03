@@ -1,9 +1,16 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { vi, describe, test, expect } from 'vitest';
+import { vi, describe, test, expect, beforeEach } from 'vitest';
 import CasoForm from './CasoForm';
 import CasoContext from '../../context/CasoContext';
+import ExamService from '../../services/ExamService';
+
+vi.mock('../../services/ExamService', () => ({
+  default: {
+    loadCategories: vi.fn(),
+  },
+}));
 
 // Helper to provide default props and allow overriding
 const getDefaultContextValue = () => ({
@@ -35,11 +42,16 @@ const renderWithContext = (ui, contextValue) => {
 };
 
 describe('CasoForm Component', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    ExamService.loadCategories.mockResolvedValue({ data: [{ id: 1, name: 'Cardiología' }] });
+  });
+
   test('renders initial description and basic form elements', () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
 
-    expect(screen.getByLabelText(/descripción del caso/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Caso clínico/i)).toBeInTheDocument();
     expect(screen.getByDisplayValue('Initial Case Description')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /agregar pregunta/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
@@ -49,7 +61,7 @@ describe('CasoForm Component', () => {
   test('calls onChange when description is changed', () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
-    const descriptionTextarea = screen.getByLabelText(/descripción del caso/i);
+    const descriptionTextarea = screen.getByLabelText(/Caso clínico/i);
     fireEvent.change(descriptionTextarea, { target: { name: 'description', value: 'New description' } });
     expect(contextValue.onChange).toHaveBeenCalledTimes(1);
   });

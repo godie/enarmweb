@@ -1,8 +1,9 @@
+
 import { useHistory, useLocation } from "react-router-dom";
-import UserService from "../../services/UserService";
-import Auth from "../../modules/Auth";
-import { alertError } from "../../services/AlertService";
-import AuthForm from "../common/AuthForm";
+import UserService from "../services/UserService";
+import Auth from "../modules/Auth";
+import { alertError } from "../services/AlertService";
+import AuthForm from "./common/AuthForm";
 
 export default function Login() {
   const history = useHistory();
@@ -19,23 +20,17 @@ export default function Login() {
       return null;
     } catch (err) {
       console.error(err);
-      alertError("Error!", "Invalid Credentials!");
-      return "Invalid Credentials!";
+      alertError('Error!', 'Invalid Credentials!');
+      return 'Invalid Credentials!';
     }
   };
 
   return (
     <AuthForm
-      layout="card"
-      title="Acceso Administrador"
+      title="Entrar"
       action={loginAction}
       submitText="Entrar"
       isPendingText="Entrando..."
-      extraContent={
-        <p className="admin-login-hint center-align grey-text text-darken-1">
-          Solo personal autorizado puede acceder al panel de administración.
-        </p>
-      }
     />
   );
 }

@@ -5,7 +5,7 @@ import { vi, describe, beforeEach, it, expect } from 'vitest';
 import Dashboard from './Dashboard';
 
 // Mock Navi component
-vi.mock('../layout/Navi', () => ({
+vi.mock('../Navi', () => ({
   default: () => <div data-testid="navi-mock">Navigation Bar</div>
 }));
 

@@ -124,9 +124,9 @@ describe("PlayerDashboard Component", () => {
         const cardioCard = await screen.findByLabelText(/Explorar especialidad Cardiología/i);
 
         fireEvent.mouseEnter(cardioCard);
-        expect(cardioCard).toHaveStyle("background-color: transparent");
+        expect(cardioCard.className).toMatch(/specialtyItemFocused|_specialtyItemFocused_/);
 
         fireEvent.mouseLeave(cardioCard);
-        expect(cardioCard).toHaveStyle("background-color: transparent");
+        expect(cardioCard.className).not.toMatch(/specialtyItemFocused|_specialtyItemFocused_/);
     });
 });

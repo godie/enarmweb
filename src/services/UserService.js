@@ -20,11 +20,6 @@ class UserService extends BaseService {
     return axios.post(BaseService.getURL("users/google_login"), params);
   }
 
-  // Facebook Login unificado
-  static facebookLogin(params) {
-    return axios.post(BaseService.getURL("users/facebook_login"), params);
-  }
-
   // Estadísticas del usuario
   static getUserStats() {
     const headers = this.getHeaders();
@@ -41,11 +36,6 @@ class UserService extends BaseService {
   static getUsers() {
     const headers = this.getHeaders();
     return axios.get(BaseService.getURL("users"), headers);
-  }
-
-  static getUserById(id) {
-    const headers = this.getHeaders();
-    return axios.get(BaseService.getURL(`users/${id}`), headers);
   }
 
   // Admin: Actualizar usuario
