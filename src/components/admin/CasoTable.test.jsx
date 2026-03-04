@@ -151,7 +151,7 @@ describe('CasoTable Component', () => {
       rejectDelayed(new Error('Network Timeout'));
       try {
         await delayedError;
-      } catch (_err) {
+      } catch {
         // expected rejection for this test
       }
     });
