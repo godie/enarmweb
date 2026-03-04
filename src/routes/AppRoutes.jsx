@@ -32,6 +32,10 @@ import V2App from "../v2/layouts/V2App";
 import V2PlayerDashboard from "../v2/pages/V2PlayerDashboard";
 import V2Examen from "../v2/pages/V2Examen";
 import V2Profile from "../v2/pages/V2Profile";
+import V2PracticaLanding from "../v2/pages/V2PracticaLanding";
+import V2Contribuir from "../v2/pages/V2Contribuir";
+import V2MisContribuciones from "../v2/pages/V2MisContribuciones";
+import V2Onboarding from "../v2/pages/V2Onboarding";
 
 function DashboardCases(props) {
   return (
@@ -252,6 +256,9 @@ export default function AppRoutes() {
 
 
       {/* — V2 Routes — */}
+      <Route path="/v2" exact>
+        <Redirect to="/v2/dashboard" />
+      </Route>
       <PlayerRoute
         path="/v2/dashboard"
         component={() => (
@@ -273,6 +280,38 @@ export default function AppRoutes() {
         component={() => (
           <V2App>
             <V2Profile />
+          </V2App>
+        )}
+      />
+      <PlayerRoute
+        path="/v2/practica"
+        component={() => (
+          <V2App>
+            <V2PracticaLanding />
+          </V2App>
+        )}
+      />
+      <PlayerRoute
+        path="/v2/contribuir"
+        component={() => (
+          <V2App>
+            <V2Contribuir />
+          </V2App>
+        )}
+      />
+      <PlayerRoute
+        path="/v2/mis-contribuciones"
+        component={() => (
+          <V2App>
+            <V2MisContribuciones />
+          </V2App>
+        )}
+      />
+      <PlayerRoute
+        path="/v2/onboarding"
+        component={() => (
+          <V2App>
+            <V2Onboarding />
           </V2App>
         )}
       />
