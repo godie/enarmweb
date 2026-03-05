@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from "react-router-dom";
-import { Sidenav } from "@materializecss/materialize";
 
 const CustomNavbar = ({
   brand,
@@ -14,7 +13,6 @@ const CustomNavbar = ({
   fixed = false,
   userName = '',
   sidenavTriggerId = 'mobile-nav', // Default ID for the sidenav this navbar might trigger
-  showSidenavTrigger = true,
   centerLogo = false, // For centering logo, especially on mobile
   ...props
 }) => {
@@ -23,14 +21,6 @@ const CustomNavbar = ({
 
   const navClasses = fixed ? 'navbar-fixed' : '';
   const navbarClasses = `nav navbar ${className}`.trim();
-
-  const openSidenav = () => {
-    const sidenavElement = document.getElementById(sidenavTriggerId);
-    if (!sidenavElement) return;
-
-    const instance = Sidenav.getInstance(sidenavElement) || Sidenav.init(sidenavElement);
-    instance.open();
-  };
 
   const mainNav = (
     <nav {...props} className={navbarClasses}>
@@ -58,18 +48,15 @@ const CustomNavbar = ({
               <ProfileLink userName={userName} />
             )}
           </ul>
-          {showSidenavTrigger && (
-            <button
-              type="button"
-              data-target={sidenavTriggerId}
-              className="sidenav-trigger btn-flat"
-              aria-label="Abrir menú de navegación"
-              onClick={openSidenav}
-              style={{ padding: 0, margin: 0, height: 'auto', lineHeight: 'inherit', display: 'block' }}
-            >
-              <i className="material-icons">menu</i>
-            </button>
-          )}
+          <button
+            type="button"
+            data-target={sidenavTriggerId}
+            className="sidenav-trigger btn-flat"
+            aria-label="Abrir menú de navegación"
+            style={{ padding: 0, margin: 0, height: 'auto', lineHeight: 'inherit', display: 'block' }}
+          >
+            <i className="material-icons">menu</i>
+          </button>
         </div>
       </div>
       <style>{`
@@ -102,7 +89,6 @@ CustomNavbar.propTypes = {
   className: PropTypes.string, // For the <nav> element itself (e.g., color)
   fixed: PropTypes.bool,
   sidenavTriggerId: PropTypes.string,
-  showSidenavTrigger: PropTypes.bool,
   centerLogo: PropTypes.bool,
 };
 

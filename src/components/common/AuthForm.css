@@ -103,12 +103,6 @@
   opacity: 0.85;
 }
 
-.admin-login-hint {
-  margin-top: 16px;
-  margin-bottom: 2px;
-  font-size: 0.92rem;
-}
-
 /* Botón principal Entrar – estilo Material Filled button (elevación 2dp → 4dp hover) */
 .btn-brand {
   display: flex;

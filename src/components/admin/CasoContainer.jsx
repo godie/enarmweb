@@ -5,15 +5,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import { alertError, alertSuccess } from "../../services/AlertService";
 import CasoContext from "../../context/CasoContext";
 
-const MAX_CASE_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
-const ALLOWED_CASE_IMAGE_TYPES = ["image/png", "image/jpeg"];
-
 const INITIAL_CASO_STATE = {
   name: "",
   description: "Un caso clínico nuevo",
   status: "pending",
   category_id: "",
-  image: null,
   questions: [
     {
       answers: [
@@ -49,7 +45,6 @@ const CasoContainer = () => {
         description: currentCaso.description,
         status: currentCaso.status,
         category_id: currentCaso.category_id,
-        ...(currentCaso.image instanceof File ? { image: currentCaso.image } : {}),
         questions_attributes: currentCaso.questions.map(q => ({
           text: q.text,
           answers_attributes: processAnswers(q.answers),
@@ -172,30 +167,6 @@ const CasoContainer = () => {
 
   const changeCaso = (event) => {
     const field = event.target.name;
-
-    if (event.target.type === "file") {
-      const file = event.target.files?.[0] || null;
-
-      if (file) {
-        if (!ALLOWED_CASE_IMAGE_TYPES.includes(file.type)) {
-          alertError("Imagen inválida", "La imagen del caso clínico debe ser PNG o JPG.");
-          event.target.value = "";
-          setCaso(prevCaso => ({ ...prevCaso, [field]: null }));
-          return;
-        }
-
-        if (file.size > MAX_CASE_IMAGE_SIZE_BYTES) {
-          alertError("Imagen demasiado grande", "La imagen del caso clínico no debe superar 5 MB.");
-          event.target.value = "";
-          setCaso(prevCaso => ({ ...prevCaso, [field]: null }));
-          return;
-        }
-      }
-
-      setCaso(prevCaso => ({ ...prevCaso, [field]: file }));
-      return;
-    }
-
     const value = event.target.value;
     setCaso(prevCaso => ({
       ...prevCaso,

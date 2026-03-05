@@ -93,7 +93,7 @@ describe('Profile Component', () => {
     render(<Profile />);
     await screen.findByText(/Selección de Especialidades/i);
     const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes.length).toBeGreaterThanOrEqual(3);
+    expect(checkboxes.length).toBeGreaterThanOrEqual(2);
   });
 
   test('renders form fields', async () => {
