@@ -24,8 +24,7 @@ const Landing = () => {
           </p>
           <div className="landing-hero-actions">
             <CustomButton
-              node="a"
-              href="#/login"
+              to="/login"
               large
               className="green darken-1 white-text waves-light"
               icon="arrow_forward"
@@ -34,8 +33,7 @@ const Landing = () => {
               Comenzar Ahora
             </CustomButton>
             <CustomButton
-              node="a"
-              href="#/login"
+              to="/login"
               large
               flat
               className="white green-text text-darken-1 waves-light landing-btn-outline"
@@ -143,8 +141,7 @@ const Landing = () => {
             Únete a miles de médicos que ya están un paso más cerca de su residencia
           </p>
           <CustomButton
-            node="a"
-            href="#/login"
+            to="/login"
             large
             className="green darken-1 white-text waves-light"
             icon="arrow_forward"

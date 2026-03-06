@@ -42,6 +42,11 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
           <Link to="/contribuir" aria-current={isActive("/contribuir") ? "page" : undefined}>Contribuir</Link>
         </li>
       )}
+      {Auth.isPlayerAuthenticated() && (
+        <li className={isActive("/flashcards", false) ? "active" : ""}>
+          <Link to="/flashcards" aria-current={isActive("/flashcards", false) ? "page" : undefined}>Flashcards</Link>
+        </li>
+      )}
       {Auth.isUserAuthenticated() && !Auth.isAdmin() && (
         <li className={isActive("/perfil") ? "active" : ""}>
           <Link to="/perfil" aria-current={isActive("/perfil") ? "page" : undefined}>Perfil</Link>

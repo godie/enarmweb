@@ -1,9 +1,10 @@
-
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const CustomSideNavItem = ({
   children,
   href,
+  to, // React Router path: use for in-app navigation (no full reload, no hash)
   className = '', // Added to the <a> tag if it's a link, or <li> if not a link/divider/subheader
   divider = false,
   subheader = false,
@@ -20,21 +21,29 @@ const CustomSideNavItem = ({
     return <li className={`subheader ${className}`.trim()} {...props}>{children}</li>;
   }
 
-  // Default to a link item
-  // If href is not provided, it can be a non-link item with an onClick
-  const linkClassName = `waves-effect ${className}`.trim(); // Add waves-effect by default for clickable items
-
-  // Renderizar icono si existe
+  const linkClassName = `waves-effect ${className}`.trim();
   const iconElement = icon ? (
     <i className="material-icons">{icon}</i>
   ) : null;
 
+  const linkContent = (
+    <>
+      {iconElement}
+      {children}
+    </>
+  );
+
   return (
     <li {...props}>
-      <a href={href || '#!'} className={linkClassName} onClick={onClick}>
-        {iconElement}
-        {children}
-      </a>
+      {to != null ? (
+        <Link to={to} className={linkClassName} onClick={onClick}>
+          {linkContent}
+        </Link>
+      ) : (
+        <a href={href || '#!'} className={linkClassName} onClick={onClick}>
+          {linkContent}
+        </a>
+      )}
     </li>
   );
 };
@@ -42,6 +51,7 @@ const CustomSideNavItem = ({
 CustomSideNavItem.propTypes = {
   children: PropTypes.node,
   href: PropTypes.string,
+  to: PropTypes.string,
   className: PropTypes.string,
   divider: PropTypes.bool,
   subheader: PropTypes.bool,
