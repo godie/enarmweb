@@ -44,6 +44,7 @@ import V2PracticaLanding from "../v2/pages/V2PracticaLanding";
 import V2Contribuir from "../v2/pages/V2Contribuir";
 import V2MisContribuciones from "../v2/pages/V2MisContribuciones";
 import V2Onboarding from "../v2/pages/V2Onboarding";
+import V2Landing from "../v2/pages/V2Landing";
 
 function DashboardCases(props) {
   return (
@@ -234,6 +235,7 @@ export default function AppRoutes() {
   return (
     <>
     <Switch>
+      <Route path="/v2/landing" exact component={V2Landing} />
       {/* — Player login flow (no Navi, full-page green + card) — */}
       <Route path="/login" exact component={() => <PlayerLogin />} />
       <Route
@@ -250,8 +252,7 @@ export default function AppRoutes() {
       <Route path="/dashboard/logout" exact component={AdminLogout} />
 
       {/* — Home: landing for guests (no Navi), dashboard for authenticated players — */}
-      <Route
-        path="/"
+      <Route path="/"
         exact
         render={() =>
           Auth.isPlayerAuthenticated() ? (
