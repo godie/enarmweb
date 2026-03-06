@@ -1,3 +1,4 @@
+import "./passiveTouchEvents"; // Before Materialize to fix touchmove/touchstart passive listener violation
 import React from "react";
 import { createRoot } from "react-dom/client";
 import "@materializecss-css";
@@ -5,7 +6,7 @@ import "@materializecss/materialize";
 import "./index.css";
 import { GoogleTagManager, GTMRouteTracker } from './components/google/GoogleTagManager';
 import AppRoutes from "./routes/AppRoutes.jsx";
-import { HashRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import * as serviceWorker from "./serviceWorker";
 

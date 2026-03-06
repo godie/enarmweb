@@ -18,11 +18,19 @@ import CustomButton from "../components/custom/CustomButton"; // Added
 // CustomIcon is not directly used here if CustomButton handles the icon prop
 import EspecialidadForm from "../components/admin/EspecialidadForm";
 import UserTable from "../components/admin/UserTable";
+import UserForm from "../components/admin/UserForm";
+import QuestionTable from "../components/admin/QuestionTable";
+import QuestionDetail from "../components/admin/QuestionDetail";
+import FlashcardTable from "../components/admin/FlashcardTable";
+import AchievementTable from "../components/admin/AchievementTable";
+import AchievementForm from "../components/admin/AchievementForm";
 import ExamenTable from "../components/admin/ExamenTable";
 import ExamenForm from "../components/admin/ExamenForm";
 import Onboarding from "../components/Onboarding";
 import EspecialidadCasos from "../pages/Player/EspecialidadCasos";
 import MyContributions from "../pages/Player/MyContributions";
+import Flashcards from "../pages/Player/Flashcards";
+import FlashcardCreate from "../pages/Player/FlashcardCreate";
 
 import PlayerDashboard from "../components/PlayerDashboard";
 import Landing from "../components/Landing";
@@ -42,7 +50,7 @@ function DashboardCases(props) {
     <Dashboard>
       <CasoTable {...props} />
       <CustomButton
-        href="#/dashboard/add/caso"
+        to="/dashboard/add/caso"
         className="red" // Ensured btn-large and btn-floating are here
         large
         floating
@@ -88,7 +96,7 @@ function DashboardEspecialidades(props) {
     <Dashboard>
       <Especialidades {...props} />
       <CustomButton
-        href="#/dashboard/new/especialidad"
+        to="/dashboard/new/especialidad"
         className="red btn-large btn-floating direction-top active" // Ensured
         node="a"
         fab
@@ -114,7 +122,7 @@ function DashboardExams(props) {
     <Dashboard>
       <ExamenTable {...props} />
       <CustomButton
-        href="#/dashboard/new/exam"
+        to="/dashboard/new/exam"
         className="red btn-large btn-floating direction-top active"
         node="a"
         fab
@@ -134,6 +142,85 @@ function DashboardEditExamen(props) {
   );
 }
 
+function DashboardUserCreate(props) {
+  return (
+    <Dashboard>
+      <UserForm {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardQuestions(props) {
+  return (
+    <Dashboard>
+      <QuestionTable {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardQuestionView(props) {
+  return (
+    <Dashboard>
+      <QuestionDetail mode="view" {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardQuestionEdit(props) {
+  return (
+    <Dashboard>
+      <QuestionDetail mode="edit" {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardQuestionCreate(props) {
+  return (
+    <Dashboard>
+      <QuestionDetail mode="create" {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardFlashcards(props) {
+  return (
+    <Dashboard>
+      <FlashcardTable {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardFlashcardsCreate(props) {
+  return (
+    <Dashboard>
+      <FlashcardCreate {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardAchievements(props) {
+  return (
+    <Dashboard>
+      <AchievementTable {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardAchievementCreate(props) {
+  return (
+    <Dashboard>
+      <AchievementForm {...props} />
+    </Dashboard>
+  );
+}
+
+function DashboardAchievementEdit(props) {
+  return (
+    <Dashboard>
+      <AchievementForm {...props} />
+    </Dashboard>
+  );
+}
 
 function AppExamen(props) {
   return (
@@ -197,6 +284,22 @@ export default function AppRoutes() {
         )}
       />
       <PlayerRoute
+        path="/flashcards/nueva"
+        component={() => (
+          <App>
+            <FlashcardCreate />
+          </App>
+        )}
+      />
+      <PlayerRoute
+        path="/flashcards"
+        component={() => (
+          <App>
+            <Flashcards />
+          </App>
+        )}
+      />
+      <PlayerRoute
         path="/onboarding"
         component={() => (
           <App>
@@ -249,8 +352,18 @@ export default function AppRoutes() {
       <PrivateRoute path="/dashboard/new/especialidad" component={DashboardEditEspecialidades} />
       <PrivateRoute path="/dashboard/edit/especialidad/:identificador" component={DashboardEditEspecialidades} />
 
-      <PrivateRoute path="/dashboard/players" component={DashboardUsers} />
+      <PrivateRoute path="/dashboard/players" exact component={DashboardUsers} />
+      <PrivateRoute path="/dashboard/players/new" component={DashboardUserCreate} />
+      <PrivateRoute path="/dashboard/questions" exact component={DashboardQuestions} />
+      <PrivateRoute path="/dashboard/questions/new" component={DashboardQuestionCreate} />
+      <PrivateRoute path="/dashboard/questions/:id/edit" component={DashboardQuestionEdit} />
+      <PrivateRoute path="/dashboard/questions/:id" component={DashboardQuestionView} />
+      <PrivateRoute path="/dashboard/flashcards" exact component={DashboardFlashcards} />
+      <PrivateRoute path="/dashboard/flashcards/new" component={DashboardFlashcardsCreate} />
       <PrivateRoute path="/dashboard/examenes" component={DashboardExams} />
+      <PrivateRoute path="/dashboard/logros" exact component={DashboardAchievements} />
+      <PrivateRoute path="/dashboard/logros/new" component={DashboardAchievementCreate} />
+      <PrivateRoute path="/dashboard/logros/edit/:id" component={DashboardAchievementEdit} />
       <PrivateRoute path="/dashboard/new/exam" component={DashboardEditExamen} />
       <PrivateRoute path="/dashboard/edit/exam/:identificador" component={DashboardEditExamen} />
 

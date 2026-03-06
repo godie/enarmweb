@@ -1,5 +1,3 @@
-import React from 'react';
-
 const V2MisContribuciones = () => {
     const contributions = [
         { id: 1, title: 'Infarto Agudo al Miocardio', status: 'Approved', specialty: 'Medicina Interna', icon: 'favorite' },

@@ -1,5 +1,6 @@
 import { useEffect, useRef, Children } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { Tooltip, FloatingActionButton } from '@materializecss/materialize';
 import CustomPreloader from './CustomPreloader';
 
@@ -9,6 +10,7 @@ const CustomButton = ({
   disabled = false,
   node = 'button',
   href,
+  to, // React Router path: in-app navigation without hash or full reload
   tooltip,
   waves = 'light',
   type = 'button',
@@ -101,12 +103,11 @@ const CustomButton = ({
 
   // Render FAB if enabled
   const renderFab = (classes) => {
-    //const fabClasses = `btn-floating btn-large waves-effect waves-${waves} ${className}`;
     const fabToolbar = typeof fab === 'object' && fab.toolbarEnabled;
 
     const fabButtonProps = {
       className: classes,
-      href: href || '#!'
+      ...(to != null ? { to } : { href: href || '#!' })
     };
 
     if (tooltip) {
@@ -119,15 +120,16 @@ const CustomButton = ({
       }
     }
 
+    const FabTag = to != null ? Link : 'a';
     return (
       <div
         ref={fabRef}
         className={`fixed-action-btn${fabToolbar ? ' toolbar' : ''}`}
         {...props}
       >
-        <a {...fabButtonProps} ref={fabButtonRef}>
+        <FabTag {...fabButtonProps} ref={fabButtonRef}>
           {iconElement || <i className="material-icons" aria-hidden="true">edit</i>}
-        </a>
+        </FabTag>
         <ul>
           {Children.map(children, (child, index) => (
             <li key={child.props?.id || `fab-item-${index}`}>{child}</li>
@@ -182,7 +184,18 @@ const CustomButton = ({
     }
   }
 
-  if (Component === 'a') {
+  if (Component === 'a' || to != null) {
+    if (to != null) {
+      return (
+        <Link
+          {...commonProps}
+          ref={elementRef}
+          to={to}
+        >
+          {content}
+        </Link>
+      );
+    }
     return (
       <Component
         {...commonProps}
@@ -211,6 +224,7 @@ CustomButton.propTypes = {
   disabled: PropTypes.bool,
   node: PropTypes.oneOf(['button', 'a']),
   href: PropTypes.string,
+  to: PropTypes.string,
   tooltip: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.shape({

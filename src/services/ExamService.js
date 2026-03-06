@@ -142,4 +142,31 @@ export default class ExamService extends BaseService {
     }
   }
 
+  static getAllQuestions(params = {}) {
+    const headers = this.getHeaders();
+    headers.params = params;
+    return axios.get(BaseService.getURL("questions"), headers);
+  }
+
+  static getQuestion(id) {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL(`questions/${id}`), headers);
+  }
+
+  static deleteQuestion(id) {
+    const headers = this.getHeaders();
+    return axios.delete(BaseService.getURL(`questions/${id}`), headers);
+  }
+
+  static getCategoryClinicalCases(categoryId, page) {
+    const headers = this.getHeaders();
+    headers.params = page ? { page } : {};
+    return axios.get(BaseService.getURL(`categories/${categoryId}/clinical_cases`), headers);
+  }
+
+  static getUserAnswers() {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL("user_answers"), headers);
+  }
+
 }
