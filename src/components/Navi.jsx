@@ -1,7 +1,5 @@
-
 import { Link, useLocation } from "react-router-dom";
 import Auth from "../modules/Auth";
-// import { Navbar } from "react-materialize"; // Removed
 import { CustomNavbar, CustomSideNav } from "./custom";
 import ThemeToggle from "./ThemeToggle";
 
@@ -33,9 +31,6 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
     <>
       <li className={isActive("/") ? "active" : ""}>
         <Link to="/" aria-current={isActive("/") ? "page" : undefined}>Inicio</Link>
-      </li>
-      <li className={isActive("/caso/", false) ? "active" : ""}>
-        <Link to="/caso/1" aria-current={isActive("/caso/", false) ? "page" : undefined}>Caso Clínico</Link>
       </li>
       {Auth.isPlayerAuthenticated() && (
         <li className={isActive("/contribuir") ? "active" : ""}>
@@ -74,7 +69,6 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
         {navLinks}
       </CustomNavbar>
 
-      {/* Mobile SideNav for main site (non-admin) */}
       {sidenavTriggerId === "mobile-nav-main" && (
         <CustomSideNav id="mobile-nav-main">
           {navLinks}
@@ -88,6 +82,3 @@ const Navi = ({ sidenavTriggerId = "mobile-nav-main" }) => {
 };
 
 export default Navi;
-
-// WEBPACK FOOTER // Removed as it's not part of the source code
-// ./src/components/Navi.js

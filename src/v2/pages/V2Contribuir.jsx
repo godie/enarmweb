@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import '../styles/v2-theme.css';
 
 const V2Contribuir = () => {
     const [form, setForm] = useState({
@@ -17,70 +18,95 @@ const V2Contribuir = () => {
     };
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
             <header style={{ marginBottom: '32px' }}>
-                <h1 className="v2-headline-medium">Contribuir Caso</h1>
-                <p className="v2-body-large" style={{ opacity: 0.7 }}>Ayuda a la comunidad compartiendo casos clínicos de calidad.</p>
+                <h1 className="v2-headline-medium">Contribuir Caso Clínico</h1>
+                <p className="v2-body-large" style={{ opacity: 0.7 }}>Tu aporte mejora la preparación de miles de colegas aspirantes.</p>
             </header>
 
-            <section className="v2-card">
-                <h3 className="v2-title-large" style={{ marginBottom: '24px' }}>Caso Clínico</h3>
-                <textarea
-                    className="v2-card-tonal"
-                    style={{ width: '100%', minHeight: '150px', padding: '16px', border: 'none', borderRadius: '8px', fontSize: '16px', outline: 'none' }}
-                    placeholder="Describe el escenario clínico..."
-                    value={form.caso}
-                    onChange={(e) => handleChange('caso', e.target.value)}
-                />
-            </section>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    <section className="v2-card">
+                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
+                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>description</i>
+                            Escenario Clínico
+                        </h3>
+                        <div className="v2-input-outlined" style={{ marginTop: '0' }}>
+                            <label>Descripción detallada</label>
+                            <textarea
+                                style={{ minHeight: '180px' }}
+                                placeholder="Paciente masculino de 45 años..."
+                                value={form.caso}
+                                onChange={(e) => handleChange('caso', e.target.value)}
+                            />
+                        </div>
+                    </section>
 
-            <section className="v2-card" style={{ marginTop: '24px' }}>
-                <h3 className="v2-title-large" style={{ marginBottom: '24px' }}>La Pregunta</h3>
-                <input
-                    className="v2-card-tonal"
-                    style={{ width: '100%', padding: '16px', border: 'none', borderRadius: '8px', fontSize: '16px', outline: 'none' }}
-                    placeholder="¿Cuál es el siguiente paso?"
-                    value={form.pregunta}
-                    onChange={(e) => handleChange('pregunta', e.target.value)}
-                />
-            </section>
+                    <section className="v2-card">
+                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
+                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>quiz</i>
+                            La Pregunta
+                        </h3>
+                        <div className="v2-input-outlined" style={{ marginTop: '0' }}>
+                            <label>Pregunta diagnóstica/terapéutica</label>
+                            <input
+                                placeholder="¿Cuál es el siguiente paso?"
+                                value={form.pregunta}
+                                onChange={(e) => handleChange('pregunta', e.target.value)}
+                            />
+                        </div>
+                    </section>
+                </div>
 
-            <section className="v2-card" style={{ marginTop: '24px' }}>
-                <h3 className="v2-title-large" style={{ marginBottom: '24px' }}>Respuestas</h3>
-                {form.opciones.map((op, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                        <input
-                            type="radio"
-                            checked={form.correcta === idx}
-                            onChange={() => handleChange('correcta', idx)}
-                            style={{ width: '24px', height: '24px' }}
-                        />
-                        <input
-                            className="v2-card-tonal"
-                            style={{ flex: 1, padding: '12px', border: 'none', borderRadius: '8px', outline: 'none' }}
-                            placeholder={`Opción ${String.fromCharCode(65 + idx)}`}
-                            value={op}
-                            onChange={(e) => handleOptionChange(idx, e.target.value)}
-                        />
-                    </div>
-                ))}
-            </section>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    <section className="v2-card">
+                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
+                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>list</i>
+                            Opciones de Respuesta
+                        </h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {form.opciones.map((op, idx) => (
+                                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <input
+                                        type="radio"
+                                        checked={form.correcta === idx}
+                                        onChange={() => handleChange('correcta', idx)}
+                                        style={{ width: '20px', height: '20px', accentColor: 'var(--md-sys-color-primary)' }}
+                                    />
+                                    <div className="v2-input-outlined" style={{ flex: 1, marginTop: '0' }}>
+                                        <input
+                                            style={{ padding: '12px' }}
+                                            placeholder={`Opción ${String.fromCharCode(65 + idx)}`}
+                                            value={op}
+                                            onChange={(e) => handleOptionChange(idx, e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
 
-            <section className="v2-card" style={{ marginTop: '24px' }}>
-                <h3 className="v2-title-large" style={{ marginBottom: '24px' }}>Perla Médica (Retroalimentación)</h3>
-                <textarea
-                    className="v2-card-tonal"
-                    style={{ width: '100%', minHeight: '100px', padding: '16px', border: 'none', borderRadius: '8px', fontSize: '16px', outline: 'none' }}
-                    placeholder="Explica la respuesta correcta..."
-                    value={form.perla}
-                    onChange={(e) => handleChange('perla', e.target.value)}
-                />
-            </section>
+                    <section className="v2-card">
+                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
+                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>lightbulb</i>
+                            Perla Médica
+                        </h3>
+                        <div className="v2-input-outlined" style={{ marginTop: '0' }}>
+                            <label>Justificación académica</label>
+                            <textarea
+                                style={{ minHeight: '100px' }}
+                                placeholder="Explica por qué la respuesta es correcta..."
+                                value={form.perla}
+                                onChange={(e) => handleChange('perla', e.target.value)}
+                            />
+                        </div>
+                    </section>
 
-            <div style={{ marginTop: '32px', textAlign: 'right' }}>
-                <button className="v2-fab v2-bg-primary" style={{ width: 'auto', padding: '0 48px', height: '56px', borderRadius: '16px' }}>
-                    Enviar para Revisión <i className="material-icons" style={{ marginLeft: '8px' }}>send</i>
-                </button>
+                    <button className="v2-btn-filled" style={{ height: '56px', width: '100%', justifyContent: 'center' }}>
+                        Enviar para Revisión
+                        <i className="material-icons">send</i>
+                    </button>
+                </div>
             </div>
         </div>
     );

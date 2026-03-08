@@ -1,41 +1,48 @@
-// src/routes/AppRoutes.js
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
+import Auth from "../modules/Auth";
+import { ScrollToTop } from "../components/custom";
+import { CustomButton } from "../components/custom";
 
+// Core Layout
 import App from "../App";
-import Examen from "../components/Examen";
+import Dashboard from "../components/admin/Dashboard";
+import Summary from "../components/admin/Summary";
+
+// Admin Components
 import CasoTable from "../components/admin/CasoTable";
-import { Dashboard, CasoContainer, Summary } from "../components/admin";
-import Login from "../components/Login";
-import PlayerLogin from "../components/PlayerLogin";
-import Profile from "../components/Profile";
-import PlayerCasoContainer from "../components/PlayerCasoContainer";
-import PrivateRoute from './PrivateRoute';
-import PlayerRoute from "../components/PlayerRoute";
-import Logout, { AdminLogout } from "../components/Logout";
-import Especialidades from '../components/admin/Especialidades';
-// import { Button, Icon } from "react-materialize"; // Removed
-import CustomButton from "../components/custom/CustomButton"; // Added
-// CustomIcon is not directly used here if CustomButton handles the icon prop
+import Especialidades from "../components/admin/Especialidades";
 import EspecialidadForm from "../components/admin/EspecialidadForm";
+import CasoContainer from "../components/admin/CasoContainer";
 import UserTable from "../components/admin/UserTable";
 import UserForm from "../components/admin/UserForm";
+import ExamenTable from "../components/admin/ExamenTable";
+import ExamenForm from "../components/admin/ExamenForm";
 import QuestionTable from "../components/admin/QuestionTable";
 import QuestionDetail from "../components/admin/QuestionDetail";
 import FlashcardTable from "../components/admin/FlashcardTable";
 import AchievementTable from "../components/admin/AchievementTable";
 import AchievementForm from "../components/admin/AchievementForm";
-import ExamenTable from "../components/admin/ExamenTable";
-import ExamenForm from "../components/admin/ExamenForm";
-import Onboarding from "../components/Onboarding";
-import EspecialidadCasos from "../pages/Player/EspecialidadCasos";
+
+// Auth & Infrastructure
+import PrivateRoute from "./PrivateRoute";
+import PlayerRoute from "../components/PlayerRoute";
+import PlayerLogin from "../components/PlayerLogin";
+import Logout, { AdminLogout } from "../components/Logout";
+import Login from "../components/Login";
+import Landing from "../components/Landing";
+
+// Player V1 Pages
+import PlayerDashboard from "../components/PlayerDashboard";
+import PlayerCasoContainer from "../components/PlayerCasoContainer";
+import Examen from "../components/Examen";
 import MyContributions from "../pages/Player/MyContributions";
 import Flashcards from "../pages/Player/Flashcards";
 import FlashcardCreate from "../pages/Player/FlashcardCreate";
+import Onboarding from "../components/Onboarding";
+import Profile from "../components/Profile";
+import EspecialidadCasos from "../pages/Player/EspecialidadCasos";
 
-import PlayerDashboard from "../components/PlayerDashboard";
-import Landing from "../components/Landing";
-import Auth from "../modules/Auth";
-import { ScrollToTop } from "../components/custom";
+// V2 Pages
 import V2App from "../v2/layouts/V2App";
 import V2PlayerDashboard from "../v2/pages/V2PlayerDashboard";
 import V2Examen from "../v2/pages/V2Examen";
@@ -45,6 +52,11 @@ import V2Contribuir from "../v2/pages/V2Contribuir";
 import V2MisContribuciones from "../v2/pages/V2MisContribuciones";
 import V2Onboarding from "../v2/pages/V2Onboarding";
 import V2Landing from "../v2/pages/V2Landing";
+import V2Login from "../v2/pages/V2Login";
+import V2Signup from "../v2/pages/V2Signup";
+import V2MockExamSetup from "../v2/pages/V2MockExamSetup";
+import V2SessionSummary from "../v2/pages/V2SessionSummary";
+import V2ForgotPassword from "../v2/pages/V2ForgotPassword";
 
 function DashboardCases(props) {
   return (
@@ -52,17 +64,13 @@ function DashboardCases(props) {
       <CasoTable {...props} />
       <CustomButton
         to="/dashboard/add/caso"
-        className="red" // Ensured btn-large and btn-floating are here
+        className="red"
         large
         floating
         fab
-        // tooltipOptions prop is not standard, tooltip text is passed directly
-        // For position, CustomButton would need a new prop e.g. tooltipPosition="top"
-        // For now, CustomButton's default tooltip position will be used.
         icon="add"
-
         tooltip={{ text: "Agregar Caso", position: 'top' }}
-        waves="light" // Adding default waves
+        waves="light"
       />
     </Dashboard>
   );
@@ -98,13 +106,12 @@ function DashboardEspecialidades(props) {
       <Especialidades {...props} />
       <CustomButton
         to="/dashboard/new/especialidad"
-        className="red btn-large btn-floating direction-top active" // Ensured
+        className="red btn-large btn-floating direction-top active"
         node="a"
         fab
-        // tooltipOptions={{position:'top'}} // See comment above
         icon="add"
         tooltip={{ text: "Agregar especialidad", position: 'top' }}
-        waves="light" // Adding default waves
+        waves="light"
       />
     </Dashboard>
   );
@@ -235,8 +242,26 @@ export default function AppRoutes() {
   return (
     <>
     <Switch>
+{/* — V2 Routes — */}
+      <Route path="/v2" exact>
+        <Redirect to="/v2/dashboard" />
+      </Route>
+      <PlayerRoute path="/v2/dashboard" component={() => (<V2App><V2PlayerDashboard /></V2App>)} />
+      <PlayerRoute path="/v2/caso/:identificador" component={() => (<V2App><V2Examen /></V2App>)} />
+      <PlayerRoute path="/v2/perfil" component={() => (<V2App><V2Profile /></V2App>)} />
+      <PlayerRoute path="/v2/practica" component={() => (<V2App><V2PracticaLanding /></V2App>)} />
+      <PlayerRoute path="/v2/contribuir" component={() => (<V2App><V2Contribuir /></V2App>)} />
+      <PlayerRoute path="/v2/mis-contribuciones" component={() => (<V2App><V2MisContribuciones /></V2App>)} />
+      <PlayerRoute path="/v2/onboarding" component={() => (<V2App><V2Onboarding /></V2App>)} />
+      <PlayerRoute path="/v2/simulacro/setup" component={() => (<V2App><V2MockExamSetup /></V2App>)} />
+      <PlayerRoute path="/v2/simulacro/resumen" component={() => (<V2App><V2SessionSummary /></V2App>)} />
+
+
       <Route path="/v2/landing" exact component={V2Landing} />
-      {/* — Player login flow (no Navi, full-page green + card) — */}
+      <Route path="/v2/login" exact component={V2Login} />
+      <Route path="/v2/signup" exact component={V2Signup} />
+      <Route path="/v2/forgot-password" exact component={V2ForgotPassword} />
+
       <Route path="/login" exact component={() => <PlayerLogin />} />
       <Route
         path="/loginfb"
@@ -246,12 +271,10 @@ export default function AppRoutes() {
         )}
       />
 
-      {/* — Login / Logout — */}
       <Route path="/admin" exact component={() => (<App><Login /></App>)} />
       <Route path="/logout" exact component={Logout} />
       <Route path="/dashboard/logout" exact component={AdminLogout} />
 
-      {/* — Home: landing for guests (no Navi), dashboard for authenticated players — */}
       <Route path="/"
         exact
         render={() =>
@@ -264,90 +287,20 @@ export default function AppRoutes() {
           )
         }
       />
-      <PlayerRoute
-        path="/caso/:identificador"
-        component={AppExamen}
-      />
-      <PlayerRoute
-        path="/contribuir"
-        component={() => (
-          <App>
-            <PlayerCasoContainer />
-          </App>
-        )}
-      />
-      <PlayerRoute
-        path="/mis-contribuciones"
-        component={() => (
-          <App>
-            <MyContributions />
-          </App>
-        )}
-      />
-      <PlayerRoute
-        path="/flashcards/nueva"
-        component={() => (
-          <App>
-            <FlashcardCreate />
-          </App>
-        )}
-      />
-      <PlayerRoute
-        path="/flashcards"
-        component={() => (
-          <App>
-            <Flashcards />
-          </App>
-        )}
-      />
-      <PlayerRoute
-        path="/onboarding"
-        component={() => (
-          <App>
-            <Onboarding />
-          </App>
-        )}
-      />
-      <PlayerRoute
-        path="/perfil"
-        component={() => (
-          <App>
-            <Profile />
-          </App>
-        )}
-      />
-      <PlayerRoute
-        path="/especialidad/:id"
-        component={(props) => (
-          <App>
-            <EspecialidadCasos {...props} />
-          </App>
-        )}
-      />
+      <PlayerRoute path="/caso/:identificador" component={AppExamen} />
+      <PlayerRoute path="/contribuir" component={() => (<App><PlayerCasoContainer /></App>)} />
+      <PlayerRoute path="/mis-contribuciones" component={() => (<App><MyContributions /></App>)} />
+      <PlayerRoute path="/flashcards/nueva" component={() => (<App><FlashcardCreate /></App>)} />
+      <PlayerRoute path="/flashcards" component={() => (<App><Flashcards /></App>)} />
+      <PlayerRoute path="/onboarding" component={() => (<App><Onboarding /></App>)} />
+      <PlayerRoute path="/perfil" component={() => (<App><Profile /></App>)} />
+      <PlayerRoute path="/especialidad/:id" component={(props) => (<App><EspecialidadCasos {...props} /></App>)} />
 
-      {/* — Routes protected by normal auth — */}
-      <PrivateRoute
-        path="/dashboard"
-        exact
-        component={DashBoardSummary}
-      />
-      <PrivateRoute
-        path="/dashboard/casos/:page"
-        exact
-        component={DashboardCases}
-      />
-      <PrivateRoute
-        path="/dashboard/edit/caso/:identificador"
-        component={DashboardEditCaso}
-      />
-      <PrivateRoute
-        path="/dashboard/new/caso"
-        component={DashboardEditCaso}
-      />
-      <PrivateRoute
-        path="/dashboard/add/caso"
-        component={DashboardEditCaso}
-      />
+      <PrivateRoute path="/dashboard" exact component={DashBoardSummary} />
+      <PrivateRoute path="/dashboard/casos/:page" exact component={DashboardCases} />
+      <PrivateRoute path="/dashboard/edit/caso/:identificador" component={DashboardEditCaso} />
+      <PrivateRoute path="/dashboard/new/caso" component={DashboardEditCaso} />
+      <PrivateRoute path="/dashboard/add/caso" component={DashboardEditCaso} />
 
       <PrivateRoute path="/dashboard/especialidades" component={DashboardEspecialidades} />
       <PrivateRoute path="/dashboard/new/especialidad" component={DashboardEditEspecialidades} />
@@ -369,69 +322,7 @@ export default function AppRoutes() {
       <PrivateRoute path="/dashboard/edit/exam/:identificador" component={DashboardEditExamen} />
 
 
-      {/* — V2 Routes — */}
-      <Route path="/v2" exact>
-        <Redirect to="/v2/dashboard" />
-      </Route>
-      <PlayerRoute
-        path="/v2/dashboard"
-        component={() => (
-          <V2App>
-            <V2PlayerDashboard />
-          </V2App>
-        )}
-      />
-      <PlayerRoute
-        path="/v2/caso/:identificador"
-        component={() => (
-          <V2App>
-            <V2Examen />
-          </V2App>
-        )}
-      />
-      <PlayerRoute
-        path="/v2/perfil"
-        component={() => (
-          <V2App>
-            <V2Profile />
-          </V2App>
-        )}
-      />
-      <PlayerRoute
-        path="/v2/practica"
-        component={() => (
-          <V2App>
-            <V2PracticaLanding />
-          </V2App>
-        )}
-      />
-      <PlayerRoute
-        path="/v2/contribuir"
-        component={() => (
-          <V2App>
-            <V2Contribuir />
-          </V2App>
-        )}
-      />
-      <PlayerRoute
-        path="/v2/mis-contribuciones"
-        component={() => (
-          <V2App>
-            <V2MisContribuciones />
-          </V2App>
-        )}
-      />
-      <PlayerRoute
-        path="/v2/onboarding"
-        component={() => (
-          <V2App>
-            <V2Onboarding />
-          </V2App>
-        )}
-      />
-
-      {/* — Fallback: cualquier otra ruta, redirige a “/” — */}
-      <Route path="*">
+            <Route path="*">
         <Redirect to="/" />
       </Route>
     </Switch>
