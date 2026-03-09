@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import ExamService from '../../services/ExamService';
+import { CustomPreloader } from '../../components/custom';
 
 const V2Examen = () => {
     const { identificador } = useParams();
@@ -51,7 +52,14 @@ const V2Examen = () => {
         setState(prev => ({ ...prev, showFeedback: true, isCorrect: correct }));
     };
 
-    if (state.loading) return <div className="center-align">Cargando caso clínico...</div>;
+    if (state.loading) {
+        return (
+            <div className="center-align" style={{ padding: '100px' }}>
+                <CustomPreloader active color="green" size="big" />
+                <p className="v2-body-large" style={{ marginTop: '20px' }}>Cargando caso clínico...</p>
+            </div>
+        );
+    }
 
     const { caso, selectedAnswer, showFeedback, isCorrect } = state;
 
@@ -61,7 +69,7 @@ const V2Examen = () => {
                 <span className="v2-body-large v2-text-primary">Reto de Sesión</span>
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                     <span className="v2-body-large">+50 XP</span>
-                    <i className="material-icons" style={{ fontSize: '20px' }}>timer</i>
+                    <i className="material-icons" style={{ fontSize: '20px' }} aria-hidden="true">timer</i>
                     <span>14:22</span>
                 </div>
             </div>
@@ -112,7 +120,7 @@ const V2Examen = () => {
                                     style={{ width: 'auto', padding: '0 32px', height: '56px', borderRadius: '16px' }}
                                     onClick={handleSubmit}
                                 >
-                                    Enviar Respuesta <i className="material-icons" style={{ marginLeft: '8px' }}>check</i>
+                                    Enviar Respuesta <i className="material-icons" style={{ marginLeft: '8px' }} aria-hidden="true">check</i>
                                 </button>
                             </div>
                         ) : (
@@ -122,12 +130,12 @@ const V2Examen = () => {
                                     color: isCorrect ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-error-container)',
                                     marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px'
                                 }}>
-                                    <i className="material-icons">{isCorrect ? 'check_circle' : 'error'}</i>
+                                    <i className="material-icons" aria-hidden="true">{isCorrect ? 'check_circle' : 'error'}</i>
                                     <span className="v2-title-large">{isCorrect ? '¡Correcto!' : 'Incorrecto'}</span>
                                 </div>
                                 <div className="v2-card" style={{ backgroundColor: '#fffbe6', border: '1px solid #ffe58f', marginBottom: '24px' }}>
                                     <h4 className="v2-title-large" style={{ color: '#856404', marginBottom: '12px' }}>
-                                        <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>lightbulb</i>
+                                        <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }} aria-hidden="true">lightbulb</i>
                                         Perla Médica: Explicación
                                     </h4>
                                     <p className="v2-body-large">
@@ -140,7 +148,7 @@ const V2Examen = () => {
                                         style={{ width: 'auto', padding: '0 32px', height: '56px', borderRadius: '16px' }}
                                         onClick={() => history.push('/v2/dashboard')}
                                     >
-                                        Siguiente Caso <i className="material-icons" style={{ marginLeft: '8px' }}>arrow_forward</i>
+                                        Siguiente Caso <i className="material-icons" style={{ marginLeft: '8px' }} aria-hidden="true">arrow_forward</i>
                                     </button>
                                 </div>
                             </div>
