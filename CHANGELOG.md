@@ -43,3 +43,24 @@ Llevar aquí cambios relevantes (restauraciones, merges, refactors) con **rama**
 ---
 
 *Próximos cambios: añadir aquí una nueva entrada con fecha, rama y descripción breve.*
+
+---
+
+## 2024-05-22 — Rama: `feature/enarmv2-pages-expansion`
+
+**Descripción:** Mapeo de pantallas de Stitch e implementación de 5 nuevas páginas para el ecosistema V2.
+
+### Nuevas Páginas (V2)
+
+- **V2NationalLeaderboard**: Ranking nacional de médicos con filtros por periodo (Semanal, Mensual, Histórico).
+- **V2ImageBank**: Galería de recursos visuales médicos con búsqueda y filtrado por categorías.
+- **V2FlashcardStudy**: Interfaz de repaso de flashcards con lógica de Spaced Repetition (SRS) y controles de calidad de respuesta.
+- **V2KnowledgeBase**: Centro de documentación con acceso a GPCs, esquemas de vacunación y algoritmos diagnósticos.
+- **V2ErrorReview**: Panel de análisis de debilidades con estadísticas por especialidad y revisión detallada de preguntas falladas.
+
+### Infraestructura y Documentación
+
+- **AppRoutes.jsx**: Integración de las 5 nuevas rutas bajo el prefijo `/v2/`.
+- **planv2.md**: Actualización del plan de implementación con el mapeo completo de pantallas de Stitch.
+- **backend_tasks.md**: Definición de contratos (endpoints, payloads y respuestas) para las nuevas funcionalidades.
+- **Tests**: Unit tests creados para las 5 nuevas páginas utilizando Vitest y React Testing Library.

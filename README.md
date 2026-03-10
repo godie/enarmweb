@@ -45,3 +45,19 @@ This will typically open the application in your default web browser at `http://
 
 *   **Facebook App ID:** `401225480247747`
 *   **Location:** The Facebook App ID is configured in the file `src/components/facebook/FacebookLoginContainer.js`. It is also used as a prop in the `src/components/facebook/FacebookComments.js` component.
+
+## ENARM V2 Progress
+
+We are currently upgrading the platform to V2 using Material Design 3.
+- [x] Core MD3 Theme
+- [x] V2 Dashboard
+- [x] V2 Exam & Session Summary
+- [x] V2 Profile & Onboarding
+- [x] V2 Contribution Flow
+- [x] V2 National Leaderboard (New)
+- [x] V2 Image Bank (New)
+- [x] V2 Flashcard Study (New)
+- [x] V2 Knowledge Base (New)
+- [x] V2 Error Review (New)
+
+Check `planv2.md` for the full implementation strategy and `backend_tasks.md` for API requirements.
