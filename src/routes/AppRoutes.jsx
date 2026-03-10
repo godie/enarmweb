@@ -56,6 +56,11 @@ import V2Login from "../v2/pages/V2Login";
 import V2Signup from "../v2/pages/V2Signup";
 import V2MockExamSetup from "../v2/pages/V2MockExamSetup";
 import V2SessionSummary from "../v2/pages/V2SessionSummary";
+import V2NationalLeaderboard from "../v2/pages/V2NationalLeaderboard";
+import V2ImageBank from "../v2/pages/V2ImageBank";
+import V2FlashcardStudy from "../v2/pages/V2FlashcardStudy";
+import V2KnowledgeBase from "../v2/pages/V2KnowledgeBase";
+import V2ErrorReview from "../v2/pages/V2ErrorReview";
 import V2ForgotPassword from "../v2/pages/V2ForgotPassword";
 
 function DashboardCases(props) {
@@ -247,6 +252,11 @@ export default function AppRoutes() {
         <Redirect to="/v2/dashboard" />
       </Route>
       <PlayerRoute path="/v2/dashboard" component={() => (<V2App><V2PlayerDashboard /></V2App>)} />
+      <PlayerRoute path="/v2/leaderboard" component={() => (<V2App><V2NationalLeaderboard /></V2App>)} />
+      <PlayerRoute path="/v2/imagenes" component={() => (<V2App><V2ImageBank /></V2App>)} />
+      <PlayerRoute path="/v2/flashcards/repaso" component={() => (<V2App><V2FlashcardStudy /></V2App>)} />
+      <PlayerRoute path="/v2/biblioteca" component={() => (<V2App><V2KnowledgeBase /></V2App>)} />
+      <PlayerRoute path="/v2/errores" component={() => (<V2App><V2ErrorReview /></V2App>)} />
       <PlayerRoute path="/v2/caso/:identificador" component={() => (<V2App><V2Examen /></V2App>)} />
       <PlayerRoute path="/v2/perfil" component={() => (<V2App><V2Profile /></V2App>)} />
       <PlayerRoute path="/v2/practica" component={() => (<V2App><V2PracticaLanding /></V2App>)} />
