@@ -128,3 +128,56 @@ Este archivo detalla los endpoints, payloads y respuestas esperadas necesarios p
   ]
 }
 ```
+
+---
+
+## 6. Public Profile (V2PublicProfile)
+
+**Endpoint:** `GET /v2/users/:id/public-profile`
+
+**Payload:** Ninguno
+
+**Respuesta Esperada:**
+```json
+{
+  "user": {
+    "nickname": "Dr. Smith",
+    "specialty": "Cardiología",
+    "avatar": "url",
+    "stats": {
+      "totalPoints": 15000,
+      "rank": 5,
+      "accuracy": 85
+    },
+    "recentActivity": [
+      { "type": "exam", "title": "Simulacro Cardiología", "score": 90, "date": "2024-05-20" }
+    ],
+    "achievements": [
+      { "id": "ach1", "title": "Estudiante Estrella", "icon": "star" }
+    ]
+  }
+}
+```
+
+---
+
+## 7. Checkout (V2Checkout)
+
+**Endpoint:** `POST /v2/payments/create-checkout-session`
+
+**Payload:**
+```json
+{
+  "planId": "premium_monthly",
+  "successUrl": "https://...",
+  "cancelUrl": "https://..."
+}
+```
+
+**Respuesta Esperada:**
+```json
+{
+  "sessionId": "cs_test_...",
+  "url": "https://checkout.stripe.com/..."
+}
+```
