@@ -66,3 +66,20 @@ describe("UserService", () => {
     });
   });
 });
+
+  describe("getPublicProfile", () => {
+    it("should call axios.get with correct URL and headers", async () => {
+      const userId = "user123";
+      const expectedUrl = "http://api.example.com/users/user123/public-profile";
+      const headers = { headers: { Authorization: "bearer token" } };
+
+      vi.mocked(BaseService.getURL).mockReturnValue(expectedUrl);
+      vi.mocked(UserService.getHeaders).mockReturnValue(headers);
+      vi.mocked(axios.get).mockResolvedValue({ data: { user: {} } });
+
+      await UserService.getPublicProfile(userId);
+
+      expect(BaseService.getURL).toHaveBeenCalledWith(`users/${userId}/public-profile`);
+      expect(axios.get).toHaveBeenCalledWith(expectedUrl, headers);
+    });
+  });

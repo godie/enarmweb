@@ -32,6 +32,13 @@ class UserService extends BaseService {
     return axios.get(BaseService.getURL(`users/${userId}/achievements`), headers);
   }
 
+  // V2: Obtener perfil público
+  static getPublicProfile(userId) {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL(`users/${userId}/public-profile`), headers);
+    return axios.get(BaseService.getURL(`users/${userId}/public-profile`), headers);
+  }
+
   // Admin: Listar usuarios
   static getUsers() {
     const headers = this.getHeaders();

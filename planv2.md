@@ -36,8 +36,8 @@ The goal is to modernize the ENARM platform using Material Design 3 principles, 
 - [x] **V2ErrorReview**: Revisión detallada de errores cometidos. (Basada en "Mobile Error Review View")
 
 ### Pages (In Progress / Pending from Stitch)
-- [/] **V2PublicProfile**: Perfil público de usuarios. (Implementación base con datos simulados)
-- [/] **V2Checkout**: Flujo de pago para suscripciones. (Implementación base + diseño para Stripe)
+- [x] **V2PublicProfile**: Perfil público de usuarios. (Implementación base con datos simulados)
+- [x] **V2Checkout**: Flujo de pago para suscripciones. (Implementación base + diseño para Stripe)
 
 ## 3. Backend Requirements (Proposed Endpoints)
 
@@ -72,3 +72,10 @@ See `backend_tasks.md` for detailed payload and response specifications.
 - **2023-10-XX**: Route integration and fix of import collisions.
 - **2024-05-22**: Mapping of Stitch screens and planning of 5 new pages.
 - **2024-05-23**: Refinement of Leaderboard, ImageBank, Flashcards, KnowledgeBase and ErrorReview. Starting PublicProfile and Checkout.
+
+### Additional Pages (Implemented March 2025)
+- [x] **V2CaseStudy**: Vista detallada para el estudio de casos clínicos con feedback por pregunta.
+- [x] **V2DirectMessaging**: Interfaz de mensajería para soporte y comunidad.
+- [x] **V2SubscriptionManagement**: Gestión de plan activo, facturación y cancelaciones.
+- [x] **V2PublicProfile (API Integration)**: Conexión con el servicio de perfil de usuario.
+- [x] **V2Checkout (API Integration)**: Integración con el servicio de pagos (Stripe redirect).

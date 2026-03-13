@@ -64,6 +64,9 @@ import V2ErrorReview from "../v2/pages/V2ErrorReview";
 import V2ForgotPassword from "../v2/pages/V2ForgotPassword";
 import V2PublicProfile from "../v2/pages/V2PublicProfile";
 import V2Checkout from "../v2/pages/V2Checkout";
+import V2CaseStudy from "../v2/pages/V2CaseStudy";
+import V2DirectMessaging from "../v2/pages/V2DirectMessaging";
+import V2SubscriptionManagement from "../v2/pages/V2SubscriptionManagement";
 
 function DashboardCases(props) {
   return (
@@ -269,6 +272,9 @@ export default function AppRoutes() {
       <PlayerRoute path="/v2/simulacro/resumen" component={() => (<V2App><V2SessionSummary /></V2App>)} />
       <PlayerRoute path="/v2/perfil/publico/:userId" component={() => (<V2App><V2PublicProfile /></V2App>)} />
       <PlayerRoute path="/v2/checkout" component={() => (<V2App><V2Checkout /></V2App>)} />
+      <PlayerRoute path="/v2/caso-estudio/:id" component={() => (<V2App><V2CaseStudy /></V2App>)} />
+      <PlayerRoute path="/v2/mensajes" component={() => (<V2App><V2DirectMessaging /></V2App>)} />
+      <PlayerRoute path="/v2/suscripcion" component={() => (<V2App><V2SubscriptionManagement /></V2App>)} />
 
 
       <Route path="/v2/landing" exact component={V2Landing} />
