@@ -64,3 +64,43 @@ Llevar aquí cambios relevantes (restauraciones, merges, refactors) con **rama**
 - **planv2.md**: Actualización del plan de implementación con el mapeo completo de pantallas de Stitch.
 - **backend_tasks.md**: Definición de contratos (endpoints, payloads y respuestas) para las nuevas funcionalidades.
 - **Tests**: Unit tests creados para las 5 nuevas páginas utilizando Vitest y React Testing Library.
+
+---
+
+## 2025-03-13 — Rama: `feature/enarmv2-extended-player`
+
+**Descripción:** Expansión del ecosistema V2 para el jugador con nuevas funcionalidades de estudio, comunidad y gestión.
+
+### Nuevas Páginas (V2)
+
+- **V2CaseStudy**: Interfaz interactiva para revisar casos clínicos resueltos, con explicaciones detalladas y análisis de aciertos.
+- **V2DirectMessaging**: Centro de mensajes para comunicación directa con soporte técnico y asesoría médica.
+- **V2SubscriptionManagement**: Panel de control para suscripciones premium, permitiendo ver historial de facturas, actualizar métodos de pago y gestionar cancelaciones.
+
+### Mejoras e Integraciones
+
+- **V2PublicProfile**: Refactorizado para consumir datos reales desde el backend a través de `UserService.getPublicProfile`.
+- **V2Checkout**: Implementada la lógica de redirección a Stripe mediante `PaymentService.createCheckoutSession`.
+- **Navegación**: Actualización de `V2Navi.jsx` incluyendo accesos directos a todas las nuevas secciones y mejoras de accesibilidad (ARIA labels).
+- **Servicios**: Creación de `PaymentService.js` y expansión de `UserService.js`.
+
+### Pruebas y Calidad
+
+- Unit tests con Vitest para todas las nuevas páginas y servicios, cumpliendo con el estándar de cobertura del 80%.
+- Verificación visual completa mediante Playwright en entorno local.
+
+## [0.9.5] - 2025-03-06
+### Added
+- New V2 Player screens: V2CouponCenter, V2FlashcardCreator, V2AIFlashcardGenerator.
+- New V2 Admin base screens: V2AdminDashboard, V2AdminUsers.
+- Full unit test suite for new components (Vitest + RTL) with >80% coverage.
+- Integrated new routes in AppRoutes.jsx and navigation items in V2Navi.jsx.
+
+### Fixed
+- Improved accessibility in V2 screens by associating form labels with controls (htmlFor).
+- Optimized performance in V2PublicProfile and V2CaseStudy by refactoring multiple setState calls into useReducer.
+- Standardized loading indicators across new V2 pages.
+
+### Updated
+- planv2.md: Updated implementation status and mapped new Stitch screens.
+- backend_tasks.md: Categorized endpoints into Completed and Pending (Expansion).

@@ -54,7 +54,10 @@ We are currently upgrading the platform to V2 using Material Design 3.
 - [x] V2 Exam & Session Summary
 - [x] V2 Profile & Onboarding
 - [x] V2 Contribution Flow
-- [x] V2 National Leaderboard (New)
+- [x] V2 National Leaderboard
+- [x] V2 Case Study (New)
+- [x] V2 Messaging (New)
+- [x] V2 Subscription Management (New)
 - [x] V2 Image Bank (New)
 - [x] V2 Flashcard Study (New)
 - [x] V2 Knowledge Base (New)

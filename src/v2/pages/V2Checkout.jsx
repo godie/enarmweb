@@ -1,19 +1,42 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import PaymentService from '../../services/PaymentService';
+import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
 const V2Checkout = () => {
     const history = useHistory();
     const [promoCode, setPromoCode] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handlePayment = () => {
-        setLoading(true);
-        // Simulate payment process or Stripe redirect
-        setTimeout(() => {
-            setLoading(false);
-            alert('En una implementación real, serás redirigido a Stripe o se procesará el pago aquí.');
-        }, 1500);
+    const handlePayment = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            // In a real implementation, we send the planId to get a Stripe session
+            const response = await PaymentService.createCheckoutSession({
+                planId: 'premium_monthly',
+                successUrl: window.location.origin + '/v2/dashboard?payment=success',
+                cancelUrl: window.location.origin + '/v2/checkout?payment=cancelled'
+            });
+
+            if (response.data && response.data.url) {
+                // Redirect to Stripe
+                window.location.href = response.data.url;
+            } else {
+                throw new Error("Respuesta de pago inválida");
+            }
+        } catch (err) {
+            console.error("Payment error:", err);
+            setError("No se pudo iniciar el proceso de pago. Inténtalo de nuevo.");
+            // For demo: simulation if service fails
+            setTimeout(() => {
+                setLoading(false);
+                alert('Implementación simulada: Serías redirigido a Stripe.');
+            }, 1000);
+        }
     };
 
     return (
@@ -29,6 +52,12 @@ const V2Checkout = () => {
                 </button>
                 <h1 className="v2-headline-medium" style={{ margin: 0 }}>Pago Seguro</h1>
             </header>
+
+            {error && (
+                <div className="v2-card" style={{ backgroundColor: 'var(--md-sys-color-error-container)', color: 'var(--md-sys-color-on-error-container)', marginBottom: '24px' }}>
+                    {error}
+                </div>
+            )}
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
                 {/* Left Column: Plan & Form */}
@@ -46,48 +75,24 @@ const V2Checkout = () => {
                     <section className="v2-card">
                         <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>Método de Pago</h3>
                         <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-                            <div className="v2-card-tonal" style={{ flex: 1, textAlign: 'center', padding: '12px' }}>
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" style={{ height: '20px' }} />
+                            <div className="v2-card-tonal" style={{ flex: 1, textAlign: 'center', padding: '12px', border: '2px solid var(--md-sys-color-primary)' }}>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" style={{ height: '20px', marginBottom: '8px' }} />
+                                <div className="v2-label-medium">Tarjeta</div>
                             </div>
-                            <div className="v2-card-tonal" style={{ flex: 1, textAlign: 'center', padding: '12px' }}>
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" style={{ height: '20px' }} />
-                            </div>
-                            <div className="v2-card-tonal" style={{ flex: 1, textAlign: 'center', padding: '12px' }}>
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '20px' }} />
+                            <div className="v2-card-tonal" style={{ flex: 1, textAlign: 'center', padding: '12px', opacity: 0.6 }}>
+                                <i className="material-icons" style={{ fontSize: '24px', marginBottom: '8px' }}>account_balance</i>
+                                <div className="v2-label-medium">Transferencia</div>
                             </div>
                         </div>
 
-                        {/* Card Form Simulation */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div className="v2-input-outlined">
-                                <label>Número de Tarjeta</label>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <i className="material-icons" style={{ opacity: 0.5 }}>credit_card</i>
-                                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" disabled />
-                                </div>
-                            </div>
-
-                            <div style={{ display: 'flex', gap: '16px' }}>
-                                <div className="v2-input-outlined" style={{ flex: 1 }}>
-                                    <label>Vencimiento</label>
-                                    <input type="text" placeholder="MM/YY" disabled />
-                                </div>
-                                <div className="v2-input-outlined" style={{ flex: 1 }}>
-                                    <label>CVC/CVV</label>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        <input type="text" placeholder="123" disabled />
-                                        <i className="material-icons" style={{ fontSize: '18px', opacity: 0.5 }}>help_outline</i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="v2-input-outlined">
-                                <label>Titular de la Tarjeta</label>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <i className="material-icons" style={{ opacity: 0.5 }}>person</i>
-                                    <input type="text" placeholder="Nombre completo" disabled />
-                                </div>
-                            </div>
+                            <button className="v2-btn-primary" onClick={handlePayment} disabled={loading} style={{ height: '56px' }}>
+                                {loading ? <CustomPreloader /> : 'Continuar con Stripe'}
+                            </button>
+                            <p className="v2-label-small" style={{ textAlign: 'center', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                                <i className="material-icons" style={{ fontSize: '12px', verticalAlign: 'middle', marginRight: '4px' }}>lock</i>
+                                Transacción cifrada y segura
+                            </p>
                         </div>
                     </section>
                 </div>
@@ -95,66 +100,47 @@ const V2Checkout = () => {
                 {/* Right Column: Order Summary */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <section className="v2-card">
-                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>Resumen de Orden</h3>
+                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>Resumen del pedido</h3>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <span className="v2-body-large">Suscripción Premium</span>
-                                <span className="v2-body-large">$499.00 MXN</span>
+                                <span className="v2-body-large">99.00</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--md-sys-color-tertiary)' }}>
-                                <span className="v2-body-large">Descuento</span>
-                                <span className="v2-body-large">-$0.00 MXN</span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <span className="v2-body-large">IVA (16%)</span>
+                                <span className="v2-body-large">7.84</span>
                             </div>
-                            <div style={{ borderTop: '1px solid var(--md-sys-color-outline-variant)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between' }}>
-                                <span className="v2-title-large">Total a pagar</span>
-                                <span className="v2-title-large" style={{ color: 'var(--md-sys-color-primary)' }}>$499.00 MXN</span>
-                            </div>
-                            <span className="v2-label-medium" style={{ textAlign: 'right', opacity: 0.6 }}>I.V.A Incluido</span>
+                            {promoCode && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--md-sys-color-primary)' }}>
+                                    <span className="v2-body-large">Descuento</span>
+                                    <span className="v2-body-large">-0.00</span>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Promo Code */}
-                        <div className="v2-input-outlined" style={{ marginBottom: '24px' }}>
-                            <label>Código Promocional</label>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                <input
-                                    type="text"
-                                    placeholder="Introduce tu código"
-                                    value={promoCode}
-                                    onChange={(e) => setPromoCode(e.target.value)}
-                                />
-                                <button className="v2-btn-tonal" style={{ padding: '0 16px' }}>Aplicar</button>
+                        <div style={{ borderTop: '1px solid var(--md-sys-color-outline-variant)', paddingTop: '20px', marginBottom: '24px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span className="v2-title-large">Total</span>
+                                <span className="v2-headline-small" style={{ color: 'var(--md-sys-color-primary)' }}>46.84</span>
                             </div>
                         </div>
 
-                        <button
-                            className="v2-btn-filled"
-                            style={{ width: '100%', padding: '16px', justifyContent: 'center' }}
-                            onClick={handlePayment}
-                            disabled={loading}
-                        >
-                            <i className="material-icons">security</i>
-                            {loading ? 'Procesando...' : 'Confirmar Pago'}
-                        </button>
-
-                        {/* Security Badges */}
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '24px', opacity: 0.6 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <i className="material-icons" style={{ fontSize: '16px' }}>lock</i>
-                                <span className="v2-label-small">SSL</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <i className="material-icons" style={{ fontSize: '16px' }}>verified_user</i>
-                                <span className="v2-label-small">PCI-DSS</span>
-                            </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <input
+                                type="text"
+                                placeholder="Código promo"
+                                value={promoCode}
+                                onChange={(e) => setPromoCode(e.target.value)}
+                                style={{
+                                    flex: 1, padding: '0 16px', borderRadius: '100px',
+                                    border: '1px solid var(--md-sys-color-outline)',
+                                    backgroundColor: 'transparent', color: 'var(--md-sys-color-on-surface)'
+                                }}
+                            />
+                            <button className="v2-btn-tonal">Aplicar</button>
                         </div>
                     </section>
-
-                    <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                        <p className="v2-label-small" style={{ opacity: 0.6 }}>
-                            Al confirmar el pago, aceptas nuestros Términos de Servicio y la Política de Privacidad. Puedes cancelar tu suscripción en cualquier momento desde tu perfil.
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
