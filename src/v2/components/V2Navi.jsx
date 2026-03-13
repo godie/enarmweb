@@ -22,17 +22,11 @@ const V2Navi = () => {
 
   return (
     <nav className="v2-nav-rail" aria-label="Navegación principal">
-      <div style={{
-        marginBottom: '20px',
-        width: '48px', height: '48px', borderRadius: '12px',
-        backgroundColor: 'var(--md-sys-color-primary-container)',
-        color: 'var(--md-sys-color-primary)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center'
-      }}>
+      <div className="v2-nav-logo">
         <i className="material-icons" style={{ fontSize: '32px' }} aria-hidden="true">stethoscope</i>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '4px', overflowY: 'auto', flex: 1, paddingRight: '4px' }}>
+      <div className="v2-nav-items-container">
         {navItems.map((item) => (
           <NavLink
             key={item.path}
@@ -41,20 +35,17 @@ const V2Navi = () => {
             activeClassName="active"
             aria-current="page"
           >
-            <div style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px'
-            }}>
+            <div className="v2-nav-item-content">
                 <i className="material-icons" aria-hidden="true">{item.icon}</i>
-                <span className="v2-label-large" style={{ fontSize: '10px', fontWeight: 'bold', textAlign: 'center' }}>{item.label}</span>
+                <span className="v2-label-large v2-nav-label">{item.label}</span>
             </div>
           </NavLink>
         ))}
       </div>
 
-      <div style={{ marginTop: 'auto', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+      <div className="v2-nav-footer">
         <button
-          className="v2-nav-item"
-          style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '8px' }}
+          className="v2-nav-item v2-theme-toggle"
           onClick={() => {
             const currentTheme = document.documentElement.getAttribute('theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
