@@ -10,72 +10,51 @@ The goal is to modernize the ENARM platform using Material Design 3 principles, 
 - **Elevation & Surface:** Utilizing MD3 surface tones instead of harsh shadows.
 - **Responsive Layout:** Mobile-first approach with a dedicated Navigation Rail for desktop.
 
-## 2. Completed Implementation (Frontend)
+## 2. Implementation Status (Frontend)
 
 ### Core Infrastructure
-- [x] **v2-theme.css**: Implementation of MD3 CSS variables and utility classes.
-- [x] **V2App Layout**: Main layout container for V2 pages.
-- [x] **V2Navi**: Navigation rail/bottom nav for V2.
-- [x] **AppRoutes.jsx Integration**: Added V2 routes with priority over V1.
+- [x] **v2-theme.css**: Implementation of MD3 CSS variables and utility classes. (2023-10)
+- [x] **V2App Layout**: Main layout container for V2 pages. (2023-10)
+- [x] **V2Navi**: Navigation rail/bottom nav for V2. (2023-10)
+- [x] **AppRoutes.jsx Integration**: Added V2 routes with priority over V1. (2023-10)
 
-### Pages (Implemented)
-- [x] **V2Landing**: High-conversion landing page.
-- [x] **V2Login / V2Signup**: Dedicated V2 auth flow.
-- [x] **V2PlayerDashboard**: Data-rich dashboard with stats and activity.
-- [x] **V2MockExamSetup**: Configuration for personalized practice sessions.
-- [x] **V2Examen**: Immersive exam experience.
-- [x] **V2SessionSummary**: Detailed post-exam analytics.
-- [x] **V2Profile**: Modernized user settings.
-- [x] **V2Onboarding**: Specialty and goal selection.
-- [x] **V2Contribuir / V2MisContribuciones**: Improved contribution workflow.
-- [x] **V2ForgotPassword**: Password recovery flow.
-- [x] **V2NationalLeaderboard**: Ranking global de usuarios. (Basada en "National Leaderboard Screen")
-- [x] **V2ImageBank**: Galería de imágenes médicas para estudio. (Basada en "Mobile Image Bank View")
-- [x] **V2FlashcardStudy**: Interfaz de repaso de flashcards con SRS. (Basada en "Mobile Flashcard Study View")
-- [x] **V2KnowledgeBase**: Base de conocimientos médicos. (Basada en "Mobile Knowledge Base View")
-- [x] **V2ErrorReview**: Revisión detallada de errores cometidos. (Basada en "Mobile Error Review View")
+### Player Pages (Completed)
+- [x] **V2Landing**: High-conversion landing page. (2023-10)
+- [x] **V2Login / V2Signup**: Dedicated V2 auth flow. (2023-10)
+- [x] **V2PlayerDashboard**: Data-rich dashboard with stats and activity. (2023-10)
+- [x] **V2MockExamSetup**: Configuration for personalized practice sessions. (2023-10)
+- [x] **V2Examen**: Immersive exam experience. (2023-10)
+- [x] **V2SessionSummary**: Detailed post-exam analytics. (2023-10)
+- [x] **V2Profile**: Modernized user settings. (2023-10)
+- [x] **V2Onboarding**: Specialty and goal selection. (2023-10)
+- [x] **V2Contribuir / V2MisContribuciones**: Improved contribution workflow. (2023-10)
+- [x] **V2ForgotPassword**: Password recovery flow. (2023-10)
+- [x] **V2NationalLeaderboard**: Ranking global de usuarios. (2024-05-22)
+- [x] **V2ImageBank**: Galería de imágenes médicas para estudio. (2024-05-22)
+- [x] **V2FlashcardStudy**: Interfaz de repaso de flashcards con SRS. (2024-05-22)
+- [x] **V2KnowledgeBase**: Base de conocimientos médicos. (2024-05-22)
+- [x] **V2ErrorReview**: Revisión detallada de errores cometidos. (2024-05-22)
+- [x] **V2CaseStudy**: Detailed clinical case review with question feedback. (2025-03-05)
+- [x] **V2DirectMessaging**: Messaging interface for support and community. (2025-03-05)
+- [x] **V2SubscriptionManagement**: Management of active plan and billing. (2025-03-05)
+- [x] **V2PublicProfile**: User public profile (Integrated with API). (2025-03-05)
+- [x] **V2Checkout**: Payment flow via Stripe. (2025-03-05)
 
-### Pages (In Progress / Pending from Stitch)
-- [x] **V2PublicProfile**: Perfil público de usuarios. (Implementación base con datos simulados)
-- [x] **V2Checkout**: Flujo de pago para suscripciones. (Implementación base + diseño para Stripe)
+### Player Pages (New - March 2025 Expansion)
+- [ ] **V2CouponCenter**: Interface for managing discount coupons. (Pending)
+- [ ] **V2FlashcardCreator**: Manual flashcard creation tool. (Pending)
+- [ ] **V2AIFlashcardGenerator**: AI-powered flashcard generation interface. (Pending)
 
-## 3. Backend Requirements (Proposed Endpoints)
+### Admin Pages (Base Implementation - March 2025)
+- [ ] **V2AdminDashboard**: Main dashboard for administrators. (Pending)
+- [ ] **V2AdminUsers**: Base user management interface. (Pending)
 
-See `backend_tasks.md` for detailed payload and response specifications.
+## 3. Backend Integration (Status)
 
-### Dashboard & Stats
-- `GET /v2/stats/summary`
-- `GET /v2/activity/recent`
-
-### Exam Sessions (Simulacros)
-- `POST /v2/exams/sessions`
-- `GET /v2/exams/sessions/:id`
-- `GET /v2/exams/sessions/:id/analytics`
-
-### Gamification & Community
-- `GET /v2/leaderboard/national`: For V2NationalLeaderboard.
-- `GET /v2/images/bank`: For V2ImageBank.
-- `GET /v2/users/:id/public-profile`: For V2PublicProfile.
-
-### Study Materials
-- `GET /v2/flashcards/review`: For V2FlashcardStudy.
-- `GET /v2/knowledge-base`: For V2KnowledgeBase.
-- `GET /v2/errors/summary`: For V2ErrorReview.
-
-### Payments
-- `POST /v2/payments/create-checkout-session`: Stripe Integration (Planned).
+All Player-related endpoints described in `backend_tasks.md` are considered **COMPLETED** as of March 2025.
 
 ## 4. Progress Log
-- **2023-10-XX**: Initial exploration and setup of V2 structure.
-- **2023-10-XX**: Implementation of core MD3 theme and Landing page.
-- **2023-10-XX**: Development of Auth, Dashboard, and Exam flows.
-- **2023-10-XX**: Route integration and fix of import collisions.
-- **2024-05-22**: Mapping of Stitch screens and planning of 5 new pages.
-- **2024-05-23**: Refinement of Leaderboard, ImageBank, Flashcards, KnowledgeBase and ErrorReview. Starting PublicProfile and Checkout.
-
-### Additional Pages (Implemented March 2025)
-- [x] **V2CaseStudy**: Vista detallada para el estudio de casos clínicos con feedback por pregunta.
-- [x] **V2DirectMessaging**: Interfaz de mensajería para soporte y comunidad.
-- [x] **V2SubscriptionManagement**: Gestión de plan activo, facturación y cancelaciones.
-- [x] **V2PublicProfile (API Integration)**: Conexión con el servicio de perfil de usuario.
-- [x] **V2Checkout (API Integration)**: Integración con el servicio de pagos (Stripe redirect).
+- **2023-10**: Initial V2 structure, MD3 theme, Auth, Dashboard.
+- **2024-05**: Mapping of Stitch screens; Leaderboard, ImageBank, Flashcards, KnowledgeBase.
+- **2025-03-05**: Implementation of CaseStudy, Messaging, Subscription, Profile/Checkout API integration.
+- **2025-03-06**: Identification of missing screens from Stitch (CouponCenter, FlashcardCreator, Admin base).

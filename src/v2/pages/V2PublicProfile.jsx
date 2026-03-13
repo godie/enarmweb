@@ -1,29 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import UserService from '../../services/UserService';
 import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
+const initialState = {
+    isFollowing: false,
+    loading: true,
+    error: null,
+    user: null,
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'FETCH_START':
+            return { ...state, loading: true, error: null };
+        case 'FETCH_SUCCESS':
+            return { ...state, loading: false, user: action.payload, error: null };
+        case 'FETCH_ERROR':
+            return { ...state, loading: false, error: action.payload, user: action.userFallback };
+        case 'TOGGLE_FOLLOW':
+            return { ...state, isFollowing: !state.isFollowing };
+        default:
+            return state;
+    }
+}
+
 const V2PublicProfile = () => {
     const { userId } = useParams();
     const history = useHistory();
-    const [isFollowing, setIsFollowing] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [user, setUser] = useState(null);
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
         const fetchProfile = async () => {
+            dispatch({ type: 'FETCH_START' });
             try {
-                setLoading(true);
                 const response = await UserService.getPublicProfile(userId);
-                setUser(response.data.user);
-                setError(null);
+                dispatch({ type: 'FETCH_SUCCESS', payload: response.data.user });
             } catch (err) {
                 console.error("Error fetching public profile:", err);
-                setError("No se pudo cargar el perfil del usuario.");
-                // Fallback to mock data for demo purposes if API fails
-                setUser({
+                const userFallback = {
                     nickname: "Dra. Elena Martínez",
                     specialty: "Aspirante a Pediatría",
                     avatar: "https://ui-avatars.com/api/?name=Elena+Martinez&background=0fa397&color=fff&size=128",
@@ -34,14 +50,15 @@ const V2PublicProfile = () => {
                         { id: "ach1", title: "Experto en Neonatología", icon: "workspace_premium", date: "Completado ayer", color: "var(--md-sys-color-primary)" },
                         { id: "ach2", title: "Racha de 30 Días", icon: "local_fire_department", date: "15 de Octubre, 2023", color: "#f44336" }
                     ]
-                });
-            } finally {
-                setLoading(false);
+                };
+                dispatch({ type: 'FETCH_ERROR', payload: "No se pudo cargar el perfil del usuario.", userFallback });
             }
         };
 
         fetchProfile();
     }, [userId]);
+
+    const { loading, error, user, isFollowing } = state;
 
     if (loading) return <div className="center-align" style={{ padding: '40px' }}><CustomPreloader /></div>;
     if (error && !user) return <div className="center-align red-text" style={{ padding: '40px' }}>{error}</div>;
@@ -89,7 +106,7 @@ const V2PublicProfile = () => {
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
                     <button
                         className={isFollowing ? "v2-btn-outlined" : "v2-btn-primary"}
-                        onClick={() => setIsFollowing(!isFollowing)}
+                        onClick={() => dispatch({ type: 'TOGGLE_FOLLOW' })}
                         style={{ minWidth: '140px' }}
                     >
                         <i className="material-icons" style={{ marginRight: '8px' }}>

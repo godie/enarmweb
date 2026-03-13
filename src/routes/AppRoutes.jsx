@@ -67,6 +67,11 @@ import V2Checkout from "../v2/pages/V2Checkout";
 import V2CaseStudy from "../v2/pages/V2CaseStudy";
 import V2DirectMessaging from "../v2/pages/V2DirectMessaging";
 import V2SubscriptionManagement from "../v2/pages/V2SubscriptionManagement";
+import V2CouponCenter from "../v2/pages/V2CouponCenter";
+import V2FlashcardCreator from "../v2/pages/V2FlashcardCreator";
+import V2AIFlashcardGenerator from "../v2/pages/V2AIFlashcardGenerator";
+import V2AdminDashboard from "../v2/pages/V2AdminDashboard";
+import V2AdminUsers from "../v2/pages/V2AdminUsers";
 
 function DashboardCases(props) {
   return (
@@ -275,6 +280,13 @@ export default function AppRoutes() {
       <PlayerRoute path="/v2/caso-estudio/:id" component={() => (<V2App><V2CaseStudy /></V2App>)} />
       <PlayerRoute path="/v2/mensajes" component={() => (<V2App><V2DirectMessaging /></V2App>)} />
       <PlayerRoute path="/v2/suscripcion" component={() => (<V2App><V2SubscriptionManagement /></V2App>)} />
+      <PlayerRoute path="/v2/cupones" component={() => (<V2App><V2CouponCenter /></V2App>)} />
+      <PlayerRoute path="/v2/flashcards/crear" component={() => (<V2App><V2FlashcardCreator /></V2App>)} />
+      <PlayerRoute path="/v2/flashcards/generar" component={() => (<V2App><V2AIFlashcardGenerator /></V2App>)} />
+
+      {/* — V2 Admin Routes — */}
+      <PrivateRoute path="/v2/admin" exact component={() => (<V2App><V2AdminDashboard /></V2App>)} />
+      <PrivateRoute path="/v2/admin/usuarios" component={() => (<V2App><V2AdminUsers /></V2App>)} />
 
 
       <Route path="/v2/landing" exact component={V2Landing} />

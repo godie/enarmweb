@@ -15,6 +15,8 @@ const V2Navi = () => {
     { label: "Mis Casos", icon: "history", path: "/v2/mis-contribuciones" },
     { label: "Mensajes", icon: "forum", path: "/v2/mensajes" },
     { label: "Suscripción", icon: "card_membership", path: "/v2/suscripcion" },
+    { label: "Cupones", icon: "confirmation_number", path: "/v2/cupones" },
+    { label: "Admin", icon: "admin_panel_settings", path: "/v2/admin" },
     { label: "Perfil", icon: "person", path: "/v2/perfil" },
   ];
 

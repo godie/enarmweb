@@ -1,25 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import UserExamService from '../../services/UserExamService';
 import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
+const initialState = {
+    loading: true,
+    error: null,
+    caseData: null,
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'FETCH_START':
+            return { ...state, loading: true, error: null };
+        case 'FETCH_SUCCESS':
+            return { ...state, loading: false, caseData: action.payload, error: null };
+        case 'FETCH_ERROR':
+            return { ...state, loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
 const V2CaseStudy = () => {
     const { id } = useParams();
     const history = useHistory();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [caseData, setCaseData] = useState(null);
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
         const fetchCase = async () => {
+            dispatch({ type: 'FETCH_START' });
             try {
-                setLoading(true);
                 // Simulate fetching clinical case study data
                 // In real app: const response = await UserExamService.getUserExam(id);
 
                 setTimeout(() => {
-                    setCaseData({
+                    const data = {
                         id: id,
                         title: "Caso Clínico: Lactante con Dificultad Respiratoria",
                         specialty: "Pediatría",
@@ -45,18 +62,19 @@ const V2CaseStudy = () => {
                             }
                         ],
                         feedback: "Tu desempeño en este caso fue aceptable, pero debes repasar los agentes etiológicos en patología respiratoria pediátrica."
-                    });
-                    setLoading(false);
+                    };
+                    dispatch({ type: 'FETCH_SUCCESS', payload: data });
                 }, 800);
             } catch (err) {
                 console.error("Error fetching case study:", err);
-                setError("Ocurrió un error al cargar el estudio de caso.");
-                setLoading(false);
+                dispatch({ type: 'FETCH_ERROR', payload: "Ocurrió un error al cargar el estudio de caso." });
             }
         };
 
         fetchCase();
     }, [id]);
+
+    const { loading, error, caseData } = state;
 
     if (loading) return <div className="center-align" style={{ padding: '40px' }}><CustomPreloader /></div>;
     if (error) return <div className="center-align red-text" style={{ padding: '40px' }}>{error}</div>;

@@ -5,6 +5,7 @@ import V2SubscriptionManagement from './V2SubscriptionManagement';
 
 describe('V2SubscriptionManagement', () => {
   it('renders subscription information and handles cancel dialog', () => {
+    window.alert = vi.fn();
     render(
       <MemoryRouter>
         <V2SubscriptionManagement />
@@ -20,9 +21,9 @@ describe('V2SubscriptionManagement', () => {
 
     expect(screen.getByText('¿Estás seguro?')).toBeTruthy();
 
-    const keepButton = screen.getByText('Mantener');
-    fireEvent.click(keepButton);
-
+    const confirmCancel = screen.getByText('Si, cancelar');
+    fireEvent.click(confirmCancel);
+    expect(window.alert).toHaveBeenCalledWith("Suscripción cancelada correctamente.");
     expect(screen.queryByText('¿Estás seguro?')).toBeNull();
   });
 });

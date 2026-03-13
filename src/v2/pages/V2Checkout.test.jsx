@@ -34,6 +34,20 @@ describe('V2Checkout', () => {
     expect(screen.getByText('46.84')).toBeTruthy();
   });
 
+  it('handles promo code input', () => {
+    render(
+      <MemoryRouter>
+        <V2Checkout />
+      </MemoryRouter>
+    );
+
+    const promoInput = screen.getByPlaceholderText('Código promo');
+    fireEvent.change(promoInput, { target: { value: 'DESC50' } });
+    expect(promoInput.value).toBe('DESC50');
+
+    expect(screen.getByText('Descuento')).toBeTruthy();
+  });
+
   it('handles payment redirection to Stripe', async () => {
     // Mock window.location.href
     const originalLocation = window.location;
@@ -58,6 +72,23 @@ describe('V2Checkout', () => {
     });
 
     window.location = originalLocation;
+  });
+
+  it('shows error message on payment failure', async () => {
+    PaymentService.createCheckoutSession.mockRejectedValue(new Error('Payment failed'));
+
+    render(
+      <MemoryRouter>
+        <V2Checkout />
+      </MemoryRouter>
+    );
+
+    const payButton = screen.getByText('Continuar con Stripe');
+    fireEvent.click(payButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/No se pudo iniciar el proceso de pago/i)).toBeTruthy();
+    });
   });
 
   it('navigates back when back button is clicked', () => {

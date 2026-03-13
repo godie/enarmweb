@@ -88,3 +88,19 @@ Llevar aquí cambios relevantes (restauraciones, merges, refactors) con **rama**
 
 - Unit tests con Vitest para todas las nuevas páginas y servicios, cumpliendo con el estándar de cobertura del 80%.
 - Verificación visual completa mediante Playwright en entorno local.
+
+## [0.9.5] - 2025-03-06
+### Added
+- New V2 Player screens: V2CouponCenter, V2FlashcardCreator, V2AIFlashcardGenerator.
+- New V2 Admin base screens: V2AdminDashboard, V2AdminUsers.
+- Full unit test suite for new components (Vitest + RTL) with >80% coverage.
+- Integrated new routes in AppRoutes.jsx and navigation items in V2Navi.jsx.
+
+### Fixed
+- Improved accessibility in V2 screens by associating form labels with controls (htmlFor).
+- Optimized performance in V2PublicProfile and V2CaseStudy by refactoring multiple setState calls into useReducer.
+- Standardized loading indicators across new V2 pages.
+
+### Updated
+- planv2.md: Updated implementation status and mapped new Stitch screens.
+- backend_tasks.md: Categorized endpoints into Completed and Pending (Expansion).
