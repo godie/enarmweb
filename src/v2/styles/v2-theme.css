@@ -197,6 +197,28 @@
   z-index: 1000;
 }
 
+.v2-nav-logo {
+  margin-bottom: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v2-nav-items-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+}
+
 .v2-nav-item {
   display: flex;
   flex-direction: column;
@@ -205,6 +227,19 @@
   color: var(--md-sys-color-on-surface-variant);
   margin-bottom: 24px;
   font-size: 12px;
+}
+
+.v2-nav-item-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.v2-nav-label {
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .v2-nav-item i {
@@ -216,6 +251,22 @@
 .v2-nav-item.active i {
   background-color: var(--md-sys-color-secondary-container);
   color: var(--md-sys-color-on-secondary-container);
+}
+
+.v2-nav-footer {
+  margin-top: auto;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.v2-theme-toggle {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px;
 }
 
 .v2-content-wrapper {
@@ -232,11 +283,33 @@
     top: auto;
     bottom: 0;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     padding-top: 0;
     border-right: none;
     border-top: 1px solid var(--md-sys-color-outline-variant);
   }
+
+  .v2-nav-logo {
+    display: none;
+  }
+
+  .v2-nav-items-container {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-right: 0;
+    gap: 8px;
+    align-items: center;
+    padding: 0 8px;
+  }
+
+  .v2-nav-footer {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-right: 8px;
+    flex-direction: row;
+  }
+
   .v2-content-wrapper {
     margin-left: 0;
     margin-bottom: 80px;
@@ -244,6 +317,10 @@
   }
   .v2-nav-item {
     margin-bottom: 0;
+    min-width: 64px;
+  }
+  .v2-nav-item i {
+    padding: 4px 12px;
   }
 }
 
