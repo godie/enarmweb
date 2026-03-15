@@ -1,23 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import UserService from '../../services/UserService';
 import '../styles/v2-theme.css';
 
 const V2AdminUsers = () => {
     const history = useHistory();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Mocking API call for user list
-        setTimeout(() => {
-            setUsers([
-                { id: 1, name: 'Juan Pérez', email: 'juan@example.com', role: 'Premium', status: 'active' },
-                { id: 2, name: 'María García', email: 'maria@example.com', role: 'Free', status: 'active' },
-                { id: 3, name: 'Carlos López', email: 'carlos@example.com', role: 'Premium', status: 'inactive' },
-                { id: 4, name: 'Ana Martínez', email: 'ana@example.com', role: 'Admin', status: 'active' }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchUsers = async () => {
+            try {
+                const response = await UserService.getUsers();
+                // Ensure response data format is handled correctly (array or nested object)
+                setUsers(Array.isArray(response.data) ? response.data : (response.data.users || []));
+            } catch (err) {
+                console.error("Error fetching users:", err);
+                setError("No se pudo cargar la lista de usuarios.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
     }, []);
 
     return (
@@ -28,6 +34,12 @@ const V2AdminUsers = () => {
                 </button>
                 <h1 className="v2-headline-small">Gestión de Usuarios</h1>
             </header>
+
+            {error && (
+                <div className="v2-card" style={{ marginBottom: '24px', backgroundColor: 'var(--md-sys-color-error-container)', color: 'var(--md-sys-color-on-error-container)' }}>
+                    <p className="v2-body-medium">{error}</p>
+                </div>
+            )}
 
             <div className="v2-card" style={{ padding: 0, overflow: 'hidden' }}>
                 <table className="highlight responsive-table" style={{ margin: 0 }}>
@@ -42,21 +54,41 @@ const V2AdminUsers = () => {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan="5" className="center-align" style={{ padding: '40px' }}><div className="preloader-wrapper small active"><div className="spinner-layer spinner-green-only"><div className="circle-clipper left"><div className="circle"></div></div></div></div></td></tr>
+                            <tr>
+                                <td colSpan="5" className="center-align" style={{ padding: '40px' }}>
+                                    <div className="preloader-wrapper small active">
+                                        <div className="spinner-layer spinner-green-only">
+                                            <div className="circle-clipper left"><div className="circle"></div></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : users.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" className="center-align" style={{ padding: '40px' }}>
+                                    <p className="v2-body-medium" style={{ opacity: 0.7 }}>No hay usuarios registrados.</p>
+                                </td>
+                            </tr>
                         ) : (
                             users.map(user => (
                                 <tr key={user.id}>
-                                    <td className="v2-body-medium" style={{ paddingLeft: '24px' }}>{user.name}</td>
+                                    <td className="v2-body-medium" style={{ paddingLeft: '24px' }}>{user.name || (user.first_name ? `${user.first_name} ${user.last_name || ''}` : 'Sin nombre')}</td>
                                     <td className="v2-body-medium">{user.email}</td>
                                     <td className="v2-body-medium">
-                                        <span className="v2-badge" style={{ backgroundColor: user.role === 'Admin' ? 'var(--md-sys-color-error-container)' : user.role === 'Premium' ? 'var(--md-sys-color-primary-container)' : 'var(--md-sys-color-surface-variant)', color: 'inherit', padding: '4px 12px', borderRadius: '16px', fontSize: '12px' }}>
+                                        <span className="v2-badge" style={{
+                                            backgroundColor: (user.role === 'Admin' || user.role === 'admin') ? 'var(--md-sys-color-error-container)' : (user.role === 'Premium' || user.role === 'premium') ? 'var(--md-sys-color-primary-container)' : 'var(--md-sys-color-surface-variant)',
+                                            color: 'inherit',
+                                            padding: '4px 12px',
+                                            borderRadius: '16px',
+                                            fontSize: '12px'
+                                        }}>
                                             {user.role}
                                         </span>
                                     </td>
                                     <td className="v2-body-medium">
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: user.status === 'active' ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)' }}></div>
-                                            {user.status === 'active' ? 'Activo' : 'Inactivo'}
+                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: (user.status === 'active' || user.active) ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)' }}></div>
+                                            {(user.status === 'active' || user.active) ? 'Activo' : 'Inactivo'}
                                         </div>
                                     </td>
                                     <td style={{ textAlign: 'right', paddingRight: '24px' }}>

@@ -22,4 +22,9 @@ export default class AIService extends BaseService {
       },
     });
   }
+
+  static generateFlashcards(payload) {
+    const headers = this.getHeaders();
+    return axios.post(BaseService.getURL("v2/ai/generate-flashcards"), payload, headers);
+  }
 }

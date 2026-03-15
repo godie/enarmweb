@@ -36,7 +36,6 @@ class UserService extends BaseService {
   static getPublicProfile(userId) {
     const headers = this.getHeaders();
     return axios.get(BaseService.getURL(`users/${userId}/public-profile`), headers);
-    return axios.get(BaseService.getURL(`users/${userId}/public-profile`), headers);
   }
 
   // Admin: Listar usuarios
@@ -55,6 +54,12 @@ class UserService extends BaseService {
   static deleteUser(id) {
     const headers = this.getHeaders();
     return axios.delete(BaseService.getURL(`users/${id}`), headers);
+  }
+
+  // Admin V2: Estadísticas globales
+  static getAdminStats() {
+    const headers = this.getHeaders();
+    return axios.get(BaseService.getURL("v2/admin/stats"), headers);
   }
 
   // Aliases para compatibilidad durante la transición si es necesario

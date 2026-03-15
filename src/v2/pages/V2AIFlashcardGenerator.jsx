@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import AIService from '../../services/AIService';
+import FlashcardService from '../../services/FlashcardService';
 import '../styles/v2-theme.css';
 
 const V2AIFlashcardGenerator = () => {
@@ -8,19 +10,56 @@ const V2AIFlashcardGenerator = () => {
     const [count, setCount] = useState(5);
     const [generating, setGenerating] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
+    const [savingAll, setSavingAll] = useState(false);
 
-    const handleGenerate = (e) => {
+    const handleGenerate = async (e) => {
         e.preventDefault();
         setGenerating(true);
-        // Mocking API call to POST /v2/ai/generate-flashcards
-        setTimeout(() => {
-            setSuggestions([
-                { id: 's1', front: 'Tratamiento inicial de la cetoacidosis diabética', back: 'Reposición hídrica con solución salina al 0.9%' },
-                { id: 's2', front: 'Criterios diagnósticos de preeclampsia', back: 'TA > 140/90 mmHg y proteinuria > 300mg/24h después de la semana 20' },
-                { id: 's3', front: 'Signo de Murphy positivo indica:', back: 'Colecistitis aguda' }
-            ]);
+        try {
+            const response = await AIService.generateFlashcards({ topic, count });
+            setSuggestions(response.data || []);
+        } catch (err) {
+            console.error("Error generating flashcards:", err);
+            alert("Error al generar sugerencias. Por favor, intenta de nuevo.");
+        } finally {
             setGenerating(false);
-        }, 1500);
+        }
+    };
+
+    const handleSaveOne = async (suggestion, index) => {
+        try {
+            await FlashcardService.createFlashcard({
+                front: suggestion.front,
+                back: suggestion.back,
+                specialty_id: suggestion.specialty_id || 1 // Fallback or derived specialty
+            });
+            // Mark as saved in UI
+            const newSuggestions = [...suggestions];
+            newSuggestions[index].saved = true;
+            setSuggestions(newSuggestions);
+        } catch (err) {
+            console.error("Error saving individual flashcard:", err);
+        }
+    };
+
+    const handleSaveAll = async () => {
+        setSavingAll(true);
+        try {
+            const unsaved = suggestions.filter(s => !s.saved);
+            for (const s of unsaved) {
+                await FlashcardService.createFlashcard({
+                    front: s.front,
+                    back: s.back,
+                    specialty_id: s.specialty_id || 1
+                });
+            }
+            history.push('/v2/flashcards/repaso');
+        } catch (err) {
+            console.error("Error saving all flashcards:", err);
+            alert("Ocurrió un error al guardar todas las flashcards.");
+        } finally {
+            setSavingAll(false);
+        }
     };
 
     return (
@@ -32,7 +71,7 @@ const V2AIFlashcardGenerator = () => {
                 <h1 className="v2-headline-small">Generador de Flashcards con IA</h1>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: suggestions.length > 0 ? '1fr 1fr' : '1fr', gap: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: suggestions.length > 0 ? '1fr 1.5fr' : '1fr', gap: '32px' }}>
                 <section>
                     <form className="v2-card" onSubmit={handleGenerate}>
                         <h2 className="v2-title-large" style={{ marginBottom: '16px' }}>Configuración</h2>
@@ -46,6 +85,7 @@ const V2AIFlashcardGenerator = () => {
                                 value={topic}
                                 onChange={(e) => setTopic(e.target.value)}
                                 required
+                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--md-sys-color-outline-variant)', backgroundColor: 'transparent', color: 'inherit' }}
                             />
                         </div>
                         <div style={{ marginBottom: '24px' }}>
@@ -57,7 +97,8 @@ const V2AIFlashcardGenerator = () => {
                                 min="1"
                                 max="20"
                                 value={count}
-                                onChange={(e) => setCount(e.target.value)}
+                                onChange={(e) => setCount(parseInt(e.target.value))}
+                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--md-sys-color-outline-variant)', backgroundColor: 'transparent', color: 'inherit' }}
                             />
                         </div>
                         <button className="v2-btn-primary" style={{ width: '100%' }} disabled={generating}>
@@ -69,23 +110,33 @@ const V2AIFlashcardGenerator = () => {
                 {suggestions.length > 0 && (
                     <section>
                         <h2 className="v2-title-large" style={{ marginBottom: '16px' }}>Sugerencias Generadas</h2>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '600px', overflowY: 'auto', paddingRight: '8px' }}>
                             {suggestions.map((s, idx) => (
-                                <div key={s.id} className="v2-card-tonal">
+                                <div key={idx} className="v2-card-tonal" style={{ position: 'relative' }}>
                                     <div className="v2-label-medium" style={{ opacity: 0.7, marginBottom: '8px' }}>Sugerencia {idx + 1}</div>
                                     <div className="v2-body-large" style={{ fontWeight: 'bold', marginBottom: '8px' }}>Q: {s.front}</div>
                                     <div className="v2-body-medium">A: {s.back}</div>
                                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-                                        <button className="v2-btn-tonal" style={{ height: '32px', fontSize: '12px' }}>
-                                            <i className="material-icons" style={{ fontSize: '16px', marginRight: '4px' }}>add</i>
-                                            Guardar
+                                        <button
+                                            className="v2-btn-tonal"
+                                            style={{ height: '32px', fontSize: '12px' }}
+                                            onClick={() => handleSaveOne(s, idx)}
+                                            disabled={s.saved}
+                                        >
+                                            <i className="material-icons" style={{ fontSize: '16px', marginRight: '4px' }}>{s.saved ? 'check' : 'add'}</i>
+                                            {s.saved ? 'Guardada' : 'Guardar'}
                                         </button>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <button className="v2-btn-primary" style={{ width: '100%', marginTop: '24px' }}>
-                            Guardar Todas
+                        <button
+                            className="v2-btn-primary"
+                            style={{ width: '100%', marginTop: '24px' }}
+                            onClick={handleSaveAll}
+                            disabled={savingAll || suggestions.every(s => s.saved)}
+                        >
+                            {savingAll ? 'Guardando...' : 'Guardar Todas'}
                         </button>
                     </section>
                 )}
