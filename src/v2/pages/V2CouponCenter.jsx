@@ -1,27 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import CouponService from '../../services/CouponService';
 import '../styles/v2-theme.css';
 
 const V2CouponCenter = () => {
     const history = useHistory();
     const [coupons, setCoupons] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Mocking API call to /v2/coupons/me
-        setTimeout(() => {
-            setCoupons([
-                { id: 'c1', code: 'BIENVENIDO25', discount: '25%', description: 'Descuento de bienvenida', expires: '2025-12-31', status: 'active' },
-                { id: 'c2', code: 'STUDENTLIFE', discount: '50%', description: 'Descuento para estudiantes', expires: '2025-06-30', status: 'active' },
-                { id: 'c3', code: 'EXPIRED10', discount: '10%', description: 'Promoción antigua', expires: '2024-01-01', status: 'expired' }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchCoupons = async () => {
+            try {
+                const response = await CouponService.getCoupons();
+                setCoupons(response.data || []);
+            } catch (err) {
+                console.error("Error fetching coupons:", err);
+                setError("No se pudieron cargar los cupones. Por favor, intenta de nuevo más tarde.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCoupons();
     }, []);
 
     const copyToClipboard = (code) => {
         navigator.clipboard.writeText(code);
-        // Show some feedback here if needed, like a toast
+        // Toast logic could be added here if a global toast exists
     };
 
     return (
@@ -42,6 +48,16 @@ const V2CouponCenter = () => {
                             <div className="circle-clipper right"><div className="circle"></div></div>
                         </div>
                     </div>
+                </div>
+            ) : error ? (
+                <div className="v2-card center-align" style={{ padding: '32px' }}>
+                    <i className="material-icons" style={{ fontSize: '48px', color: 'var(--md-sys-color-error)', marginBottom: '16px' }}>error_outline</i>
+                    <p className="v2-body-large">{error}</p>
+                </div>
+            ) : coupons.length === 0 ? (
+                <div className="v2-card center-align" style={{ padding: '32px' }}>
+                    <i className="material-icons" style={{ fontSize: '48px', opacity: 0.5, marginBottom: '16px' }}>confirmation_number</i>
+                    <p className="v2-body-large">No tienes cupones disponibles en este momento.</p>
                 </div>
             ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>

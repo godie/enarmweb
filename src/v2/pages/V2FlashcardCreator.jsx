@@ -1,23 +1,66 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import FlashcardService from '../../services/FlashcardService';
+import ExamService from '../../services/ExamService';
 import '../styles/v2-theme.css';
 
 const V2FlashcardCreator = () => {
     const history = useHistory();
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
-    const [specialty, setSpecialty] = useState('');
+    const [specialtyId, setSpecialtyId] = useState('');
+    const [specialties, setSpecialties] = useState([]);
     const [saving, setSaving] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSpecialties = async () => {
+            try {
+                const response = await ExamService.loadCategories();
+                setSpecialties(response.data || []);
+            } catch (err) {
+                console.error("Error fetching specialties:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSpecialties();
+    }, []);
 
     const handleSave = async (e) => {
         e.preventDefault();
+        if (!specialtyId || !front || !back) return;
+
         setSaving(true);
-        // Mocking API call to POST /v2/flashcards
-        setTimeout(() => {
+        try {
+            await FlashcardService.createFlashcard({
+                front,
+                back,
+                specialty_id: specialtyId
+            });
+            history.push('/v2/flashcards/repaso');
+        } catch (err) {
+            console.error("Error saving flashcard:", err);
+            alert("Ocurrió un error al guardar la flashcard. Por favor, intenta de nuevo.");
+        } finally {
             setSaving(false);
-            history.push('/v2/repaso');
-        }, 1000);
+        }
     };
+
+    if (loading) {
+        return (
+            <div className="v2-page-container center-align" style={{ padding: '80px' }}>
+                <div className="preloader-wrapper big active">
+                    <div className="spinner-layer spinner-green-only">
+                        <div className="circle-clipper left"><div className="circle"></div></div>
+                        <div className="gap-patch"><div className="circle"></div></div>
+                        <div className="circle-clipper right"><div className="circle"></div></div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="v2-page-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
@@ -34,16 +77,15 @@ const V2FlashcardCreator = () => {
                     <select
                         id="specialty-select"
                         className="v2-input"
-                        value={specialty}
-                        onChange={(e) => setSpecialty(e.target.value)}
+                        value={specialtyId}
+                        onChange={(e) => setSpecialtyId(e.target.value)}
                         required
-                        style={{ display: 'block' }}
+                        style={{ display: 'block', width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid var(--md-sys-color-outline-variant)' }}
                     >
                         <option value="" disabled>Seleccionar Especialidad</option>
-                        <option value="pediatria">Pediatría</option>
-                        <option value="ginecologia">Ginecología</option>
-                        <option value="cirugia">Cirugía</option>
-                        <option value="medicina-interna">Medicina Interna</option>
+                        {specialties.map(spec => (
+                            <option key={spec.id} value={spec.id}>{spec.name}</option>
+                        ))}
                     </select>
                 </div>
 
@@ -57,6 +99,7 @@ const V2FlashcardCreator = () => {
                         value={front}
                         onChange={(e) => setFront(e.target.value)}
                         required
+                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--md-sys-color-outline-variant)', backgroundColor: 'transparent', color: 'inherit' }}
                     />
                 </div>
 
@@ -70,6 +113,7 @@ const V2FlashcardCreator = () => {
                         value={back}
                         onChange={(e) => setBack(e.target.value)}
                         required
+                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--md-sys-color-outline-variant)', backgroundColor: 'transparent', color: 'inherit' }}
                     />
                 </div>
 
