@@ -2,34 +2,72 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import V2AIFlashcardGenerator from './V2AIFlashcardGenerator';
+import AIService from '../../services/AIService';
+import FlashcardService from '../../services/FlashcardService';
+
+const mockPush = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useHistory: () => ({
+      push: mockPush,
+      goBack: vi.fn()
+    })
+  };
+});
+
+vi.mock('../../services/AIService');
+vi.mock('../../services/FlashcardService');
 
 describe('V2AIFlashcardGenerator', () => {
-  it('renders generator form', () => {
-    render(
-      <MemoryRouter>
-        <V2AIFlashcardGenerator />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByPlaceholderText(/Ej: Diabetes Mellitus Tipo 2/i)).toBeTruthy();
-    expect(screen.getByText('Generar Sugerencias')).toBeTruthy();
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('generates suggestions on form submission', async () => {
+  it('generates suggestions on form submit', async () => {
+    AIService.generateFlashcards.mockResolvedValue({
+      data: [
+        { front: 'AI Question', back: 'AI Answer' }
+      ]
+    });
+
     render(
       <MemoryRouter>
         <V2AIFlashcardGenerator />
       </MemoryRouter>
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/Ej: Diabetes Mellitus Tipo 2/i), { target: { value: 'HTA' } });
+    fireEvent.change(screen.getByPlaceholderText(/Diabetes Mellitus/i), { target: { value: 'Diabetes' } });
     fireEvent.click(screen.getByText('Generar Sugerencias'));
 
-    expect(screen.getByText('Generando...')).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText('Q: AI Question')).toBeTruthy();
+      expect(screen.getByText('A: AI Answer')).toBeTruthy();
+    });
+  });
+
+  it('saves all suggestions', async () => {
+    AIService.generateFlashcards.mockResolvedValue({
+      data: [{ front: 'Q1', back: 'A1' }, { front: 'Q2', back: 'A2' }]
+    });
+    FlashcardService.createFlashcard.mockResolvedValue({});
+
+    render(
+      <MemoryRouter>
+        <V2AIFlashcardGenerator />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/Diabetes Mellitus/i), { target: { value: 'Diabetes' } });
+    fireEvent.click(screen.getByText('Generar Sugerencias'));
+
+    await waitFor(() => screen.getByText('Guardar Todas'));
+    fireEvent.click(screen.getByText('Guardar Todas'));
 
     await waitFor(() => {
-      expect(screen.getByText('Sugerencias Generadas')).toBeTruthy();
-      expect(screen.getByText(/Q: Signo de Murphy positivo indica:/i)).toBeTruthy();
-    }, { timeout: 2000 });
+      expect(FlashcardService.createFlashcard).toHaveBeenCalledTimes(2);
+      expect(mockPush).toHaveBeenCalledWith('/v2/flashcards/repaso');
+    });
   });
 });

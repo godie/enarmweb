@@ -22,4 +22,9 @@ export default class FlashcardService extends BaseService {
     const headers = this.getHeaders();
     return axios.post(BaseService.getURL(`flashcards/${id}/review`), { quality }, headers);
   }
+
+  static createFlashcard(payload) {
+    const headers = this.getHeaders();
+    return axios.post(BaseService.getURL("v2/flashcards"), payload, headers);
+  }
 }

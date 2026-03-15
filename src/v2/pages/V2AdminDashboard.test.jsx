@@ -2,22 +2,25 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import V2AdminDashboard from './V2AdminDashboard';
+import UserService from '../../services/UserService';
+
+vi.mock('../../services/UserService');
 
 describe('V2AdminDashboard', () => {
-  it('renders stats after loading', async () => {
-    render(
-      <MemoryRouter>
-        <V2AdminDashboard />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('15420')).toBeTruthy();
-      expect(screen.getByText(',250.00')).toBeTruthy();
-    }, { timeout: 2000 });
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('renders quick actions', async () => {
+  it('renders admin stats correctly', async () => {
+    UserService.getAdminStats.mockResolvedValue({
+      data: {
+        totalUsers: 100,
+        activeUsersToday: 10,
+        newSubscriptions: 2,
+        revenueToday: '$200.00'
+      }
+    });
+
     render(
       <MemoryRouter>
         <V2AdminDashboard />
@@ -25,8 +28,22 @@ describe('V2AdminDashboard', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Gestionar Usuarios')).toBeTruthy();
-      expect(screen.getByText('Logs de Actividad')).toBeTruthy();
+      expect(screen.getByText('100')).toBeTruthy();
+      expect(screen.getByText('$200.00')).toBeTruthy();
+    });
+  });
+
+  it('renders error state when API fails', async () => {
+    UserService.getAdminStats.mockRejectedValue(new Error('API Error'));
+
+    render(
+      <MemoryRouter>
+        <V2AdminDashboard />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Error al cargar estadísticas/i)).toBeTruthy();
     });
   });
 });

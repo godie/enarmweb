@@ -2,9 +2,23 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import V2AdminUsers from './V2AdminUsers';
+import UserService from '../../services/UserService';
+
+vi.mock('../../services/UserService');
 
 describe('V2AdminUsers', () => {
-  it('renders user list after loading', async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders user list correctly', async () => {
+    UserService.getUsers.mockResolvedValue({
+      data: [
+        { id: 1, name: 'Admin User', email: 'admin@test.com', role: 'Admin', status: 'active' },
+        { id: 2, name: 'Premium User', email: 'premium@test.com', role: 'Premium', status: 'active' }
+      ]
+    });
+
     render(
       <MemoryRouter>
         <V2AdminUsers />
@@ -12,9 +26,22 @@ describe('V2AdminUsers', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Juan Pérez')).toBeTruthy();
-      expect(screen.getByText('maria@example.com')).toBeTruthy();
-      expect(screen.getByText('Admin')).toBeTruthy();
-    }, { timeout: 2000 });
+      expect(screen.getByText('Admin User')).toBeTruthy();
+      expect(screen.getByText('premium@test.com')).toBeTruthy();
+    });
+  });
+
+  it('handles empty user list', async () => {
+    UserService.getUsers.mockResolvedValue({ data: [] });
+
+    render(
+      <MemoryRouter>
+        <V2AdminUsers />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/No hay usuarios registrados/i)).toBeTruthy();
+    });
   });
 });
