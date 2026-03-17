@@ -8,6 +8,7 @@ import '../styles/v2-theme.css';
 const V2Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
@@ -45,7 +46,7 @@ const V2Login = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 16px'
           }}>
-            <i className="material-icons" style={{ fontSize: '40px' }}>stethoscope</i>
+            <i className="material-icons" style={{ fontSize: '40px' }} aria-hidden="true">stethoscope</i>
           </div>
           <h1 className="v2-headline-medium" style={{ color: 'var(--md-sys-color-primary)' }}>ENARM V2</h1>
           <p className="v2-body-large" style={{ opacity: 0.7 }}>Bienvenido de nuevo, Doctor</p>
@@ -53,8 +54,9 @@ const V2Login = () => {
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
           <div className="v2-input-outlined">
-            <label>Correo Electrónico</label>
+            <label htmlFor="email">Correo Electrónico</label>
             <input
+              id="email"
               type="email"
               placeholder="doctor@medical.com"
               value={email}
@@ -63,15 +65,39 @@ const V2Login = () => {
             />
           </div>
 
-          <div className="v2-input-outlined">
-            <label>Contraseña</label>
+          <div className="v2-input-outlined" style={{ position: 'relative' }}>
+            <label htmlFor="password">Contraseña</label>
             <input
-              type="password"
+              id="password"
+              type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              style={{ paddingRight: '48px' }}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--md-sys-color-outline)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '8px',
+                marginTop: '12px'
+              }}
+            >
+              <i className="material-icons">{showPassword ? 'visibility_off' : 'visibility'}</i>
+            </button>
           </div>
 
           <div style={{ textAlign: 'right' }}>
@@ -82,7 +108,7 @@ const V2Login = () => {
 
           <button type="submit" className="v2-btn-filled" style={{ justifyContent: 'center', height: '56px' }} disabled={loading}>
             {loading ? 'Iniciando sesión...' : 'Entrar'}
-            {!loading && <i className="material-icons">arrow_forward</i>}
+            {!loading && <i className="material-icons" aria-hidden="true">arrow_forward</i>}
           </button>
         </form>
 
