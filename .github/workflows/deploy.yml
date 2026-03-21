@@ -57,16 +57,20 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm_config_legacy_peer_deps=true npm ci
 
       - name: Run build
         run: npm run build
+
+      - name: List dist directory (debug)
+        run: ls -la ./dist
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
         with:
           name: production-files
           path: ./dist
+          include-hidden-files: true
 
   deploy:
     name: Deploy
@@ -80,6 +84,9 @@ jobs:
         with:
           name: production-files
           path: ./dist
+
+      - name: List dist directory after download (debug)
+        run: ls -la ./dist
 
       - name: Write SSH key to file
         run: |
@@ -113,7 +120,7 @@ jobs:
           RSYNC_SSH="ssh -i ~/.ssh/deploy_key -p ${REMOTE_PORT} -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
           SRC="dist/"
           DEST="${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_TARGET}"
-          ARGS="-az --delete --chmod=Du=rwx,Dg=rx,Fu=rw,Fg=r --partial --progress "
+          ARGS="-avz --delete --chmod=Du=rwx,Dg=rx,Fu=rw,Fg=r --partial --progress"
 
           max_attempts=5
           attempt=1
@@ -122,7 +129,7 @@ jobs:
             echo "rsync failed with exit code $rc (attempt $attempt/$max_attempts)"
             if [ $attempt -ge $max_attempts ]; then
               echo "Maximum attempts reached, failing."
-              exit $rc
+              return $rc
             fi
             attempt=$((attempt + 1))
             sleep $((attempt * 5))
