@@ -113,7 +113,7 @@ jobs:
           RSYNC_SSH="ssh -i ~/.ssh/deploy_key -p ${REMOTE_PORT} -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
           SRC="dist/"
           DEST="${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_TARGET}"
-          ARGS="-az --delete --chmod=Du=rwx,Dg=rx,Fu=rw,Fg=r --partial --progress --exclude='.htaccess'"
+          ARGS="-az --delete --chmod=Du=rwx,Dg=rx,Fu=rw,Fg=r --partial --progress "
 
           max_attempts=5
           attempt=1
