@@ -14,6 +14,7 @@ const V2FlashcardStudy = () => {
 
     const handleAnswer = (quality) => {
         // En una implementación real, aquí se llamaría al backend con la calidad del SRS
+        console.log('Quality:', quality);
         if (currentIndex < flashcards.length - 1) {
             setCurrentIndex(currentIndex + 1);
             setShowAnswer(false);

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import CouponService from '../../services/CouponService';
+import Util from '../../commons/Util';
+import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
 const V2CouponCenter = () => {
@@ -27,36 +29,35 @@ const V2CouponCenter = () => {
 
     const copyToClipboard = (code) => {
         navigator.clipboard.writeText(code);
-        // Toast logic could be added here if a global toast exists
+        Util.showToast('Código copiado al portapapeles');
     };
 
     return (
         <div className="v2-page-container">
             <header style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
-                <button className="v2-btn-tonal" onClick={() => history.goBack()} style={{ borderRadius: '50%', width: '40px', height: '40px', padding: 0 }}>
-                    <i className="material-icons">arrow_back</i>
+                <button
+                    className="v2-btn-tonal"
+                    onClick={() => history.goBack()}
+                    style={{ borderRadius: '50%', width: '40px', height: '40px', padding: 0 }}
+                    aria-label="Volver"
+                >
+                    <i className="material-icons" aria-hidden="true">arrow_back</i>
                 </button>
                 <h1 className="v2-headline-small">Centro de Cupones</h1>
             </header>
 
             {loading ? (
                 <div className="center-align" style={{ padding: '40px' }}>
-                    <div className="preloader-wrapper big active">
-                        <div className="spinner-layer spinner-green-only">
-                            <div className="circle-clipper left"><div className="circle"></div></div>
-                            <div className="gap-patch"><div className="circle"></div></div>
-                            <div className="circle-clipper right"><div className="circle"></div></div>
-                        </div>
-                    </div>
+                    <CustomPreloader color="green" size="big" />
                 </div>
             ) : error ? (
                 <div className="v2-card center-align" style={{ padding: '32px' }}>
-                    <i className="material-icons" style={{ fontSize: '48px', color: 'var(--md-sys-color-error)', marginBottom: '16px' }}>error_outline</i>
+                    <i className="material-icons" style={{ fontSize: '48px', color: 'var(--md-sys-color-error)', marginBottom: '16px' }} aria-hidden="true">error_outline</i>
                     <p className="v2-body-large">{error}</p>
                 </div>
             ) : coupons.length === 0 ? (
                 <div className="v2-card center-align" style={{ padding: '32px' }}>
-                    <i className="material-icons" style={{ fontSize: '48px', opacity: 0.5, marginBottom: '16px' }}>confirmation_number</i>
+                    <i className="material-icons" style={{ fontSize: '48px', opacity: 0.5, marginBottom: '16px' }} aria-hidden="true">confirmation_number</i>
                     <p className="v2-body-large">No tienes cupones disponibles en este momento.</p>
                 </div>
             ) : (
@@ -76,12 +77,12 @@ const V2CouponCenter = () => {
                             <div className="v2-label-small" style={{ opacity: 0.7 }}>Vence: {coupon.expires}</div>
 
                             <button
-                                className="v2-btn-primary"
+                                className="v2-btn-filled"
                                 style={{ width: '100%', marginTop: '24px' }}
                                 disabled={coupon.status === 'expired'}
                                 onClick={() => copyToClipboard(coupon.code)}
                             >
-                                <i className="material-icons" style={{ marginRight: '8px' }}>content_copy</i>
+                                <i className="material-icons" style={{ marginRight: '8px' }} aria-hidden="true">content_copy</i>
                                 Copiar Código
                             </button>
                         </div>

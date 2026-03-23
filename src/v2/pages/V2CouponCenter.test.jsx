@@ -20,6 +20,9 @@ vi.mock('../../services/CouponService');
 describe('V2CouponCenter', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    if (globalThis.M && globalThis.M.toast) {
+      globalThis.M.toast.mockClear();
+    }
   });
 
   it('renders loading state initially', () => {
@@ -29,7 +32,7 @@ describe('V2CouponCenter', () => {
         <V2CouponCenter />
       </MemoryRouter>
     );
-    expect(document.querySelector('.preloader-wrapper')).toBeTruthy();
+    expect(screen.getByRole('progressbar')).toBeTruthy();
   });
 
   it('renders coupons after loading', async () => {
@@ -51,7 +54,7 @@ describe('V2CouponCenter', () => {
     });
   });
 
-  it('handles copy to clipboard', async () => {
+  it('handles copy to clipboard and shows toast', async () => {
     const mockClipboard = {
       writeText: vi.fn().mockResolvedValue(undefined),
     };
@@ -73,5 +76,18 @@ describe('V2CouponCenter', () => {
     fireEvent.click(copyButton);
 
     expect(mockClipboard.writeText).toHaveBeenCalledWith('PROMO2025');
+    expect(globalThis.M.toast).toHaveBeenCalledWith({ html: 'Código copiado al portapapeles' });
+  });
+
+  it('handles go back button', async () => {
+    CouponService.getCoupons.mockResolvedValue({ data: [] });
+    render(
+      <MemoryRouter>
+        <V2CouponCenter />
+      </MemoryRouter>
+    );
+    const backButton = screen.getByLabelText('Volver');
+    fireEvent.click(backButton);
+    expect(mockGoBack).toHaveBeenCalled();
   });
 });
