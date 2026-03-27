@@ -1,6 +1,5 @@
 import { useReducer, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import UserExamService from '../../services/UserExamService';
 import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
