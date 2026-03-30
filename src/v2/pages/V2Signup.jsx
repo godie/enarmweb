@@ -12,6 +12,7 @@ const V2Signup = () => {
     username: '',
     password: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
@@ -53,7 +54,7 @@ const V2Signup = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 16px'
           }}>
-            <i className="material-icons" style={{ fontSize: '40px' }}>app_registration</i>
+            <i className="material-icons" style={{ fontSize: '40px' }} aria-hidden="true">app_registration</i>
           </div>
           <h1 className="v2-headline-medium" style={{ color: 'var(--md-sys-color-primary)' }}>Crear Cuenta</h1>
           <p className="v2-body-large" style={{ opacity: 0.7 }}>Únete a la comunidad de médicos de élite</p>
@@ -61,8 +62,9 @@ const V2Signup = () => {
 
         <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
           <div className="v2-input-outlined">
-            <label>Nombre Completo</label>
+            <label htmlFor="name">Nombre Completo</label>
             <input
+              id="name"
               type="text"
               name="name"
               placeholder="Dr. García"
@@ -73,8 +75,9 @@ const V2Signup = () => {
           </div>
 
           <div className="v2-input-outlined">
-            <label>Correo Electrónico</label>
+            <label htmlFor="email">Correo Electrónico</label>
             <input
+              id="email"
               type="email"
               name="email"
               placeholder="doctor@medical.com"
@@ -85,8 +88,9 @@ const V2Signup = () => {
           </div>
 
           <div className="v2-input-outlined">
-            <label>Nombre de Usuario</label>
+            <label htmlFor="username">Nombre de Usuario</label>
             <input
+              id="username"
               type="text"
               name="username"
               placeholder="drgarcia"
@@ -96,21 +100,45 @@ const V2Signup = () => {
             />
           </div>
 
-          <div className="v2-input-outlined">
-            <label>Contraseña</label>
+          <div className="v2-input-outlined" style={{ position: 'relative' }}>
+            <label htmlFor="password">Contraseña</label>
             <input
-              type="password"
+              id="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
               required
+              style={{ paddingRight: '48px' }}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--md-sys-color-outline)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '8px',
+                marginTop: '12px'
+              }}
+            >
+              <i className="material-icons">{showPassword ? 'visibility_off' : 'visibility'}</i>
+            </button>
           </div>
 
           <button type="submit" className="v2-btn-filled" style={{ justifyContent: 'center', height: '56px', marginTop: '8px' }} disabled={loading}>
             {loading ? 'Creando cuenta...' : 'Registrarse'}
-            {!loading && <i className="material-icons">person_add</i>}
+            {!loading && <i className="material-icons" aria-hidden="true">person_add</i>}
           </button>
         </form>
 
