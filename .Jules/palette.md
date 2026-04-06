@@ -39,6 +39,10 @@
 ## 2025-05-27 - [Unified Loading States and Derived ARIA Labels]
 **Learning:** Centralizing loading logic within the `CustomButton` component (using `isPending` and `isPendingText` props) ensures consistent visual feedback and simplifies form components. Furthermore, automatically deriving `aria-label` from `tooltip` for icon-only buttons provides a robust accessibility fallback without requiring repetitive developer effort.
 **Action:** Prefer integrated loading states in core button components and use tooltips to automatically populate ARIA labels for icon-only interactive elements.
+
+## 2025-06-17 - [Dynamic Theme Feedback and Functional Branding]
+**Learning:** Converting static branding elements into functional navigation links (e.g., logo to dashboard) fulfills standard user expectations. Furthermore, synchronizing the theme toggle's icon and ARIA labels with the active theme via React state, combined with subtle CSS transitions (scale and rotation), creates a more accessible and "delightful" interaction that feels responsive to the user's current environment.
+**Action:** Always ensure branding logos are functional links and use dynamic state for theme-related UI elements to provide clear, accessible feedback.
 ## 2025-02-03 - [Unified Loading Feedback in Buttons and Components]
 **Learning:** Moving loading logic (spinners, text, disabled state) into base components like `CustomButton` reduces boilerplate and ensures consistent UX across the app. In Spanish interfaces, using semantic icons like `check_circle` within a `valign-wrapper` in toasts provides clear, professional feedback for critical actions like saving.
 **Action:** Abstract loading states into reusable UI components and always include visual markers (icons) for status updates.

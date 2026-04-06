@@ -267,6 +267,23 @@
   background: none;
   cursor: pointer;
   padding: 8px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.v2-theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.v2-theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.v2-theme-toggle i {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.v2-theme-toggle:active i {
+  transform: rotate(45deg);
 }
 
 .v2-content-wrapper {

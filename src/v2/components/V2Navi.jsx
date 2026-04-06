@@ -1,7 +1,9 @@
-import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
 import '../styles/v2-theme.css';
 
 const V2Navi = () => {
+  const [theme, setTheme] = useState(document.documentElement.getAttribute('theme') || 'light');
   const navItems = [
     { label: "Inicio", icon: "home", path: "/v2/dashboard" },
     { label: "Práctica", icon: "medical_services", path: "/v2/practica" },
@@ -20,11 +22,23 @@ const V2Navi = () => {
     { label: "Perfil", icon: "person", path: "/v2/perfil" },
   ];
 
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    setTheme(newTheme);
+  };
+
   return (
     <nav className="v2-nav-rail" aria-label="Navegación principal">
-      <div className="v2-nav-logo">
+      <Link
+        to="/v2/dashboard"
+        className="v2-nav-logo"
+        aria-label="Ir al inicio"
+        title="Ir al inicio"
+      >
         <i className="material-icons" style={{ fontSize: '32px' }} aria-hidden="true">stethoscope</i>
-      </div>
+      </Link>
 
       <div className="v2-nav-items-container">
         {navItems.map((item) => (
@@ -46,15 +60,13 @@ const V2Navi = () => {
       <div className="v2-nav-footer">
         <button
           className="v2-nav-item v2-theme-toggle"
-          onClick={() => {
-            const currentTheme = document.documentElement.getAttribute('theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-          }}
-          aria-label="Cambiar tema"
+          onClick={toggleTheme}
+          aria-label={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
+          title={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
         >
-          <i className="material-icons" aria-hidden="true">dark_mode</i>
+          <i className="material-icons" aria-hidden="true">
+            {theme === 'light' ? 'dark_mode' : 'light_mode'}
+          </i>
         </button>
       </div>
     </nav>

@@ -46,14 +46,29 @@ describe('V2Navi', () => {
       </MemoryRouter>
     );
 
-    const themeButton = screen.getByLabelText('Cambiar tema');
+    const themeButton = screen.getByLabelText('Cambiar a modo oscuro');
     fireEvent.click(themeButton);
 
     expect(setAttributeSpy).toHaveBeenCalledWith('theme', 'dark');
     expect(setItemSpy).toHaveBeenCalledWith('theme', 'dark');
 
+    // Icon and label should update
+    expect(screen.getByLabelText('Cambiar a modo claro')).toBeDefined();
+    expect(screen.getByText('light_mode')).toBeDefined();
+
     setAttributeSpy.mockRestore();
     getItemSpy.mockRestore();
     setItemSpy.mockRestore();
+  });
+
+  it('renders logo as a link to dashboard', () => {
+    render(
+      <MemoryRouter>
+        <V2Navi />
+      </MemoryRouter>
+    );
+
+    const logoLink = screen.getByLabelText('Ir al inicio');
+    expect(logoLink.getAttribute('href')).toBe('/v2/dashboard');
   });
 });
