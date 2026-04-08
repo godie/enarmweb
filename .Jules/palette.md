@@ -98,3 +98,7 @@
 ## 2025-06-16 - [Functional Matchers for Complex Buttons and Utility-First Layout]
 **Learning:** React Testing Library's `findByText` can fail on buttons containing Materialize icons due to text node fragmentation and the icon's name being part of the `textContent`. Using a functional matcher that checks for partial content and tag name is more robust. Additionally, strictly adhering to utility classes (e.g., 'center-align') instead of inline styles ensures compliance with repository constraints and theme consistency.
 **Action:** Always use functional matchers for testing interactive elements with icons and avoid inline styles by leveraging existing CSS utility classes.
+
+## 2025-06-18 - [Standardized Accessibility and Password Visibility in V2 Auth Forms]
+**Learning:** In V2 authentication flows, maintaining feature parity between Login, Signup, and Forgot Password pages—specifically regarding password visibility toggles and label-input associations—ensures a predictable and accessible user experience. Missing `id` and `htmlFor` attributes on inputs breaks screen reader navigation even if the layout looks correct.
+**Action:** Always audit the full authentication suite (Login, Signup, Recovery) for accessibility parity and ensure interactive password fields consistently offer visibility toggles.

@@ -35,7 +35,7 @@ const V2ForgotPassword = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 16px'
           }}>
-            <i className="material-icons" style={{ fontSize: '40px' }}>lock_reset</i>
+            <i className="material-icons" style={{ fontSize: '40px' }} aria-hidden="true">lock_reset</i>
           </div>
           <h1 className="v2-headline-medium" style={{ color: 'var(--md-sys-color-primary)' }}>Recuperar Acceso</h1>
           <p className="v2-body-large" style={{ opacity: 0.7 }}>
@@ -48,8 +48,9 @@ const V2ForgotPassword = () => {
         {!submitted ? (
           <form onSubmit={handleResetRequest} style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
             <div className="v2-input-outlined">
-              <label>Correo Electrónico</label>
+              <label htmlFor="email">Correo Electrónico</label>
               <input
+                id="email"
                 type="email"
                 placeholder="doctor@medical.com"
                 value={email}
@@ -60,7 +61,7 @@ const V2ForgotPassword = () => {
 
             <button type="submit" className="v2-btn-filled" style={{ justifyContent: 'center', height: '56px' }} disabled={loading}>
               {loading ? 'Procesando...' : 'Enviar Instrucciones'}
-              {!loading && <i className="material-icons">send</i>}
+              {!loading && <i className="material-icons" aria-hidden="true">send</i>}
             </button>
           </form>
         ) : (
