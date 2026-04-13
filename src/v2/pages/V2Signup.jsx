@@ -3,6 +3,7 @@ import { useHistory, Link } from 'react-router-dom';
 import UserService from '../../services/UserService';
 import Auth from '../../modules/Auth';
 import { alertError } from '../../services/AlertService';
+import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
 const V2Signup = () => {
@@ -12,6 +13,7 @@ const V2Signup = () => {
     username: '',
     password: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
@@ -61,56 +63,103 @@ const V2Signup = () => {
 
         <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left' }}>
           <div className="v2-input-outlined">
-            <label>Nombre Completo</label>
+            <label htmlFor="name">Nombre Completo</label>
+            <i className="material-icons" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--md-sys-color-outline)', marginTop: '12px' }} aria-hidden="true">person</i>
             <input
+              id="name"
               type="text"
               name="name"
               placeholder="Dr. García"
               value={formData.name}
               onChange={handleChange}
               required
+              aria-required="true"
+              style={{ paddingLeft: '48px' }}
             />
           </div>
 
           <div className="v2-input-outlined">
-            <label>Correo Electrónico</label>
+            <label htmlFor="email">Correo Electrónico</label>
+            <i className="material-icons" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--md-sys-color-outline)', marginTop: '12px' }} aria-hidden="true">mail</i>
             <input
+              id="email"
               type="email"
               name="email"
               placeholder="doctor@medical.com"
               value={formData.email}
               onChange={handleChange}
               required
+              aria-required="true"
+              style={{ paddingLeft: '48px' }}
             />
           </div>
 
           <div className="v2-input-outlined">
-            <label>Nombre de Usuario</label>
+            <label htmlFor="username">Nombre de Usuario</label>
+            <i className="material-icons" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--md-sys-color-outline)', marginTop: '12px' }} aria-hidden="true">badge</i>
             <input
+              id="username"
               type="text"
               name="username"
               placeholder="drgarcia"
               value={formData.username}
               onChange={handleChange}
               required
+              aria-required="true"
+              style={{ paddingLeft: '48px' }}
             />
           </div>
 
-          <div className="v2-input-outlined">
-            <label>Contraseña</label>
+          <div className="v2-input-outlined" style={{ position: 'relative' }}>
+            <label htmlFor="password">Contraseña</label>
+            <i className="material-icons" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--md-sys-color-outline)', marginTop: '12px' }} aria-hidden="true">lock</i>
             <input
-              type="password"
+              id="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
               required
+              aria-required="true"
+              style={{ paddingLeft: '48px', paddingRight: '48px' }}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--md-sys-color-outline)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '8px',
+                marginTop: '12px'
+              }}
+            >
+              <i className="material-icons">{showPassword ? 'visibility_off' : 'visibility'}</i>
+            </button>
           </div>
 
           <button type="submit" className="v2-btn-filled" style={{ justifyContent: 'center', height: '56px', marginTop: '8px' }} disabled={loading}>
-            {loading ? 'Creando cuenta...' : 'Registrarse'}
-            {!loading && <i className="material-icons">person_add</i>}
+            {loading ? (
+              <span className="valign-wrapper">
+                <CustomPreloader size="small" color="white" />
+                <span style={{ marginLeft: '12px' }}>Creando cuenta...</span>
+              </span>
+            ) : (
+              <>
+                Registrarse
+                <i className="material-icons" aria-hidden="true">person_add</i>
+              </>
+            )}
           </button>
         </form>
 
