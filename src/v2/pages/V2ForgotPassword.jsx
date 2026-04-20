@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { alertSuccess, alertError } from '../../services/AlertService';
+import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
 const V2ForgotPassword = () => {
@@ -48,19 +49,34 @@ const V2ForgotPassword = () => {
         {!submitted ? (
           <form onSubmit={handleResetRequest} style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
             <div className="v2-input-outlined">
-              <label>Correo Electrónico</label>
+              <label htmlFor="email">Correo Electrónico</label>
+              <i className="material-icons" aria-hidden="true" style={{
+                position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
+                color: 'var(--md-sys-color-outline)', marginTop: '8px'
+              }}>mail</i>
               <input
+                id="email"
                 type="email"
                 placeholder="doctor@medical.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                style={{ paddingLeft: '48px' }}
               />
             </div>
 
             <button type="submit" className="v2-btn-filled" style={{ justifyContent: 'center', height: '56px' }} disabled={loading}>
-              {loading ? 'Procesando...' : 'Enviar Instrucciones'}
-              {!loading && <i className="material-icons">send</i>}
+              {loading ? (
+                <span className="valign-wrapper" style={{ gap: '12px' }}>
+                  <CustomPreloader size="small" />
+                  Procesando...
+                </span>
+              ) : (
+                <>
+                  Enviar Instrucciones
+                  <i className="material-icons">send</i>
+                </>
+              )}
             </button>
           </form>
         ) : (
