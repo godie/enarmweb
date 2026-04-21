@@ -3,6 +3,7 @@ import { useHistory, Link } from 'react-router-dom';
 import UserService from '../../services/UserService';
 import Auth from '../../modules/Auth';
 import { alertError } from '../../services/AlertService';
+import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
 const V2Login = () => {
@@ -55,6 +56,10 @@ const V2Login = () => {
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
           <div className="v2-input-outlined">
             <label htmlFor="email">Correo Electrónico</label>
+            <i className="material-icons" aria-hidden="true" style={{
+              position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
+              color: 'var(--md-sys-color-outline)', marginTop: '8px'
+            }}>mail</i>
             <input
               id="email"
               type="email"
@@ -62,11 +67,16 @@ const V2Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              style={{ paddingLeft: '48px' }}
             />
           </div>
 
           <div className="v2-input-outlined" style={{ position: 'relative' }}>
             <label htmlFor="password">Contraseña</label>
+            <i className="material-icons" aria-hidden="true" style={{
+              position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
+              color: 'var(--md-sys-color-outline)', marginTop: '8px'
+            }}>lock</i>
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -74,7 +84,7 @@ const V2Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ paddingRight: '48px' }}
+              style={{ paddingLeft: '48px', paddingRight: '48px' }}
             />
             <button
               type="button"
@@ -107,8 +117,17 @@ const V2Login = () => {
           </div>
 
           <button type="submit" className="v2-btn-filled" style={{ justifyContent: 'center', height: '56px' }} disabled={loading}>
-            {loading ? 'Iniciando sesión...' : 'Entrar'}
-            {!loading && <i className="material-icons" aria-hidden="true">arrow_forward</i>}
+            {loading ? (
+              <span className="valign-wrapper" style={{ gap: '12px' }}>
+                <CustomPreloader size="small" />
+                Iniciando sesión...
+              </span>
+            ) : (
+              <>
+                Entrar
+                <i className="material-icons" aria-hidden="true">arrow_forward</i>
+              </>
+            )}
           </button>
         </form>
 
