@@ -95,14 +95,6 @@ jobs:
       - name: Ensure rsync is available
         run: sudo apt-get update && sudo apt-get install -y rsync
 
-      - name: Test SSH connectivity (debug)
-        env:
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-        run: |
-          ssh -v -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -p ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_HOST} "whoami; pwd"
-
       - name: Deploy with rsync and retries
         env:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
