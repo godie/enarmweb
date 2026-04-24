@@ -2157,16 +2157,27 @@ button:focus-visible,
   margin: 0 auto;
 }
 .v2-landing-specialties-grid {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px !important; /* Stronger separation between specialty cards */
 }
 .v2-landing-footer-content {
   /* Uses default flex-direction: row */
+}
+
+/* Desktop large (1200px-1399px): 3 columns */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .v2-landing-specialties-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px !important;
+  }
 }
 
 /* Tablet (768px-1023px): specialties 2 columns */
 @media (min-width: 768px) and (max-width: 1023px) {
   .v2-landing-specialties-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 20px !important;
   }
 }
 
@@ -2174,6 +2185,7 @@ button:focus-visible,
 @media (max-width: 767px) {
   .v2-landing-specialties-grid {
     grid-template-columns: 1fr;
+    gap: 16px !important;
   }
 }
 

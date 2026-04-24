@@ -10,7 +10,7 @@ const V2Landing = () => {
         <div className='v2-flex-col v2-gap-32'>
           <div className='v2-flex-align-center v2-gap-12 v2-bg-primary-container v2-fit-content' style={{ padding: '8px 24px', borderRadius: '40px' }}>
             <i className="material-icons">verified</i>
-            <span className="v2-label-large">PREPARACIÓN ELITE ENARM 2024</span>
+            <span className="v2-label-large">PREPARACIÓN ELITE ENARM 2026</span>
           </div>
 
           <h1 className='v2-display-large v2-text-bold' style={{ lineHeight: '1.1' }}>
