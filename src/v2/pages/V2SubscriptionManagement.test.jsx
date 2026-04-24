@@ -21,7 +21,7 @@ describe('V2SubscriptionManagement', () => {
 
     expect(screen.getByText('¿Estás seguro?')).toBeTruthy();
 
-    const confirmCancel = screen.getByText('Si, cancelar');
+    const confirmCancel = screen.getByText('Sí, cancelar');
     fireEvent.click(confirmCancel);
     expect(window.alert).toHaveBeenCalledWith("Suscripción cancelada correctamente.");
     expect(screen.queryByText('¿Estás seguro?')).toBeNull();

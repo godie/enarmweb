@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { alertSuccess } from '../../services/AlertService';
 import '../styles/v2-theme.css';
 
 const V2KnowledgeBase = () => {
@@ -49,16 +50,17 @@ const V2KnowledgeBase = () => {
     })).filter(cat => cat.topics.length > 0);
 
     return (
-        <div className="v2-knowledge-base-container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '32px' }}>
-                <h1 className="v2-headline-medium">Base de Conocimientos</h1>
-                <p className="v2-body-large" style={{ opacity: 0.7 }}>Consulta guías, esquemas y algoritmos actualizados</p>
+        <div className='v2-page-medium'>
+            <header className='v2-mb-32'>
+                <h1 className='v2-headline-medium'>Base de Conocimientos</h1>
+                <p className='v2-body-large v2-opacity-70'>Consulta guías, esquemas y algoritmos actualizados</p>
             </header>
 
             {/* Search */}
-            <div className="v2-input-outlined" style={{ marginBottom: '32px' }}>
-                <label>Buscar tema o guía</label>
+            <div className='v2-input-outlined v2-mb-32'>
+                <label htmlFor='kb-search'>Buscar tema o guía</label>
                 <input
+                    id='kb-search'
                     type="text"
                     placeholder="Ej. Diabetes, GPC, Vacunas..."
                     value={search}
@@ -67,16 +69,21 @@ const V2KnowledgeBase = () => {
             </div>
 
             {/* Categories List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className='v2-flex-col v2-gap-16'>
                 {filteredCategories.map(cat => (
-                    <section key={cat.id} className="v2-card" style={{ padding: '0', overflow: 'hidden' }}>
+                    <section key={cat.id} className='v2-card v2-p-0 v2-overflow-hidden'>
                         <div
-                            style={{ padding: '24px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                            className='v2-p-24 v2-cursor-pointer v2-flex-justify-between v2-flex-align-center'
                             onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
+                            role='button'
+                            tabIndex={0}
+                            aria-expanded={expandedCategory === cat.id}
+                            aria-label={cat.title}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedCategory(expandedCategory === cat.id ? null : cat.id); } }}
                         >
-                            <div style={{ flex: 1 }}>
-                                <h3 className="v2-title-large" style={{ margin: '0 0 4px 0' }}>{cat.title}</h3>
-                                <p className="v2-body-large" style={{ margin: 0, opacity: 0.6, fontSize: '14px' }}>{cat.description}</p>
+                            <div className='v2-flex-1'>
+                                <h3 className='v2-title-large v2-m-0 v2-mb-4'>{cat.title}</h3>
+                                <p className='v2-body-medium v2-opacity-60 v2-m-0'>{cat.description}</p>
                             </div>
                             <i className="material-icons" aria-hidden="true" style={{ transition: 'transform 0.3s', transform: expandedCategory === cat.id ? 'rotate(180deg)' : 'none' }}>
                                 expand_more
@@ -84,19 +91,23 @@ const V2KnowledgeBase = () => {
                         </div>
 
                         {expandedCategory === cat.id && (
-                            <div style={{ padding: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div style={{ padding: '0 24px 24px 24px' }} className='v2-flex-col v2-gap-8'>
                                 {cat.topics.map(topic => (
                                     <div
                                         key={topic.id}
-                                        className="v2-card-tonal"
+                                        className="v2-card-tonal v2-cursor-pointer"
                                         style={{
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'space-between',
                                             padding: '12px 16px',
-                                            borderRadius: '12px',
-                                            cursor: 'pointer'
+                                            borderRadius: '12px'
                                         }}
+                                        role='button'
+                                        tabIndex={0}
+                                        aria-label={`${topic.title} — próximamente`}
+                                        onClick={() => alertSuccess('Próximamente', `${topic.title} estará disponible pronto.`)}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alertSuccess('Próximamente', `${topic.title} estará disponible pronto.`); } }}
                                     >
                                         <span className="v2-body-large" style={{ fontSize: '15px' }}>{topic.title}</span>
                                         <i className="material-icons v2-text-primary" style={{ fontSize: '20px' }}>download</i>
@@ -109,7 +120,7 @@ const V2KnowledgeBase = () => {
             </div>
 
             {filteredCategories.length === 0 && (
-                <div style={{ textAlign: 'center', marginTop: '64px', opacity: 0.5 }}>
+                <div className='v2-text-center v2-opacity-50' style={{ marginTop: '64px' }}>
                     <i className="material-icons" aria-hidden="true" style={{ fontSize: '64px' }}>find_in_page</i>
                     <p className="v2-body-large">No se encontraron temas que coincidan con tu búsqueda</p>
                 </div>

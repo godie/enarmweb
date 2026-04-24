@@ -47,24 +47,8 @@ h6 {
   border-radius: 4px;
 }
 
-/* Layout adjusting for Fixed SideNav */
-header,
-main,
-footer,
-.navbar-fixed nav {
-  padding-left: 300px;
-}
-
-
-@media only screen and (max-width : 992px) {
-
-  header,
-  main,
-  footer,
-  .navbar-fixed nav {
-    padding-left: 0;
-  }
-}
+/* V2 layout handles its own spacing via .v2-content-wrapper (margin-left: 80px) */
+/* Legacy CSS padding-left removed to prevent conflicts with V2 pages */
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",

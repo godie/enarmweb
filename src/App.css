@@ -29,13 +29,8 @@
   border-radius: 8px;
 }
 
-@media only screen and (min-width: 993px) {
-
-  .dashboard header,
-  main {
-    padding-left: 300px;
-  }
-}
+/* V2 layout handles its own spacing via .v2-content-wrapper (margin-left: 80px) */
+/* Legacy CSS padding-left removed to prevent conflicts with V2 */
 
 .fb-login-btn {
   width: 100%;

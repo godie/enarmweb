@@ -95,14 +95,6 @@ jobs:
       - name: Ensure rsync is available
         run: sudo apt-get update && sudo apt-get install -y rsync
 
-      - name: Test SSH connectivity (debug)
-        env:
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-        run: |
-          ssh -v -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -p ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_HOST} "whoami; pwd"
-
       - name: Deploy with rsync and retries
         env:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
@@ -127,6 +119,24 @@ jobs:
             attempt=$((attempt + 1))
             sleep $((attempt * 5))
           done
+
+      - name: Verify .htaccess upload and fix permissions
+        env:
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+          REMOTE_TARGET: ${{ secrets.REMOTE_TARGET }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p ${REMOTE_PORT} -o IdentitiesOnly=yes -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
+            echo "=== Directory contents ==="
+            ls -la ${REMOTE_TARGET}/
+            echo ""
+            echo "=== .htaccess content ==="
+            cat ${REMOTE_TARGET}/.htaccess || echo 'NOT FOUND'
+            echo ""
+            echo "=== Fixing permissions ==="
+            chmod 644 ${REMOTE_TARGET}/.htaccess 2>/dev/null && echo 'Permissions set to 644' || echo 'No .htaccess to fix'
+          EOF
 
       - name: Clean up SSH key
         if: always()

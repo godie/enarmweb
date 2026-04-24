@@ -22,14 +22,14 @@ const V2NationalLeaderboard = () => {
     });
 
     return (
-        <div className="v2-leaderboard-container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '32px', textAlign: 'center' }}>
-                <h1 className="v2-headline-medium">Ranking Nacional</h1>
-                <p className="v2-body-large" style={{ opacity: 0.7 }}>Compite con médicos de todo el país</p>
+        <div className='v2-page-medium'>
+            <header className='v2-mb-32 v2-text-center'>
+                <h1 className='v2-headline-medium'>Ranking Nacional</h1>
+                <p className='v2-body-large v2-opacity-70'>Compite con médicos de todo el país</p>
             </header>
 
             {/* Period Selector */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
+            <div className='v2-flex v2-flex-justify-center v2-gap-8 v2-mb-32'>
                 {['weekly', 'monthly', 'all'].map(p => (
                     <button
                         key={p}
@@ -43,30 +43,27 @@ const V2NationalLeaderboard = () => {
             </div>
 
             {/* Current User Tonal Card */}
-            <section className="v2-card-tonal" style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
-                <div className="v2-title-large" style={{ width: '40px', fontWeight: 'bold' }}>#{data.currentUser.rank}</div>
+            <section className='v2-card-tonal v2-flex-align-center v2-gap-16 v2-mb-24' style={{ padding: '20px' }}>
+                <div className='v2-title-large v2-text-bold' style={{ width: '40px' }}>#{data.currentUser.rank}</div>
                 <img src={data.currentUser.avatar} alt="Avatar" style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
-                <div style={{ flex: 1 }}>
-                    <div className="v2-title-large">{data.currentUser.nickname}</div>
-                    <div className="v2-label-large" style={{ opacity: 0.8 }}>Tu posición actual</div>
+                <div className='v2-flex-1'>
+                    <div className='v2-title-large'>{data.currentUser.nickname}</div>
+                    <div className='v2-label-large v2-opacity-80'>Tu posición actual</div>
                 </div>
-                <div className="v2-title-large" style={{ color: 'var(--md-sys-color-primary)' }}>{data.currentUser.points} XP</div>
+                <div className='v2-title-large v2-text-primary'>{data.currentUser.points} XP</div>
             </section>
 
             {/* Top Players List */}
-            <section className="v2-card" style={{ padding: '8px' }}>
+            <section className='v2-card' style={{ padding: '8px' }}>
                 {data.topPlayers.map((player, index) => (
                     <div
                         key={player.rank}
+                        className='v2-flex-align-center v2-gap-16 v2-p-16'
                         style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            padding: '16px',
                             borderBottom: index === data.topPlayers.length - 1 ? 'none' : '1px solid var(--md-sys-color-outline-variant)'
                         }}
                     >
-                        <div style={{ width: '40px', display: 'flex', justifyContent: 'center' }}>
+                        <div style={{ width: '40px' }} className='v2-flex v2-flex-justify-center'>
                             {player.rank <= 3 ? (
                                 <i className="material-icons" aria-hidden="true" style={{
                                     color: player.rank === 1 ? '#ffd700' : player.rank === 2 ? '#c0c0c0' : '#cd7f32'
@@ -76,8 +73,8 @@ const V2NationalLeaderboard = () => {
                             )}
                         </div>
                         <img src={player.avatar} alt={player.nickname} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                        <div style={{ flex: 1 }} className="v2-body-large">{player.nickname}</div>
-                        <div className="v2-label-large" style={{ fontWeight: 'bold' }}>{player.points} XP</div>
+                        <div className='v2-flex-1 v2-body-large'>{player.nickname}</div>
+                        <div className='v2-label-large v2-text-bold'>{player.points} XP</div>
                     </div>
                 ))}
             </section>

@@ -69,6 +69,6 @@ describe('V2Navi', () => {
     );
 
     const logoLink = screen.getByLabelText('Ir al inicio');
-    expect(logoLink.getAttribute('href')).toBe('/v2/dashboard');
+    expect(logoLink.getAttribute('href')).toBe('/dashboard');
   });
 });

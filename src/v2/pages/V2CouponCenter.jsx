@@ -34,51 +34,49 @@ const V2CouponCenter = () => {
 
     return (
         <div className="v2-page-container">
-            <header style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
+            <header className='v2-page-header-back v2-gap-16'>
                 <button
-                    className="v2-btn-tonal"
+                    className='v2-btn-icon'
                     onClick={() => history.goBack()}
-                    style={{ borderRadius: '50%', width: '40px', height: '40px', padding: 0 }}
-                    aria-label="Volver"
+                    aria-label='Volver'
                 >
-                    <i className="material-icons" aria-hidden="true">arrow_back</i>
+                    <i className='material-icons' aria-hidden='true'>arrow_back</i>
                 </button>
                 <h1 className="v2-headline-small">Centro de Cupones</h1>
             </header>
 
             {loading ? (
-                <div className="center-align" style={{ padding: '40px' }}>
+                <div className='v2-center-state v2-p-40'>
                     <CustomPreloader color="green" size="big" />
                 </div>
             ) : error ? (
-                <div className="v2-card center-align" style={{ padding: '32px' }}>
-                    <i className="material-icons" style={{ fontSize: '48px', color: 'var(--md-sys-color-error)', marginBottom: '16px' }} aria-hidden="true">error_outline</i>
+                <div className='v2-card v2-text-center v2-p-32'>
+                    <i className='material-icons v2-error-icon v2-mb-16' aria-hidden='true'>error_outline</i>
                     <p className="v2-body-large">{error}</p>
                 </div>
             ) : coupons.length === 0 ? (
-                <div className="v2-card center-align" style={{ padding: '32px' }}>
-                    <i className="material-icons" style={{ fontSize: '48px', opacity: 0.5, marginBottom: '16px' }} aria-hidden="true">confirmation_number</i>
+                <div className='v2-card v2-text-center v2-p-32'>
+                    <i className='material-icons v2-opacity-50 v2-mb-16' style={{ fontSize: '48px' }} aria-hidden='true'>confirmation_number</i>
                     <p className="v2-body-large">No tienes cupones disponibles en este momento.</p>
                 </div>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+                <div className='v2-grid-auto-fill v2-gap-24' style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
                     {coupons.map(coupon => (
-                        <div key={coupon.id} className="v2-card" style={{ opacity: coupon.status === 'expired' ? 0.6 : 1, position: 'relative', overflow: 'hidden' }}>
+                        <div key={coupon.id} className='v2-card v2-position-relative v2-overflow-hidden' style={{ opacity: coupon.status === 'expired' ? 0.6 : 1 }}>
                             {coupon.status === 'expired' && (
-                                <div style={{ position: 'absolute', top: '10px', right: '-30px', background: 'var(--md-sys-color-error)', color: 'white', padding: '4px 40px', transform: 'rotate(45deg)', fontSize: '10px', fontWeight: 'bold' }}>
+                                <div style={{ position: 'absolute', top: '10px', right: '-30px', background: 'var(--md-sys-color-error)', color: 'var(--md-sys-color-on-error)', padding: '4px 40px', transform: 'rotate(45deg)', fontSize: '10px', fontWeight: 'bold' }}>
                                     EXPIRADO
                                 </div>
                             )}
-                            <div className="v2-title-large" style={{ color: 'var(--md-sys-color-primary)', marginBottom: '8px' }}>{coupon.discount} OFF</div>
-                            <div className="v2-label-large" style={{ marginBottom: '16px', letterSpacing: '2px', backgroundColor: 'var(--md-sys-color-surface-variant)', padding: '8px', borderRadius: '4px', textAlign: 'center', fontWeight: 'bold' }}>
+                            <div className='v2-title-large v2-text-primary v2-mb-8'>{coupon.discount} OFF</div>
+                            <div className='v2-label-large v2-mb-16 v2-text-center v2-text-bold v2-bg-surface-variant' style={{ letterSpacing: '2px', padding: '8px', borderRadius: '4px' }}>
                                 {coupon.code}
                             </div>
-                            <p className="v2-body-medium" style={{ marginBottom: '8px' }}>{coupon.description}</p>
-                            <div className="v2-label-small" style={{ opacity: 0.7 }}>Vence: {coupon.expires}</div>
+                            <p className='v2-body-medium v2-mb-8'>{coupon.description}</p>
+                            <div className='v2-label-small v2-opacity-70'>Vence: {coupon.expires}</div>
 
                             <button
-                                className="v2-btn-filled"
-                                style={{ width: '100%', marginTop: '24px' }}
+                                className='v2-btn-filled v2-btn-full v2-mt-24'
                                 disabled={coupon.status === 'expired'}
                                 onClick={() => copyToClipboard(coupon.code)}
                             >

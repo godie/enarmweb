@@ -15,5 +15,5 @@ export function AdminLogout() {
   useEffect(() => {
     Auth.deauthenticateUser();
   }, []);
-  return <Redirect to="/login" />;
+  return <Redirect to="/" />;
 }

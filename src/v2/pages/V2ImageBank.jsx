@@ -25,23 +25,24 @@ const V2ImageBank = () => {
 
     return (
         <div className="v2-image-bank-container">
-            <header style={{ marginBottom: '32px' }}>
-                <h1 className="v2-headline-medium">Banco de Imágenes</h1>
-                <p className="v2-body-large" style={{ opacity: 0.7 }}>Recursos visuales para tu estudio clínico</p>
+            <header className='v2-mb-32'>
+                <h1 className='v2-headline-medium'>Banco de Imágenes</h1>
+                <p className='v2-body-large v2-opacity-70'>Recursos visuales para tu estudio clínico</p>
             </header>
 
             {/* Search and Filter */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
+            <div className='v2-flex-col v2-gap-20 v2-mb-32'>
                 <div className="v2-input-outlined">
-                    <label>Buscar imagen</label>
+                    <label htmlFor='img-search'>Buscar imagen</label>
                     <input
+                        id='img-search'
                         type="text"
                         placeholder="Ej. Neumonía, EKG..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
+                <div className='v2-flex v2-gap-8' style={{ overflowX: 'auto', paddingBottom: '8px' }}>
                     {categories.map(cat => (
                         <button
                             key={cat}
@@ -56,20 +57,20 @@ const V2ImageBank = () => {
             </div>
 
             {/* Image Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '24px' }}>
+            <div className='v2-grid-auto-fill v2-gap-24'>
                 {filteredImages.map(img => (
-                    <div key={img.id} className="v2-card v2-card-elevated" style={{ padding: '0', overflow: 'hidden' }}>
+                    <div key={img.id} className='v2-card v2-card-elevated v2-p-0 v2-overflow-hidden'>
                         <img
                             src={img.url}
                             alt={img.title}
                             style={{ width: '100%', height: '180px', objectFit: 'cover' }}
                         />
-                        <div style={{ padding: '16px' }}>
-                            <span className="v2-label-large" style={{ color: 'var(--md-sys-color-primary)', display: 'block', marginBottom: '4px' }}>
+                        <div className='v2-p-16'>
+                            <span className='v2-label-large v2-text-primary' style={{ display: 'block', marginBottom: '4px' }}>
                                 {img.category}
                             </span>
-                            <h3 className="v2-title-large" style={{ fontSize: '18px', margin: '0 0 12px 0' }}>{img.title}</h3>
-                            <button className="v2-btn-tonal" style={{ width: '100%', justifyContent: 'center', fontSize: '14px' }}>
+                            <h3 className='v2-title-large v2-mb-12' style={{ fontSize: '18px', margin: 0 }}>{img.title}</h3>
+                            <button className='v2-btn-tonal v2-btn-full v2-btn-justify-center' style={{ fontSize: '14px' }}>
                                 Ver Detalle
                                 <i className="material-icons" aria-hidden="true" style={{ fontSize: '18px' }}>open_in_new</i>
                             </button>
@@ -79,7 +80,7 @@ const V2ImageBank = () => {
             </div>
 
             {filteredImages.length === 0 && (
-                <div style={{ textAlign: 'center', marginTop: '64px', opacity: 0.5 }}>
+                <div className='v2-text-center v2-opacity-50' style={{ marginTop: '64px' }}>
                     <i className="material-icons" aria-hidden="true" style={{ fontSize: '64px' }}>search_off</i>
                     <p className="v2-body-large">No se encontraron imágenes que coincidan con tu búsqueda</p>
                 </div>

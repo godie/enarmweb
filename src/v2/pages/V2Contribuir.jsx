@@ -18,22 +18,23 @@ const V2Contribuir = () => {
     };
 
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '32px' }}>
-                <h1 className="v2-headline-medium">Contribuir Caso Clínico</h1>
-                <p className="v2-body-large" style={{ opacity: 0.7 }}>Tu aporte mejora la preparación de miles de colegas aspirantes.</p>
+        <div className='v2-page-container'>
+            <header className='v2-mb-32'>
+                <h1 className='v2-headline-medium'>Contribuir Caso Clínico</h1>
+                <p className='v2-body-large v2-opacity-70'>Tu aporte mejora la preparación de miles de colegas aspirantes.</p>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' }}>
+            <div className='v2-grid v2-gap-24' style={{ gridTemplateColumns: '1.5fr 1fr' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <section className="v2-card">
-                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
-                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>description</i>
+                        <h2 className='v2-title-large v2-mb-20'>
+                            <i className='material-icons' style={{ verticalAlign: 'middle', marginRight: '8px' }}>description</i>
                             Escenario Clínico
-                        </h3>
+                        </h2>
                         <div className="v2-input-outlined" style={{ marginTop: '0' }}>
-                            <label>Descripción detallada</label>
+                            <label htmlFor='caso-input'>Descripción detallada</label>
                             <textarea
+                                id='caso-input'
                                 style={{ minHeight: '180px' }}
                                 placeholder="Paciente masculino de 45 años..."
                                 value={form.caso}
@@ -43,13 +44,14 @@ const V2Contribuir = () => {
                     </section>
 
                     <section className="v2-card">
-                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
-                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>quiz</i>
+                        <h2 className='v2-title-large v2-mb-20'>
+                            <i className='material-icons' style={{ verticalAlign: 'middle', marginRight: '8px' }}>quiz</i>
                             La Pregunta
-                        </h3>
+                        </h2>
                         <div className="v2-input-outlined" style={{ marginTop: '0' }}>
-                            <label>Pregunta diagnóstica/terapéutica</label>
+                            <label htmlFor='pregunta-input'>Pregunta diagnóstica/terapéutica</label>
                             <input
+                                id='pregunta-input'
                                 placeholder="¿Cuál es el siguiente paso?"
                                 value={form.pregunta}
                                 onChange={(e) => handleChange('pregunta', e.target.value)}
@@ -60,13 +62,13 @@ const V2Contribuir = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <section className="v2-card">
-                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
-                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>list</i>
+                        <h2 className='v2-title-large v2-mb-20'>
+                            <i className='material-icons' style={{ verticalAlign: 'middle', marginRight: '8px' }}>list</i>
                             Opciones de Respuesta
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        </h2>
+                        <div className='v2-flex-col v2-gap-12'>
                             {form.opciones.map((op, idx) => (
-                                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div key={idx} className='v2-flex-align-center v2-gap-12'>
                                     <input
                                         type="radio"
                                         checked={form.correcta === idx}
@@ -87,13 +89,14 @@ const V2Contribuir = () => {
                     </section>
 
                     <section className="v2-card">
-                        <h3 className="v2-title-large" style={{ marginBottom: '20px' }}>
-                            <i className="material-icons" style={{ verticalAlign: 'middle', marginRight: '8px' }}>lightbulb</i>
+                        <h2 className='v2-title-large v2-mb-20'>
+                            <i className='material-icons' style={{ verticalAlign: 'middle', marginRight: '8px' }}>lightbulb</i>
                             Perla Médica
-                        </h3>
+                        </h2>
                         <div className="v2-input-outlined" style={{ marginTop: '0' }}>
-                            <label>Justificación académica</label>
+                            <label htmlFor='perla-input'>Justificación académica</label>
                             <textarea
+                                id='perla-input'
                                 style={{ minHeight: '100px' }}
                                 placeholder="Explica por qué la respuesta es correcta..."
                                 value={form.perla}
@@ -102,7 +105,7 @@ const V2Contribuir = () => {
                         </div>
                     </section>
 
-                    <button className="v2-btn-filled" style={{ height: '56px', width: '100%', justifyContent: 'center' }}>
+                    <button className='v2-btn-filled v2-btn-h-56 v2-btn-full v2-btn-justify-center'>
                         Enviar para Revisión
                         <i className="material-icons">send</i>
                     </button>
