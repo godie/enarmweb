@@ -28,3 +28,6 @@ serve.log
 npm_output.log
 serve_output.log
 lighthouse-report*.json
+
+# Local deploy test artifacts
+.test-deploy-target/

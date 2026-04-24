@@ -128,6 +128,24 @@ jobs:
             sleep $((attempt * 5))
           done
 
+      - name: Verify .htaccess upload and fix permissions
+        env:
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+          REMOTE_TARGET: ${{ secrets.REMOTE_TARGET }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p ${REMOTE_PORT} -o IdentitiesOnly=yes -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
+            echo "=== Directory contents ==="
+            ls -la ${REMOTE_TARGET}/
+            echo ""
+            echo "=== .htaccess content ==="
+            cat ${REMOTE_TARGET}/.htaccess || echo 'NOT FOUND'
+            echo ""
+            echo "=== Fixing permissions ==="
+            chmod 644 ${REMOTE_TARGET}/.htaccess 2>/dev/null && echo 'Permissions set to 644' || echo 'No .htaccess to fix'
+          EOF
+
       - name: Clean up SSH key
         if: always()
         run: shred -u ~/.ssh/deploy_key || rm -f ~/.ssh/deploy_key
