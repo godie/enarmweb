@@ -1,114 +1,123 @@
 import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
 import React from 'react';
-// Import React at the top
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import AppRoutes from './AppRoutes';
 
 // --- Mock Control Variables ---
-// Using var for hoisting compatibility with vi.mock factory functions
 var mockIsAuthenticated = true;
-var mockIsFacebookAuthenticated = true;
 
-// --- Helper function (defined outside mocks) ---
-// This function will be called by the PrivateRoute/FacebookRoute mocks
-// We define it here hoping to bypass babel-plugin-jest-hoist issues with React.isValidElement
-// Renamed to start with "mock" to satisfy babel-plugin-jest-hoist
+// --- Helper function ---
 const mockRenderComponentOrElement = (ComponentOrElement, props) => {
   if (React.isValidElement(ComponentOrElement)) {
-    return ComponentOrElement; // It's already an element
+    return ComponentOrElement;
   }
   if (typeof ComponentOrElement === 'function' || (typeof ComponentOrElement === 'object' && ComponentOrElement !== null && ComponentOrElement.$$typeof === Symbol.for('react.lazy'))) {
-    // It's a component type (function, class, or React.lazy)
     return <ComponentOrElement {...props} />;
   }
-  // If it's neither, it's problematic, but we'll return null or a placeholder
-  // to avoid crashing the test runner, and the test will likely fail on assertions.
-  console.warn('Invalid component prop passed to mocked PrivateRoute/FacebookRoute:', ComponentOrElement);
+  console.warn('Invalid component prop passed to mocked route guard:', ComponentOrElement);
   return <div data-testid="invalid-component-prop-mock">Invalid Prop</div>;
 };
 
-
 // --- Mock Auth Module ---
-vi.mock('../modules/Auth', () => {
-  return {
-    default: {
-      isUserAuthenticated: vi.fn(() => mockIsAuthenticated),
-      isPlayerAuthenticated: vi.fn(() => mockIsAuthenticated),
-      isFacebookAuthenticated: vi.fn(() => mockIsFacebookAuthenticated),
-      getToken: vi.fn().mockReturnValue('fake-token'),
-      authenticateUser: vi.fn(),
-      deauthenticateUser: vi.fn(),
-      isFacebookUser: vi.fn().mockReturnValue(false),
-      getFacebookUser: vi.fn().mockReturnValue(null),
-      removeFacebookUser: vi.fn(),
-      getUserInfo: vi.fn().mockReturnValue(null),
-      getPlayerInfo: vi.fn().mockReturnValue(null),
-      isAdmin: vi.fn().mockReturnValue(false),
-    }
-  };
-});
-
-// --- Mock Leaf Components ---
-vi.mock('../components/Examen', () => ({ default: () => <div data-testid="examen-mock">Examen Component</div> }));
-vi.mock('../components/admin/CasoTable', () => ({ default: () => <div data-testid="casotable-mock">CasoTable Component</div> }));
-vi.mock('../components/admin/CasoContainer', () => ({ default: () => <div data-testid="casocontainer-mock">CasoContainer Component</div> }));
-vi.mock('../components/Login', () => ({ default: () => <div data-testid="login-mock">Login Component</div> }));
-vi.mock('../components/facebook/FacebookLoginContainer', () => ({ default: () => <div data-testid="fb-login-container-mock">FacebookLoginContainer Component</div> }));
-vi.mock('../components/Profile', () => ({ default: () => <div data-testid="profile-mock">Profile Component</div> }));
-vi.mock('../components/Logout', () => ({
-  default: () => <div data-testid="logout-mock">Logout Component</div>,
-  AdminLogout: () => <div data-testid="admin-logout-mock">AdminLogout Component</div>,
+vi.mock('../modules/Auth', () => ({
+  default: {
+    isUserAuthenticated: vi.fn(() => mockIsAuthenticated),
+    isPlayerAuthenticated: vi.fn(() => mockIsAuthenticated),
+    isFacebookAuthenticated: vi.fn(() => mockIsAuthenticated),
+    getToken: vi.fn().mockReturnValue('fake-token'),
+    authenticateUser: vi.fn(),
+    deauthenticateUser: vi.fn(),
+    isFacebookUser: vi.fn().mockReturnValue(false),
+    getFacebookUser: vi.fn().mockReturnValue(null),
+    removeFacebookUser: vi.fn(),
+    getUserInfo: vi.fn().mockReturnValue(null),
+    getPlayerInfo: vi.fn().mockReturnValue(null),
+    isAdmin: vi.fn().mockReturnValue(false),
+  }
 }));
-vi.mock('../components/admin/Especialidades', () => ({ default: () => <div data-testid="especialidades-mock">Especialidades Component</div> }));
-vi.mock('../components/admin/EspecialidadForm', () => ({ default: () => <div data-testid="especialidadform-mock">EspecialidadForm Component</div> }));
-vi.mock('../components/admin/Onboarding', () => ({ default: () => <div data-testid="onboarding-mock">Onboarding Component</div> }));
-vi.mock('../components/PlayerDashboard', () => ({ default: () => <div data-testid="playerdashboard-mock">PlayerDashboard Component</div> }));
-vi.mock('../components/admin/Summary', () => ({ default: () => <div data-testid="summary-mock">Summary Component</div> }));
-//vi.mock('../components/admin/Dashboard', () => ({ default: (props) => <div data-testid="dashboard-mock">{props.children}</div> }));
 
-// --- Mock Specific Materialize Components ---
-// Mock SideNav from react-materialize to prevent 'destroy' error
+// --- Mock V2 Public Pages ---
+vi.mock('../v2/pages/V2Landing', () => ({ default: () => <div data-testid="v2-landing-mock">V2Landing</div> }));
+vi.mock('../v2/pages/V2Login', () => ({ default: () => <div data-testid="v2-login-mock">V2Login</div> }));
+vi.mock('../v2/pages/V2Signup', () => ({ default: () => <div data-testid="v2-signup-mock">V2Signup</div> }));
+vi.mock('../v2/pages/V2ForgotPassword', () => ({ default: () => <div data-testid="v2-forgot-password-mock">V2ForgotPassword</div> }));
+
+// --- Mock V2 Player Pages ---
+vi.mock('../v2/pages/V2PlayerDashboard', () => ({ default: () => <div data-testid="v2-dashboard-mock">V2PlayerDashboard</div> }));
+vi.mock('../v2/pages/V2Examen', () => ({ default: () => <div data-testid="v2-examen-mock">V2Examen</div> }));
+vi.mock('../v2/pages/V2Profile', () => ({ default: () => <div data-testid="v2-profile-mock">V2Profile</div> }));
+vi.mock('../v2/pages/V2PracticaLanding', () => ({ default: () => <div data-testid="v2-practica-mock">V2PracticaLanding</div> }));
+vi.mock('../v2/pages/V2Contribuir', () => ({ default: () => <div data-testid="v2-contribuir-mock">V2Contribuir</div> }));
+vi.mock('../v2/pages/V2MisContribuciones', () => ({ default: () => <div data-testid="v2-mis-contribuciones-mock">V2MisContribuciones</div> }));
+vi.mock('../v2/pages/V2Onboarding', () => ({ default: () => <div data-testid="v2-onboarding-mock">V2Onboarding</div> }));
+vi.mock('../v2/pages/V2MockExamSetup', () => ({ default: () => <div data-testid="v2-simulacro-mock">V2MockExamSetup</div> }));
+vi.mock('../v2/pages/V2SessionSummary', () => ({ default: () => <div data-testid="v2-session-mock">V2SessionSummary</div> }));
+vi.mock('../v2/pages/V2NationalLeaderboard', () => ({ default: () => <div data-testid="v2-leaderboard-mock">V2NationalLeaderboard</div> }));
+vi.mock('../v2/pages/V2ImageBank', () => ({ default: () => <div data-testid="v2-imagenes-mock">V2ImageBank</div> }));
+vi.mock('../v2/pages/V2FlashcardStudy', () => ({ default: () => <div data-testid="v2-flashcards-repaso-mock">V2FlashcardStudy</div> }));
+vi.mock('../v2/pages/V2KnowledgeBase', () => ({ default: () => <div data-testid="v2-biblioteca-mock">V2KnowledgeBase</div> }));
+vi.mock('../v2/pages/V2ErrorReview', () => ({ default: () => <div data-testid="v2-errores-mock">V2ErrorReview</div> }));
+vi.mock('../v2/pages/V2PublicProfile', () => ({ default: () => <div data-testid="v2-public-profile-mock">V2PublicProfile</div> }));
+vi.mock('../v2/pages/V2Checkout', () => ({ default: () => <div data-testid="v2-checkout-mock">V2Checkout</div> }));
+vi.mock('../v2/pages/V2CaseStudy', () => ({ default: () => <div data-testid="v2-caso-estudio-mock">V2CaseStudy</div> }));
+vi.mock('../v2/pages/V2DirectMessaging', () => ({ default: () => <div data-testid="v2-mensajes-mock">V2DirectMessaging</div> }));
+vi.mock('../v2/pages/V2SubscriptionManagement', () => ({ default: () => <div data-testid="v2-suscripcion-mock">V2SubscriptionManagement</div> }));
+vi.mock('../v2/pages/V2CouponCenter', () => ({ default: () => <div data-testid="v2-cupones-mock">V2CouponCenter</div> }));
+vi.mock('../v2/pages/V2FlashcardCreator', () => ({ default: () => <div data-testid="v2-flashcards-crear-mock">V2FlashcardCreator</div> }));
+vi.mock('../v2/pages/V2AIFlashcardGenerator', () => ({ default: () => <div data-testid="v2-flashcards-generar-mock">V2AIFlashcardGenerator</div> }));
+
+// --- Mock V2 Admin Pages ---
+vi.mock('../v2/pages/V2AdminDashboard', () => ({ default: () => <div data-testid="v2-admin-mock">V2AdminDashboard</div> }));
+vi.mock('../v2/pages/V2AdminUsers', () => ({ default: () => <div data-testid="v2-admin-users-mock">V2AdminUsers</div> }));
+
+// --- Mock V2 Layout ---
+vi.mock('../v2/layouts/V2App', () => ({ default: ({ children }) => <div data-testid="v2-app-mock">{children}</div> }));
+
+// --- Mock V1 Admin Components (still used by /dashboard routes) ---
+vi.mock('../components/admin/CasoTable', () => ({ default: () => <div data-testid="casotable-mock">CasoTable</div> }));
+vi.mock('../components/admin/CasoContainer', () => ({ default: () => <div data-testid="casocontainer-mock">CasoContainer</div> }));
+vi.mock('../components/admin/Especialidades', () => ({ default: () => <div data-testid="especialidades-mock">Especialidades</div> }));
+vi.mock('../components/admin/EspecialidadForm', () => ({ default: () => <div data-testid="especialidadform-mock">EspecialidadForm</div> }));
+vi.mock('../components/admin/Summary', () => ({ default: () => <div data-testid="summary-mock">Summary</div> }));
+
+// --- Mock Other Components ---
+vi.mock('../components/Logout', () => ({
+  default: () => <div data-testid="logout-mock">Logout</div>,
+  AdminLogout: () => <div data-testid="admin-logout-mock">AdminLogout</div>,
+}));
+vi.mock('../pages/Player/FlashcardCreate', () => ({ default: () => <div data-testid="flashcardcreate-mock">FlashcardCreate</div> }));
 vi.mock('../components/custom', async () => {
   const actualMaterialize = await vi.importActual('../components/custom');
   return {
     ...actualMaterialize,
     CustomSideNav: (props) => <div data-testid="mock-sidenav">{props.trigger}{props.children}</div>,
-    // Add other components if they cause similar issues, e.g., Modal, Tooltip
-    Modal: (props) => <div data-testid="mock-modal">{props.trigger}{props.children}</div>,
-    Tooltip: (props) => <div data-testid="mock-tooltip">{props.children}</div>,
-    Dropdown: (props) => <div data-testid="mock-dropdown">{props.trigger}{props.children}</div>,
-    SideNavItem: (props) => <a href={props.href}>{props.children}</a>, // Make it a simple link
-    Button: (props) => <button className={props.className} href={props.href} onClick={props.onClick}>{props.icon || props.children}</button>,
-    Icon: (props) => <i className="material-icons">{props.children}</i>,
-    TextInput: (props) => <input type={props.password ? 'password' : 'text'} aria-label={props.label} onChange={props.onChange} />,
+    ScrollToTop: () => null,
   };
 });
 
-
-// --- Mocks for Protected Route Components ---
+// --- Mock Route Guards ---
 vi.mock('./PrivateRoute', () => ({
   default: (props) => {
-    const { component, ...rest } = props; // component prop might be Component type or element
+    const { component, ...rest } = props;
     if (mockIsAuthenticated) {
-      return mockRenderComponentOrElement(component, rest); // Use renamed helper
+      return mockRenderComponentOrElement(component, rest);
     }
     return <div data-testid="private-route-redirect">Redirected by PrivateRoute</div>;
   }
 }));
 
-vi.mock('../components/facebook/FacebookRoute', () => ({
+vi.mock('../components/PlayerRoute', () => ({
   default: (props) => {
     const { component, ...rest } = props;
-    if (mockIsFacebookAuthenticated) {
-      return mockRenderComponentOrElement(component, rest); // Use renamed helper
+    if (mockIsAuthenticated) {
+      return mockRenderComponentOrElement(component, rest);
     }
-    return <div data-testid="fb-route-redirect">Redirected by FacebookRoute</div>;
+    return <div data-testid="player-route-redirect">Redirected by PlayerRoute</div>;
   }
 }));
 
 // --- Global Materialize M object mock ---
-// This needs to be available globally for components that might call M.method()
 global.M = {
   Sidenav: {
     init: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
@@ -127,7 +136,7 @@ global.M = {
     getInstance: vi.fn().mockReturnValue({ destroy: vi.fn(), open: vi.fn(), close: vi.fn() }),
   },
   updateTextFields: vi.fn(),
-  validate_field: vi.fn(), // From Login.test.js
+  validate_field: vi.fn(),
 };
 
 
@@ -142,13 +151,14 @@ describe('AppRoutes', () => {
 
   beforeEach(async () => {
     mockIsAuthenticated = true;
-    mockIsFacebookAuthenticated = true;
 
     const { default: AuthMock } = await import('../modules/Auth');
     vi.mocked(AuthMock.isUserAuthenticated).mockImplementation(() => mockIsAuthenticated);
-    vi.mocked(AuthMock.isFacebookAuthenticated).mockImplementation(() => mockIsFacebookAuthenticated);
+    vi.mocked(AuthMock.isPlayerAuthenticated).mockImplementation(() => mockIsAuthenticated);
+    vi.mocked(AuthMock.isFacebookAuthenticated).mockImplementation(() => mockIsAuthenticated);
     vi.mocked(AuthMock.isFacebookUser).mockImplementation(() => false);
     vi.mocked(AuthMock.getFacebookUser).mockImplementation(() => null);
+    vi.mocked(AuthMock.isAdmin).mockImplementation(() => false);
 
     const methodsToClear = [
       AuthMock.getToken, AuthMock.authenticateUser, AuthMock.deauthenticateUser,
@@ -156,7 +166,6 @@ describe('AppRoutes', () => {
     ];
     methodsToClear.forEach(mockFn => { if (mockFn && mockFn.mockClear) mockFn.mockClear(); });
 
-    // Clear calls to global.M methods
     Object.values(global.M).forEach(service => {
       if (typeof service === 'object' && service !== null) {
         Object.values(service).forEach(method => {
@@ -171,114 +180,148 @@ describe('AppRoutes', () => {
     window.location = { reload: vi.fn(), assign: vi.fn(), replace: vi.fn(), href: '' };
   });
 
-  afterEach(() => {
-    // Restore original window.location if necessary, or ensure it's clean for next test file
-  });
+  afterEach(() => {});
 
-  // --- Tests from before, should mostly work if element type issue is handled ---
-  it('renders FacebookLoginContainer for /loginfb', async () => {
-    renderWithRouter(['/loginfb']);
-    await waitFor(() => expect(screen.getByTestId('fb-login-container-mock')).toBeInTheDocument());
-  });
-
-  it('renders Login component for /admin', async () => {
-    renderWithRouter(['/admin']);
-    await waitFor(() => expect(screen.getByTestId('login-mock')).toBeInTheDocument());
-  });
-
-  it('renders Logout component for /logout', async () => {
-    renderWithRouter(['/logout']);
-    await waitFor(() => expect(screen.getByTestId('logout-mock')).toBeInTheDocument());
-  });
-
-  it('renders AdminLogout component for /dashboard/logout', async () => {
-    renderWithRouter(['/dashboard/logout']);
-    await waitFor(() => expect(screen.getByTestId('admin-logout-mock')).toBeInTheDocument());
-  });
-
-  describe('Facebook Protected Routes', () => {
-    it('renders Examen component for / when Facebook authenticated', async () => {
-      mockIsFacebookAuthenticated = true;
+  // ── Public Routes ──
+  describe('Public Routes', () => {
+    it('renders V2Landing for / when not authenticated', async () => {
+      mockIsAuthenticated = false;
       renderWithRouter(['/']);
-      await waitFor(() => expect(screen.getByTestId('playerdashboard-mock')).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByTestId('v2-landing-mock')).toBeInTheDocument());
     });
 
-    it('shows redirect content for / when not Facebook authenticated', async () => {
-      mockIsFacebookAuthenticated = false;
+    it('redirects authenticated users from / to /dashboard', async () => {
+      mockIsAuthenticated = true;
       renderWithRouter(['/']);
-      await waitFor(() => expect(screen.getByTestId('playerdashboard-mock')).toBeInTheDocument());
-      expect(screen.queryByTestId('examen-mock')).not.toBeInTheDocument();
+      await waitFor(() => expect(screen.getByTestId('v2-dashboard-mock')).toBeInTheDocument());
     });
 
-    it('renders Examen component for /caso/:identificador when Facebook authenticated', async () => {
-      mockIsFacebookAuthenticated = true;
-      renderWithRouter(['/caso/some-case-id']);
-      await waitFor(() => expect(screen.getByTestId('examen-mock')).toBeInTheDocument());
+    it('renders V2Login for /login', async () => {
+      renderWithRouter(['/login']);
+      await waitFor(() => expect(screen.getByTestId('v2-login-mock')).toBeInTheDocument());
     });
 
-    it('renders Profile component for /perfil when Facebook authenticated', async () => {
-      mockIsFacebookAuthenticated = true;
-      renderWithRouter(['/perfil']);
-      await waitFor(() => expect(screen.getByTestId('profile-mock')).toBeInTheDocument());
+    it('renders V2Signup for /signup', async () => {
+      renderWithRouter(['/signup']);
+      await waitFor(() => expect(screen.getByTestId('v2-signup-mock')).toBeInTheDocument());
+    });
+
+    it('renders V2ForgotPassword for /forgot-password', async () => {
+      renderWithRouter(['/forgot-password']);
+      await waitFor(() => expect(screen.getByTestId('v2-forgot-password-mock')).toBeInTheDocument());
+    });
+
+    it('renders Logout for /logout', async () => {
+      renderWithRouter(['/logout']);
+      await waitFor(() => expect(screen.getByTestId('logout-mock')).toBeInTheDocument());
+    });
+
+    it('renders AdminLogout for /dashboard/logout', async () => {
+      renderWithRouter(['/dashboard/logout']);
+      await waitFor(() => expect(screen.getByTestId('admin-logout-mock')).toBeInTheDocument());
     });
   });
 
-  describe('Admin Protected Routes (PrivateRoute)', () => {
-    it('renders Dashboard with CasoTable for /dashboard when authenticated', async () => {
+  // ── Player Protected Routes ──
+  describe('Player Protected Routes', () => {
+    it('renders V2PlayerDashboard for /dashboard when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard']);
-      await waitFor(() => expect(screen.getByTestId('summary-mock')).toBeInTheDocument());
-      // Check if our mock SideNav is rendered as part of Dashboard
-      expect(screen.getByTestId('mock-sidenav')).toBeInTheDocument();
+      await waitFor(() => expect(screen.getByTestId('v2-dashboard-mock')).toBeInTheDocument());
     });
 
-    it('shows redirect content for /dashboard when not authenticated', async () => {
+    it('shows redirect for /dashboard when not authenticated', async () => {
       mockIsAuthenticated = false;
       renderWithRouter(['/dashboard']);
-      await waitFor(() => expect(screen.getByTestId('private-route-redirect')).toBeInTheDocument());
-      expect(screen.queryByTestId('casotable-mock')).not.toBeInTheDocument();
+      await waitFor(() => expect(screen.getByTestId('player-route-redirect')).toBeInTheDocument());
     });
 
-    it('renders Dashboard with CasoTable for /dashboard/casos/:page', async () => {
+    it('renders V2Examen for /caso/:identificador when authenticated', async () => {
+      mockIsAuthenticated = true;
+      renderWithRouter(['/caso/some-case-id']);
+      await waitFor(() => expect(screen.getByTestId('v2-examen-mock')).toBeInTheDocument());
+    });
+
+    it('renders V2Profile for /perfil when authenticated', async () => {
+      mockIsAuthenticated = true;
+      renderWithRouter(['/perfil']);
+      await waitFor(() => expect(screen.getByTestId('v2-profile-mock')).toBeInTheDocument());
+    });
+
+    it('renders V2PracticaLanding for /practica when authenticated', async () => {
+      mockIsAuthenticated = true;
+      renderWithRouter(['/practica']);
+      await waitFor(() => expect(screen.getByTestId('v2-practica-mock')).toBeInTheDocument());
+    });
+  });
+
+  // ── V1 Admin Routes (temporary) ──
+  describe('V1 Admin Protected Routes (PrivateRoute)', () => {
+    it('renders Dashboard with CasoTable for /dashboard/casos/:page when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard/casos/2']);
       await waitFor(() => expect(screen.getByTestId('casotable-mock')).toBeInTheDocument());
     });
 
-    it('renders Dashboard with CasoContainer for /dashboard/edit/caso/:identificador', async () => {
+    it('renders Dashboard with CasoContainer for /dashboard/edit/caso/:identificador when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard/edit/caso/case123']);
       await waitFor(() => expect(screen.getByTestId('casocontainer-mock')).toBeInTheDocument());
     });
 
-    it('renders Dashboard with CasoContainer for /dashboard/new/caso', async () => {
+    it('renders Dashboard with CasoContainer for /dashboard/new/caso when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard/new/caso']);
       await waitFor(() => expect(screen.getByTestId('casocontainer-mock')).toBeInTheDocument());
     });
 
-    it('renders Dashboard with Especialidades for /dashboard/especialidades', async () => {
+    it('renders Dashboard with Especialidades for /dashboard/especialidades when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard/especialidades']);
       await waitFor(() => expect(screen.getByTestId('especialidades-mock')).toBeInTheDocument());
     });
 
-    it('renders Dashboard with EspecialidadForm for /dashboard/new/especialidad', async () => {
+    it('renders Dashboard with EspecialidadForm for /dashboard/new/especialidad when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard/new/especialidad']);
       await waitFor(() => expect(screen.getByTestId('especialidadform-mock')).toBeInTheDocument());
     });
 
-    it('renders Dashboard with EspecialidadForm for /dashboard/edit/especialidad/:identificador', async () => {
+    it('renders Dashboard with EspecialidadForm for /dashboard/edit/especialidad/:identificador when authenticated', async () => {
       mockIsAuthenticated = true;
       renderWithRouter(['/dashboard/edit/especialidad/esp123']);
       await waitFor(() => expect(screen.getByTestId('especialidadform-mock')).toBeInTheDocument());
     });
   });
 
-  it('redirects to / for an unknown route, then renders content for /', async () => {
-    mockIsFacebookAuthenticated = true;
+  // ── Redirects from old paths ──
+  describe('Old Path Redirects', () => {
+    it('redirects /v2/login to /login', async () => {
+      renderWithRouter(['/v2/login']);
+      await waitFor(() => expect(screen.getByTestId('v2-login-mock')).toBeInTheDocument());
+    });
+
+    it('redirects /v2/dashboard to /dashboard', async () => {
+      mockIsAuthenticated = true;
+      renderWithRouter(['/v2/dashboard']);
+      await waitFor(() => expect(screen.getByTestId('v2-dashboard-mock')).toBeInTheDocument());
+    });
+
+    it('redirects /v2/signup to /signup', async () => {
+      renderWithRouter(['/v2/signup']);
+      await waitFor(() => expect(screen.getByTestId('v2-signup-mock')).toBeInTheDocument());
+    });
+
+    it('redirects /loginfb to /login', async () => {
+      renderWithRouter(['/loginfb']);
+      await waitFor(() => expect(screen.getByTestId('v2-login-mock')).toBeInTheDocument());
+    });
+  });
+
+  // ── Catch-all ──
+  it('redirects unknown routes to / (V2Landing for unauthenticated)', async () => {
+    mockIsAuthenticated = false;
     renderWithRouter(['/some/unknown/route']);
-    await waitFor(() => expect(screen.getByTestId('playerdashboard-mock')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('v2-landing-mock')).toBeInTheDocument());
   });
 });

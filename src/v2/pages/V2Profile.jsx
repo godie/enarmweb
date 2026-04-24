@@ -1,14 +1,23 @@
 import { useState, useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 import Auth from '../../modules/Auth';
 import { alertSuccess } from '../../services/AlertService';
 import '../styles/v2-theme.css';
 
 const V2Profile = () => {
+
     // Mock user with potentially missing email for testing
     const [user] = useState(useMemo(() => Auth.getUserInfo() || { name: 'García', email: '' }, []));
     const [selectedSpecialties, setSelectedSpecialties] = useState(['Pediatría', 'Medicina Interna']);
     const allSpecialties = ['Cirugía General', 'Ginecología y Obstetricia', 'Medicina Interna', 'Pediatría', 'Traumatología'];
     const [isVerifying, setIsVerifying] = useState(false);
+
+    const history = useHistory();
+
+    const handleLogout = () => {
+        Auth.deauthenticateUser();
+        history.push('/login');
+    };
 
     const toggleSpecialty = (spec) => {
         setSelectedSpecialties(prev =>
@@ -26,53 +35,47 @@ const V2Profile = () => {
     };
 
     return (
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '40px' }}>
-                <h1 className="v2-headline-medium">Perfil del Estudiante</h1>
-                <p className="v2-body-large" style={{ opacity: 0.7 }}>Gestiona tus datos y preferencias de estudio.</p>
+        <div className='v2-page-wide'>
+            <header className='v2-mb-40'>
+                <h1 className='v2-headline-medium'>Perfil del Estudiante</h1>
+                <p className='v2-body-large v2-opacity-70'>Gestiona tus datos y preferencias de estudio.</p>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '32px' }}>
+            <div className='v2-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '32px' }}>
                 {/* User Info Card */}
-                <section className="v2-card v2-card-elevated" style={{ textAlign: 'center' }}>
-                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-                      <div style={{
-                         width: '120px', height: '120px', borderRadius: '50%',
-                         backgroundColor: 'var(--md-sys-color-primary-container)',
-                         color: 'var(--md-sys-color-primary)',
-                         display: 'flex', alignItems: 'center', justifyContent: 'center'
-                      }}>
-                         <i className="material-icons" style={{ fontSize: '64px' }}>person</i>
+                <section className='v2-card v2-card-elevated v2-text-center'>
+                   <div className='v2-flex-col v2-flex-align-center v2-gap-20'>
+                      <div className='v2-icon-box-4xl v2-icon-box-primary'>
+                         <i className='material-icons' style={{ fontSize: '64px' }}>person</i>
                       </div>
                       <div>
-                        <h2 className="v2-title-large">Dr. {user.name}</h2>
-                        <p className="v2-label-large" style={{ opacity: 0.6 }}>{user.email || 'Correo no asignado'}</p>
+                        <h2 className='v2-title-large'>Dr. {user.name}</h2>
+                        <p className='v2-label-large v2-opacity-60'>{user.email || 'Correo no asignado'}</p>
                       </div>
-                      <div className="v2-card-tonal" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '24px' }}>
-                         <i className="material-icons v2-text-primary" style={{ fontSize: '20px' }}>workspace_premium</i>
-                         <span className="v2-label-large">Aspirante: Pediatría</span>
+                      <div className='v2-card-tonal v2-flex-align-center v2-gap-8' style={{ padding: '12px 24px', borderRadius: '24px' }}>
+                         <i className='material-icons v2-text-primary' style={{ fontSize: '20px' }}>workspace_premium</i>
+                         <span className='v2-label-large'>Aspirante: Pediatría</span>
                       </div>
                    </div>
                 </section>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                <div className='v2-flex-col v2-gap-32'>
                     {/* Specialty Preferences */}
-                    <section className="v2-card">
-                        <h3 className="v2-title-large" style={{ marginBottom: '16px' }}>Preferencias de Especialidad</h3>
-                        <p className="v2-body-large" style={{ opacity: 0.7, marginBottom: '24px' }}>
+                    <section className='v2-card'>
+                        <h2 className='v2-title-large v2-mb-16'>Preferencias de Especialidad</h2>
+                        <p className='v2-body-large v2-opacity-70 v2-mb-24'>
                             Selecciona las áreas en las que deseas enfocarte. Adaptaremos tus simulacros a estas elecciones.
                         </p>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                        <div className='v2-flex v2-flex-wrap v2-gap-12'>
                             {allSpecialties.map(spec => {
                                 const active = selectedSpecialties.includes(spec);
                                 return (
                                     <button
                                         key={spec}
                                         onClick={() => toggleSpecialty(spec)}
-                                        className={active ? 'v2-btn-filled' : 'v2-card-outlined'}
-                                        style={{ cursor: 'pointer', padding: '12px 20px' }}
+                                        className={`v2-btn-selectable ${active ? 'v2-selected' : ''}`}
                                     >
-                                        {active && <i className="material-icons" style={{ fontSize: '18px' }}>check</i>}
+                                        {active && <i className='material-icons' style={{ fontSize: '18px' }}>check</i>}
                                         {spec}
                                     </button>
                                 );
@@ -81,20 +84,20 @@ const V2Profile = () => {
                     </section>
 
                     {/* Account Settings */}
-                    <section className="v2-card">
-                        <h3 className="v2-title-large" style={{ marginBottom: '24px' }}>Ajustes de Cuenta</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <div className="v2-card-tonal" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <i className="material-icons" style={{ opacity: 0.6 }}>mail</i>
+                    <section className='v2-card'>
+                        <h2 className='v2-title-large v2-mb-24'>Ajustes de Cuenta</h2>
+                        <div className='v2-flex-col v2-gap-12'>
+                            <div className='v2-card-tonal v2-flex-justify-between v2-flex-align-center' style={{ padding: '16px 24px' }}>
+                                <div className='v2-flex-align-center v2-gap-12'>
+                                    <i className='material-icons v2-opacity-60'>mail</i>
                                     <span>Correo Electrónico</span>
                                 </div>
                                 {user.email ? (
-                                    <span style={{ opacity: 0.6 }}>{user.email}</span>
+                                    <span className='v2-opacity-60'>{user.email}</span>
                                 ) : (
                                     <button
-                                        className="v2-btn-tonal"
-                                        style={{ height: '36px', padding: '0 16px', fontSize: '12px' }}
+                                        className='v2-btn-tonal'
+                                        style={{ height: '44px', padding: '0 16px', fontSize: '12px' }}
                                         onClick={handleAssignEmail}
                                         disabled={isVerifying}
                                     >
@@ -102,19 +105,35 @@ const V2Profile = () => {
                                     </button>
                                 )}
                             </div>
-                            <div className="v2-card-tonal" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', cursor: 'pointer' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <i className="material-icons" style={{ opacity: 0.6 }}>lock</i>
+                            <div
+                                className='v2-card-tonal v2-flex-justify-between v2-flex-align-center v2-cursor-pointer'
+                                style={{ padding: '16px 24px' }}
+                                role='button'
+                                tabIndex={0}
+                                aria-label='Seguridad y contraseña — próximamente'
+                                onClick={() => alertSuccess('Próximamente', 'La sección de seguridad estará disponible pronto.')}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alertSuccess('Próximamente', 'La sección de seguridad estará disponible pronto.'); } }}
+                            >
+                                <div className='v2-flex-align-center v2-gap-12'>
+                                    <i className='material-icons v2-opacity-60'>lock</i>
                                     <span>Seguridad y Contraseña</span>
                                 </div>
-                                <i className="material-icons">chevron_right</i>
+                                <i className='material-icons'>chevron_right</i>
                             </div>
-                            <div className="v2-card-tonal" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', cursor: 'pointer', color: 'var(--md-sys-color-error)' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <i className="material-icons">logout</i>
+                            <div
+                                className='v2-card-tonal v2-flex-justify-between v2-flex-align-center v2-cursor-pointer v2-text-error'
+                                style={{ padding: '16px 24px' }}
+                                role='button'
+                                tabIndex={0}
+                                aria-label='Cerrar sesión'
+                                onClick={handleLogout}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleLogout(); } }}
+                            >
+                                <div className='v2-flex-align-center v2-gap-12'>
+                                    <i className='material-icons'>logout</i>
                                     <span>Cerrar Sesión</span>
                                 </div>
-                                <i className="material-icons">chevron_right</i>
+                                <i className='material-icons'>chevron_right</i>
                             </div>
                         </div>
                     </section>

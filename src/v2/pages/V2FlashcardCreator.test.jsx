@@ -66,7 +66,7 @@ describe('V2FlashcardCreator', () => {
         back: 'Respuesta de prueba',
         specialty_id: '1'
       });
-      expect(mockPush).toHaveBeenCalledWith('/v2/flashcards/repaso');
+      expect(mockPush).toHaveBeenCalledWith('/flashcards/repaso');
     });
   });
 });

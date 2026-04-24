@@ -75,53 +75,53 @@ const V2CaseStudy = () => {
 
     const { loading, error, caseData } = state;
 
-    if (loading) return <div className="center-align" style={{ padding: '40px' }}><CustomPreloader /></div>;
-    if (error) return <div className="center-align red-text" style={{ padding: '40px' }}>{error}</div>;
+    if (loading) return <div className='v2-center-state v2-p-40'><CustomPreloader /></div>;
+    if (error) return <div className='v2-error-state v2-p-40'>{error}</div>;
 
     return (
-        <div className="v2-case-study-container" style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <div className='v2-page-container'>
             {/* Header */}
-            <header style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
+            <header className='v2-page-header-back v2-gap-16'>
                 <button
-                    className="v2-btn-tonal"
-                    style={{ borderRadius: '50%', width: '40px', height: '40px', padding: 0, minWidth: '40px' }}
+                    className='v2-btn-icon'
                     onClick={() => history.goBack()}
+                    aria-label='Volver'
                 >
-                    <i className="material-icons">arrow_back</i>
+                    <i className='material-icons'>arrow_back</i>
                 </button>
                 <div>
-                    <div className="v2-label-large" style={{ color: 'var(--md-sys-color-primary)' }}>{caseData.specialty} • {caseData.difficulty}</div>
-                    <h1 className="v2-headline-small" style={{ margin: 0 }}>{caseData.title}</h1>
+                    <div className='v2-label-large v2-text-primary'>{caseData.specialty} • {caseData.difficulty}</div>
+                    <h1 className='v2-headline-small v2-m-0'>{caseData.title}</h1>
                 </div>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '24px' }}>
+            <div className='v2-grid v2-gap-24' style={{ gridTemplateColumns: '1fr 300px' }}>
                 {/* Main Content */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    <section className="v2-card">
-                        <h2 className="v2-title-large" style={{ marginBottom: '16px' }}>Presentación del Caso</h2>
-                        <p className="v2-body-large" style={{ lineHeight: '1.6' }}>{caseData.content}</p>
-                        <h3 className="v2-title-medium" style={{ marginTop: '20px', marginBottom: '12px' }}>Exploración Física</h3>
-                        <p className="v2-body-large" style={{ lineHeight: '1.6' }}>{caseData.physicalExam}</p>
+                <div className='v2-flex-col v2-gap-24'>
+                    <section className='v2-card'>
+                        <h2 className='v2-title-large v2-mb-16'>Presentación del Caso</h2>
+                        <p className='v2-body-large v2-line-height-relaxed'>{caseData.content}</p>
+                        <h3 className='v2-title-medium v2-mt-20 v2-mb-12'>Exploración Física</h3>
+                        <p className='v2-body-large v2-line-height-relaxed'>{caseData.physicalExam}</p>
                     </section>
 
                     <section>
-                        <h2 className="v2-title-large" style={{ marginBottom: '16px' }}>Revisión de Preguntas</h2>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <h2 className='v2-title-large v2-mb-16'>Revisión de Preguntas</h2>
+                        <div className='v2-flex-col v2-gap-16'>
                             {caseData.questions.map((q, index) => (
                                 <div key={q.id} className="v2-card-tonal" style={{ borderLeft: `4px solid ${q.isCorrect ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)'}` }}>
-                                    <div className="v2-label-medium" style={{ marginBottom: '8px', opacity: 0.7 }}>Pregunta {index + 1}</div>
+                                    <div className="v2-label-medium v2-opacity-70" style={{ marginBottom: '8px' }}>Pregunta {index + 1}</div>
                                     <div className="v2-title-medium" style={{ marginBottom: '12px' }}>{q.question}</div>
 
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderRadius: '8px', backgroundColor: q.isCorrect ? 'rgba(15, 163, 151, 0.1)' : 'rgba(186, 26, 26, 0.1)' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderRadius: '8px', backgroundColor: q.isCorrect ? 'var(--v2-primary-tint)' : 'var(--v2-error-tint)' }}>
                                             <span className="v2-body-medium">Tu respuesta: <b>{q.userAnswer}</b></span>
                                             <i className="material-icons" style={{ fontSize: '20px', color: q.isCorrect ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)' }}>
                                                 {q.isCorrect ? 'check_circle' : 'cancel'}
                                             </i>
                                         </div>
                                         {!q.isCorrect && (
-                                            <div style={{ padding: '8px 12px', borderRadius: '8px', backgroundColor: 'rgba(15, 163, 151, 0.1)' }}>
+                                            <div style={{ padding: '8px 12px', borderRadius: '8px', backgroundColor: 'var(--v2-primary-tint)' }}>
                                                 <span className="v2-body-medium">Respuesta correcta: <b>{q.correctAnswer}</b></span>
                                             </div>
                                         )}
@@ -139,23 +139,23 @@ const V2CaseStudy = () => {
 
                 {/* Sidebar */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    <section className="v2-card-elevated" style={{ backgroundColor: 'var(--md-sys-color-primary-container)', color: 'var(--md-sys-color-on-primary-container)', textAlign: 'center' }}>
-                        <i className="material-icons" style={{ fontSize: '48px', marginBottom: '12px' }}>analytics</i>
-                        <h3 className="v2-title-large">Resultado</h3>
+                    <section className='v2-card-elevated v2-bg-primary-container v2-text-center'>
+                        <i className='material-icons' style={{ fontSize: '48px', marginBottom: '12px' }}>analytics</i>
+                        <h2 className="v2-title-large">Resultado</h2>
                         <div className="v2-headline-medium">50%</div>
                         <p className="v2-label-medium">1 de 2 correctas</p>
                     </section>
 
-                    <section className="v2-card">
-                        <h3 className="v2-title-medium" style={{ marginBottom: '12px' }}>Retroalimentación</h3>
-                        <p className="v2-body-medium" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{caseData.feedback}</p>
-                        <button className="v2-btn-tonal" style={{ width: '100%', marginTop: '16px' }}>
+                    <section className='v2-card'>
+                        <h2 className='v2-title-medium v2-mb-12'>Retroalimentación</h2>
+                        <p className='v2-body-medium v2-text-secondary'>{caseData.feedback}</p>
+                        <button className='v2-btn-tonal v2-btn-full v2-mt-16'>
                             <i className="material-icons" style={{ marginRight: '8px' }}>bookmark</i>
                             Guardar para repaso
                         </button>
                     </section>
 
-                    <button className="v2-btn-primary" onClick={() => history.push('/v2/practica')} style={{ height: '56px' }}>
+                    <button className='v2-btn-primary v2-btn-h-56' onClick={() => history.push('/practica')}>
                         Siguiente Caso
                     </button>
                 </div>

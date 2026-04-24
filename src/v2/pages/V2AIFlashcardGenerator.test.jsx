@@ -67,7 +67,7 @@ describe('V2AIFlashcardGenerator', () => {
 
     await waitFor(() => {
       expect(FlashcardService.createFlashcard).toHaveBeenCalledTimes(2);
-      expect(mockPush).toHaveBeenCalledWith('/v2/flashcards/repaso');
+      expect(mockPush).toHaveBeenCalledWith('/flashcards/repaso');
     });
   });
 });

@@ -169,4 +169,19 @@ export default class ExamService extends BaseService {
     return axios.get(BaseService.getURL("user_answers"), headers);
   }
 
+  // Load a random clinical case
+  static async loadRandomCaso() {
+    const headers = this.getHeaders();
+    headers.params = { page: 1 };
+    const res = await axios.get(BaseService.getURL("clinical_cases"), headers);
+    const cases = res.data || [];
+    if (cases.length === 0) {
+      throw new Error('No clinical cases available');
+    }
+    const randomIndex = Math.floor(Math.random() * Math.min(cases.length, 10));
+    const randomCase = cases[randomIndex];
+    // Return full case details
+    return axios.get(BaseService.getURL(`clinical_cases/${randomCase.id}`), headers);
+  }
+
 }

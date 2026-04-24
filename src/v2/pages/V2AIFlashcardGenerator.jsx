@@ -53,7 +53,7 @@ const V2AIFlashcardGenerator = () => {
                     specialty_id: s.specialty_id || 1
                 });
             }
-            history.push('/v2/flashcards/repaso');
+            history.push('/flashcards/repaso');
         } catch (err) {
             console.error("Error saving all flashcards:", err);
             alert("Ocurrió un error al guardar todas las flashcards.");
@@ -64,19 +64,19 @@ const V2AIFlashcardGenerator = () => {
 
     return (
         <div className="v2-page-container">
-            <header style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
-                <button className="v2-btn-tonal" onClick={() => history.goBack()} style={{ borderRadius: '50%', width: '40px', height: '40px', padding: 0 }}>
+            <header className='v2-page-header-back v2-gap-16'>
+                <button className='v2-btn-icon' onClick={() => history.goBack()} aria-label='Volver'>
                     <i className="material-icons">arrow_back</i>
                 </button>
                 <h1 className="v2-headline-small">Generador de Flashcards con IA</h1>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: suggestions.length > 0 ? '1fr 1.5fr' : '1fr', gap: '32px' }}>
+            <div className='v2-grid v2-gap-32' style={{ gridTemplateColumns: suggestions.length > 0 ? '1fr 1.5fr' : '1fr' }}>
                 <section>
                     <form className="v2-card" onSubmit={handleGenerate}>
-                        <h2 className="v2-title-large" style={{ marginBottom: '16px' }}>Configuración</h2>
-                        <div style={{ marginBottom: '24px' }}>
-                            <label htmlFor="topic-input" className="v2-label-large" style={{ display: 'block', marginBottom: '8px' }}>Tema o Concepto Médico</label>
+                        <h2 className='v2-title-large v2-mb-16'>Configuración</h2>
+                        <div className='v2-mb-24'>
+                            <label htmlFor='topic-input' className='v2-label-large v2-mb-8' style={{ display: 'block' }}>Tema o Concepto Médico</label>
                             <input
                                 id="topic-input"
                                 className="v2-input"
@@ -88,8 +88,8 @@ const V2AIFlashcardGenerator = () => {
                                 style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--md-sys-color-outline-variant)', backgroundColor: 'transparent', color: 'inherit' }}
                             />
                         </div>
-                        <div style={{ marginBottom: '24px' }}>
-                            <label htmlFor="count-input" className="v2-label-large" style={{ display: 'block', marginBottom: '8px' }}>Número de Cartas</label>
+                        <div className='v2-mb-24'>
+                            <label htmlFor='count-input' className='v2-label-large v2-mb-8' style={{ display: 'block' }}>Número de Cartas</label>
                             <input
                                 id="count-input"
                                 className="v2-input"
@@ -101,7 +101,7 @@ const V2AIFlashcardGenerator = () => {
                                 style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--md-sys-color-outline-variant)', backgroundColor: 'transparent', color: 'inherit' }}
                             />
                         </div>
-                        <button className="v2-btn-primary" style={{ width: '100%' }} disabled={generating}>
+                        <button className='v2-btn-primary v2-btn-full' disabled={generating}>
                             {generating ? 'Generando...' : 'Generar Sugerencias'}
                         </button>
                     </form>
@@ -109,17 +109,17 @@ const V2AIFlashcardGenerator = () => {
 
                 {suggestions.length > 0 && (
                     <section>
-                        <h2 className="v2-title-large" style={{ marginBottom: '16px' }}>Sugerencias Generadas</h2>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '600px', overflowY: 'auto', paddingRight: '8px' }}>
+                        <h2 className='v2-title-large v2-mb-16'>Sugerencias Generadas</h2>
+                        <div className='v2-flex-col v2-gap-16 v2-overflow-y-auto' style={{ maxHeight: '600px', paddingRight: '8px' }}>
                             {suggestions.map((s, idx) => (
                                 <div key={idx} className="v2-card-tonal" style={{ position: 'relative' }}>
-                                    <div className="v2-label-medium" style={{ opacity: 0.7, marginBottom: '8px' }}>Sugerencia {idx + 1}</div>
-                                    <div className="v2-body-large" style={{ fontWeight: 'bold', marginBottom: '8px' }}>Q: {s.front}</div>
+                                <div className='v2-label-medium v2-opacity-70 v2-mb-8'>Sugerencia {idx + 1}</div>
+                                <div className='v2-body-large v2-text-bold v2-mb-8'>Q: {s.front}</div>
                                     <div className="v2-body-medium">A: {s.back}</div>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+                                    <div className='v2-flex v2-flex-justify-end v2-mt-16'>
                                         <button
                                             className="v2-btn-tonal"
-                                            style={{ height: '32px', fontSize: '12px' }}
+                                            style={{ height: '44px', fontSize: '12px', minWidth: '44px' }}
                                             onClick={() => handleSaveOne(s, idx)}
                                             disabled={s.saved}
                                         >
@@ -131,8 +131,7 @@ const V2AIFlashcardGenerator = () => {
                             ))}
                         </div>
                         <button
-                            className="v2-btn-primary"
-                            style={{ width: '100%', marginTop: '24px' }}
+                            className='v2-btn-primary v2-btn-full v2-mt-24'
                             onClick={handleSaveAll}
                             disabled={savingAll || suggestions.every(s => s.saved)}
                         >

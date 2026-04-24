@@ -49,7 +49,7 @@ describe('V2CaseStudy', () => {
     expect(mockGoBack).toHaveBeenCalled();
 
     fireEvent.click(screen.getByText('Siguiente Caso'));
-    expect(mockPush).toHaveBeenCalledWith('/v2/practica');
+    expect(mockPush).toHaveBeenCalledWith('/practica');
   });
 
   it('shows questions feedback', async () => {
