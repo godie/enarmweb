@@ -2,12 +2,20 @@ import { useState, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import Auth from '../../modules/Auth';
 import { alertSuccess } from '../../services/AlertService';
+import Util from '../../commons/Util';
 import '../styles/v2-theme.css';
 
 const V2Profile = () => {
 
     // Mock user with potentially missing email for testing
     const [user] = useState(useMemo(() => Auth.getUserInfo() || { name: 'García', email: '' }, []));
+
+    const handleCopyEmail = () => {
+        if (user.email) {
+            navigator.clipboard.writeText(user.email);
+            Util.showToast('Correo copiado al portapapeles');
+        }
+    };
     const [selectedSpecialties, setSelectedSpecialties] = useState(['Pediatría', 'Medicina Interna']);
     const allSpecialties = ['Cirugía General', 'Ginecología y Obstetricia', 'Medicina Interna', 'Pediatría', 'Traumatología'];
     const [isVerifying, setIsVerifying] = useState(false);
@@ -50,7 +58,20 @@ const V2Profile = () => {
                       </div>
                       <div>
                         <h2 className='v2-title-large'>Dr. {user.name}</h2>
-                        <p className='v2-label-large v2-opacity-60'>{user.email || 'Correo no asignado'}</p>
+                        <div className='v2-flex-align-center v2-flex-justify-center v2-gap-8'>
+                            <p className='v2-label-large v2-opacity-60'>{user.email || 'Correo no asignado'}</p>
+                            {user.email && (
+                                <button
+                                    className='v2-btn-icon v2-btn-icon-sm'
+                                    style={{ width: '28px', height: '28px', minWidth: '28px' }}
+                                    onClick={handleCopyEmail}
+                                    aria-label='Copiar correo'
+                                    title='Copiar correo'
+                                >
+                                    <i className='material-icons' style={{ fontSize: '16px' }}>content_copy</i>
+                                </button>
+                            )}
+                        </div>
                       </div>
                       <div className='v2-card-tonal v2-flex-align-center v2-gap-8' style={{ padding: '12px 24px', borderRadius: '24px' }}>
                          <i className='material-icons v2-text-primary' style={{ fontSize: '20px' }}>workspace_premium</i>
@@ -93,7 +114,18 @@ const V2Profile = () => {
                                     <span>Correo Electrónico</span>
                                 </div>
                                 {user.email ? (
-                                    <span className='v2-opacity-60'>{user.email}</span>
+                                    <div className='v2-flex-align-center v2-gap-8'>
+                                        <span className='v2-opacity-60'>{user.email}</span>
+                                        <button
+                                            className='v2-btn-icon v2-btn-icon-sm'
+                                            style={{ width: '28px', height: '28px', minWidth: '28px' }}
+                                            onClick={handleCopyEmail}
+                                            aria-label='Copiar correo'
+                                            title='Copiar correo'
+                                        >
+                                            <i className='material-icons' style={{ fontSize: '16px' }}>content_copy</i>
+                                        </button>
+                                    </div>
                                 ) : (
                                     <button
                                         className='v2-btn-tonal'

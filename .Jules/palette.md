@@ -103,3 +103,7 @@
 ## 2025-06-16 - [Functional Matchers for Complex Buttons and Utility-First Layout]
 **Learning:** React Testing Library's `findByText` can fail on buttons containing Materialize icons due to text node fragmentation and the icon's name being part of the `textContent`. Using a functional matcher that checks for partial content and tag name is more robust. Additionally, strictly adhering to utility classes (e.g., 'center-align') instead of inline styles ensures compliance with repository constraints and theme consistency.
 **Action:** Always use functional matchers for testing interactive elements with icons and avoid inline styles by leveraging existing CSS utility classes.
+
+## 2025-06-25 - [Copy-to-Clipboard UX and Immediate Feedback]
+**Learning:** Adding a copy-to-clipboard feature for key user identifiers (like email or IDs) significantly reduces friction in user workflows. Implementing this with `navigator.clipboard.writeText` and providing immediate visual feedback via a toast notification ('Correo copiado al portapapeles') confirms success. Using icon-only buttons with explicit `aria-label` and `title` ensures the feature is both accessible and intuitive.
+**Action:** Always provide a copy-to-clipboard option for static text that users frequently need to reuse, and ensure immediate feedback is provided upon action.
