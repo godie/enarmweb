@@ -1,53 +1,72 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { alertSuccess } from '../../services/AlertService';
+import KnowledgeBaseService from '../../services/KnowledgeBaseService';
 import '../styles/v2-theme.css';
 
 const V2KnowledgeBase = () => {
     const [search, setSearch] = useState('');
-    const [expandedCategory, setExpandedCategory] = useState(null);
+    const [expandedTopic, setExpandedTopic] = useState(null);
+    const [topics, setTopics] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const [data] = useState({
-        categories: [
-            {
-                id: '1',
-                title: 'Guías de Práctica Clínica',
-                description: 'Repositorio oficial de GPCs vigentes en México',
-                topics: [
-                    { id: 't1', title: 'GPC Hipertensión Arterial Sistémica' },
-                    { id: 't2', title: 'GPC Diabetes Mellitus Tipo 2' },
-                    { id: 't3', title: 'GPC Insuficiencia Cardiaca' }
-                ]
-            },
-            {
-                id: '2',
-                title: 'Esquemas de Vacunación',
-                description: 'Actualización 2024 de cartillas nacionales de salud',
-                topics: [
-                    { id: 't4', title: 'Esquema Infantil (0-9 años)' },
-                    { id: 't5', title: 'Esquema Adolescente (10-19 años)' },
-                    { id: 't6', title: 'Esquema Adulto Mayor' }
-                ]
-            },
-            {
-                id: '3',
-                title: 'Algoritmos Diagnósticos',
-                description: 'Diagramas de flujo para toma de decisiones clínicas',
-                topics: [
-                    { id: 't7', title: 'Algoritmo Sepsis y Choque Séptico' },
-                    { id: 't8', title: 'Algoritmo Manejo de Asma Aguda' },
-                    { id: 't9', title: 'Algoritmo Código Infarto' }
-                ]
-            }
-        ]
-    });
+    useEffect(() => {
+        loadTopics();
+    }, []);
 
-    const filteredCategories = data.categories.map(cat => ({
-        ...cat,
-        topics: cat.topics.filter(topic =>
-            topic.title.toLowerCase().includes(search.toLowerCase()) ||
-            cat.title.toLowerCase().includes(search.toLowerCase())
+    const loadTopics = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await KnowledgeBaseService.getTopics();
+            setTopics(response.data.topics || []);
+        } catch (err) {
+            console.error('Error loading knowledge base:', err);
+            setError('Error al cargar la base de conocimientos');
+            setTopics([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filteredTopics = topics.filter(topic =>
+        topic.title.toLowerCase().includes(search.toLowerCase()) ||
+        topic.articles?.some(article => 
+            article.title.toLowerCase().includes(search.toLowerCase())
         )
-    })).filter(cat => cat.topics.length > 0);
+    );
+
+    const handleArticleClick = (articleTitle) => {
+        alertSuccess('Próximamente', `${articleTitle} estará disponible pronto.`);
+    };
+
+    if (loading) {
+        return (
+            <div className='v2-page-medium v2-text-center'>
+                <div className='v2-mb-24'>
+                    <i className="material-icons v2-text-primary" style={{ fontSize: '48px', animation: 'spin 1s linear infinite' }}>sync</i>
+                </div>
+                <p className='v2-body-large v2-opacity-60'>Cargando base de conocimientos...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className='v2-page-medium v2-text-center'>
+                <div className='v2-mb-24'>
+                    <i className="material-icons v2-text-error" style={{ fontSize: '48px' }}>error_outline</i>
+                </div>
+                <p className='v2-body-large v2-opacity-60'>{error}</p>
+                <button 
+                    className='v2-button-primary v2-mt-16'
+                    onClick={loadTopics}
+                >
+                    Reintentar
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className='v2-page-medium'>
@@ -68,58 +87,66 @@ const V2KnowledgeBase = () => {
                 />
             </div>
 
-            {/* Categories List */}
+            {/* Topics List */}
             <div className='v2-flex-col v2-gap-16'>
-                {filteredCategories.map(cat => (
-                    <section key={cat.id} className='v2-card v2-p-0 v2-overflow-hidden'>
+                {filteredTopics.map(topic => (
+                    <section key={topic.id} className='v2-card v2-p-0 v2-overflow-hidden'>
                         <div
                             className='v2-p-24 v2-cursor-pointer v2-flex-justify-between v2-flex-align-center'
-                            onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
+                            onClick={() => setExpandedTopic(expandedTopic === topic.id ? null : topic.id)}
                             role='button'
                             tabIndex={0}
-                            aria-expanded={expandedCategory === cat.id}
-                            aria-label={cat.title}
-                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedCategory(expandedCategory === cat.id ? null : cat.id); } }}
+                            aria-expanded={expandedTopic === topic.id}
+                            aria-label={topic.title}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedTopic(expandedTopic === topic.id ? null : topic.id); } }}
                         >
                             <div className='v2-flex-1'>
-                                <h3 className='v2-title-large v2-m-0 v2-mb-4'>{cat.title}</h3>
-                                <p className='v2-body-medium v2-opacity-60 v2-m-0'>{cat.description}</p>
+                                <h3 className='v2-title-large v2-m-0 v2-mb-4'>{topic.title}</h3>
+                                <p className='v2-body-medium v2-opacity-60 v2-m-0'>
+                                    {topic.articles?.length || 0} artículo{topic.articles?.length !== 1 ? 's' : ''} disponible{topic.articles?.length !== 1 ? 's' : ''}
+                                </p>
                             </div>
-                            <i className="material-icons" aria-hidden="true" style={{ transition: 'transform 0.3s', transform: expandedCategory === cat.id ? 'rotate(180deg)' : 'none' }}>
+                            <i className="material-icons" aria-hidden="true" style={{ transition: 'transform 0.3s', transform: expandedTopic === topic.id ? 'rotate(180deg)' : 'none' }}>
                                 expand_more
                             </i>
                         </div>
 
-                        {expandedCategory === cat.id && (
+                        {expandedTopic === topic.id && (
                             <div style={{ padding: '0 24px 24px 24px' }} className='v2-flex-col v2-gap-8'>
-                                {cat.topics.map(topic => (
-                                    <div
-                                        key={topic.id}
-                                        className="v2-card-tonal v2-cursor-pointer"
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            padding: '12px 16px',
-                                            borderRadius: '12px'
-                                        }}
-                                        role='button'
-                                        tabIndex={0}
-                                        aria-label={`${topic.title} — próximamente`}
-                                        onClick={() => alertSuccess('Próximamente', `${topic.title} estará disponible pronto.`)}
-                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alertSuccess('Próximamente', `${topic.title} estará disponible pronto.`); } }}
-                                    >
-                                        <span className="v2-body-large" style={{ fontSize: '15px' }}>{topic.title}</span>
-                                        <i className="material-icons v2-text-primary" style={{ fontSize: '20px' }}>download</i>
-                                    </div>
-                                ))}
+                                {topic.articles?.length > 0 ? (
+                                    topic.articles.map(article => (
+                                        <div
+                                            key={article.id}
+                                            className="v2-card-tonal v2-cursor-pointer"
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                padding: '12px 16px',
+                                                borderRadius: '12px'
+                                            }}
+                                            role='button'
+                                            tabIndex={0}
+                                            aria-label={`${article.title} — próximamente`}
+                                            onClick={() => handleArticleClick(article.title)}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleArticleClick(article.title); } }}
+                                        >
+                                            <span className="v2-body-large" style={{ fontSize: '15px' }}>{article.title}</span>
+                                            <i className="material-icons v2-text-primary" style={{ fontSize: '20px' }}>download</i>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className='v2-body-medium v2-opacity-60 v2-text-center v2-p-16'>
+                                        No hay artículos disponibles en este tema
+                                    </p>
+                                )}
                             </div>
                         )}
                     </section>
                 ))}
             </div>
 
-            {filteredCategories.length === 0 && (
+            {filteredTopics.length === 0 && (
                 <div className='v2-text-center v2-opacity-50' style={{ marginTop: '64px' }}>
                     <i className="material-icons" aria-hidden="true" style={{ fontSize: '64px' }}>find_in_page</i>
                     <p className="v2-body-large">No se encontraron temas que coincidan con tu búsqueda</p>

@@ -11,12 +11,16 @@ export default function FacebookLoginContainer() {
       console.log("FB status change:", response);
 
       if (response.status === "connected") {
+        const authResponse = response.authResponse;
+        const accessToken = authResponse?.accessToken;
+
         // Retrieve user info from Facebook
         window.FB.api("/me", { fields: "id,name,email" }, (fbRes) => {
           const params = {
             name: fbRes.name,
             facebook_id: fbRes.id,
             email: fbRes.email || "no_mail",
+            facebook_access_token: accessToken, // Send token for server-side verification
           };
 
           // Persist in localStorage and backend
