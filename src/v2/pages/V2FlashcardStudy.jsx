@@ -236,10 +236,10 @@ const Flashcard = ({ card, isFlipped, onFlip }) => (
 // Quality rating buttons (SM-2 mapped to UI)
 const QualityButtons = ({ onRate, disabled }) => {
   const buttons = [
-    { quality: 1, label: 'Otra vez', sublabel: '< 1 día', color: '#ba1a1a', icon: 'replay' },
-    { quality: 3, label: 'Difícil', sublabel: '2-3 días', color: '#9c4247', icon: 'sentiment_dissatisfied' },
-    { quality: 4, label: 'Bien', sublabel: '4-6 días', color: '#0fa397', icon: 'sentiment_satisfied' },
-    { quality: 5, label: 'Fácil', sublabel: '7+ días', color: '#4a6360', icon: 'sentiment_very_satisfied' }
+    { quality: 1, label: 'Otra vez', shortcut: '1', sublabel: '< 1 día', color: '#ba1a1a', icon: 'replay' },
+    { quality: 3, label: 'Difícil', shortcut: '2', sublabel: '2-3 días', color: '#9c4247', icon: 'sentiment_dissatisfied' },
+    { quality: 4, label: 'Bien', shortcut: '3 / Espacio', sublabel: '4-6 días', color: '#0fa397', icon: 'sentiment_satisfied' },
+    { quality: 5, label: 'Fácil', shortcut: '4', sublabel: '7+ días', color: '#4a6360', icon: 'sentiment_very_satisfied' }
   ];
   
   return (
@@ -255,13 +255,14 @@ const QualityButtons = ({ onRate, disabled }) => {
             opacity: disabled ? 0.5 : 1,
             border: 'none'
           }}
-          aria-label={`Calificar como ${btn.label}`}
+          aria-label={`Calificar como ${btn.label} (atajo: tecla ${btn.shortcut})`}
+          title={`Atajo: ${btn.shortcut}`}
         >
           <i className='material-icons' style={{ fontSize: '28px', color: btn.color }} aria-hidden='true'>
             {btn.icon}
           </i>
           <span className='v2-label-large v2-text-semibold' style={{ color: btn.color }}>
-            {btn.label}
+            {btn.label} <span className='v2-opacity-50' style={{ fontSize: '0.8em' }}>[{btn.quality === 4 ? '3' : btn.shortcut}]</span>
           </span>
           <span className='v2-label-small v2-opacity-70'>
             {btn.sublabel}
@@ -400,6 +401,37 @@ const V2FlashcardStudy = () => {
   const handleGoHome = useCallback(() => {
     history.push('/dashboard');
   }, [history]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Don't trigger if any overlay is active or if user is typing (though no inputs here yet)
+      if (loading || isSubmitting || isSessionComplete || !currentCard) return;
+
+      const { key } = e;
+
+      if (!isFlipped) {
+        if (key === ' ' || key === 'Enter') {
+          e.preventDefault();
+          handleFlip();
+        }
+      } else {
+        if (key === '1') {
+          handleRate(1);
+        } else if (key === '2') {
+          handleRate(3);
+        } else if (key === '3' || key === ' ' || key === 'Enter') {
+          e.preventDefault();
+          handleRate(4);
+        } else if (key === '4') {
+          handleRate(5);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [loading, isSubmitting, isSessionComplete, currentCard, isFlipped, handleFlip, handleRate]);
   
   // Loading state
   if (loading) {
@@ -501,9 +533,11 @@ const V2FlashcardStudy = () => {
               <button 
                 className='v2-btn-tonal'
                 onClick={handleFlip}
+                aria-label='Mostrar Respuesta (atajo: Espacio)'
+                title='Atajo: Espacio'
               >
                 <i className='material-icons' aria-hidden='true'>visibility</i>
-                Mostrar Respuesta
+                Mostrar Respuesta <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[Espacio]</span>
               </button>
             </div>
           )}
