@@ -143,4 +143,37 @@ describe('V2FlashcardStudy', () => {
       expect(screen.getByText('¡Todo al día!')).toBeTruthy();
     });
   });
+
+  it('handles keyboard shortcuts for flipping and rating', async () => {
+    render(
+      <MemoryRouter>
+        <V2FlashcardStudy />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => screen.getByText('¿Cuál es la tríada de Virchow?'));
+
+    // Press Space to flip
+    fireEvent.keyDown(window, { key: ' ' });
+    await waitFor(() => {
+      expect(screen.getByText(/Estasis venosa/)).toBeTruthy();
+    });
+
+    // Press '4' to rate as Easy (Quality 5)
+    fireEvent.keyDown(window, { key: '4' });
+    await waitFor(() => {
+      expect(screen.getByText('Agente causal más común de epiglotitis')).toBeTruthy();
+    });
+
+    // Press ' ' to rate as Good (Quality 4) - after flipping
+    fireEvent.keyDown(window, { key: ' ' }); // Flip second card
+    await waitFor(() => {
+      expect(screen.getByText(/Haemophilus influenzae/)).toBeTruthy();
+    });
+
+    fireEvent.keyDown(window, { key: ' ' }); // Rate as Good
+    await waitFor(() => {
+      expect(screen.getByText('Signo de Murphy positivo indica...')).toBeTruthy();
+    });
+  });
 });

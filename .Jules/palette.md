@@ -107,3 +107,7 @@
 ## 2025-06-25 - [Copy-to-Clipboard UX and Immediate Feedback]
 **Learning:** Adding a copy-to-clipboard feature for key user identifiers (like email or IDs) significantly reduces friction in user workflows. Implementing this with `navigator.clipboard.writeText` and providing immediate visual feedback via a toast notification ('Correo copiado al portapapeles') confirms success. Using icon-only buttons with explicit `aria-label` and `title` ensures the feature is both accessible and intuitive.
 **Action:** Always provide a copy-to-clipboard option for static text that users frequently need to reuse, and ensure immediate feedback is provided upon action.
+
+## 2025-01-15 - [Keyboard Efficiency and Discoverability in Flashcards]
+**Learning:** For high-repetition tasks like flashcard study, keyboard shortcuts (Space/Enter for flip, 1-4 for rating) dramatically improve user flow and "flow state" immersion. However, shortcuts must be discoverable; adding bracketed visual hints like "[Espacio]" or "[1]" directly to button labels, along with descriptive "aria-label" and "title" attributes, ensures accessibility and lowers the learning curve for power users.
+**Action:** Always include keyboard shortcuts for core repetitive loops and provide integrated visual hints for those shortcuts to ensure they aren't "hidden" features.
