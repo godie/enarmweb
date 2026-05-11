@@ -80,6 +80,10 @@
 **Learning:** Centralizing the visual and semantic treatment of required fields (e.g., a red asterisk `*` and `aria-required="true"`) in base components like `CustomTextInput` ensures a consistent and accessible experience across all forms without duplicating logic. Additionally, meticulous attention to Spanish orthography (e.g., 'Clínico' vs 'Clinico', 'Ocurrió' vs 'Ocurrio') significantly elevates the professional feel of the application for native speakers.
 **Action:** Always provide standardized visual cues for mandatory fields in base components and maintain strict linguistic standards for localized interfaces.
 
+## 2025-06-26 - [Flashcard Keyboard Shortcuts and Accessibility Hints]
+**Learning:** Adding keyboard shortcuts (Space/Enter, 1-4) for high-repetition tasks like flashcard study significantly reduces friction. Including visual hints in brackets (e.g., `[Espacio]`, `[1]`) within button labels ensures discoverability without cluttering the UI. Crucially, when using `useCallback` in global listeners, the `useEffect` must be defined *after* the callbacks to avoid initialization `ReferenceError` due to lack of hoisting.
+**Action:** Always implement keyboard shortcuts for study interfaces and provide clear visual and ARIA hints for discovery. Ensure correct hook ordering to avoid initialization errors.
+
 ## 2025-06-12 - [Maximizing Clickable Areas and Robust Input Grouping]
 **Learning:** In collection-based form inputs (like exam questions), moving padding from the `<li>` to a full-width block `label` maximizes the interactive hit area, significantly improving the user experience on both desktop and touch devices. Furthermore, using indices (e.g., `questionIndex`) instead of text for input `name` and `id` attributes ensures robust grouping and accessibility even when multiple questions share identical text.
 **Action:** Always wrap collection-item inputs in full-width block labels and use stable, unique indices for input grouping.

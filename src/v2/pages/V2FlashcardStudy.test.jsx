@@ -143,4 +143,66 @@ describe('V2FlashcardStudy', () => {
       expect(screen.getByText('¡Todo al día!')).toBeTruthy();
     });
   });
+
+  it('flips the card when pressing Space', async () => {
+    render(
+      <MemoryRouter>
+        <V2FlashcardStudy />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => screen.getByText('¿Cuál es la tríada de Virchow?'));
+
+    fireEvent.keyDown(window, { key: ' ' });
+
+    await waitFor(() => {
+      expect(screen.getByText(/Estasis venosa/)).toBeTruthy();
+    });
+  });
+
+  it('rates the card when pressing numeric keys when flipped', async () => {
+    render(
+      <MemoryRouter>
+        <V2FlashcardStudy />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => screen.getByText('¿Cuál es la tríada de Virchow?'));
+
+    // Flip first
+    fireEvent.keyDown(window, { key: 'Enter' });
+    await waitFor(() => screen.getByText(/Estasis venosa/));
+
+    // Rate with '4' (Fácil)
+    fireEvent.keyDown(window, { key: '4' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Agente causal más común de epiglotitis')).toBeTruthy();
+    });
+
+    expect(FlashcardService.reviewFlashcard).toHaveBeenCalledWith(1, 5); // 4 maps to quality 5
+  });
+
+  it('rates the card as "Bien" when pressing Space when flipped', async () => {
+    render(
+      <MemoryRouter>
+        <V2FlashcardStudy />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => screen.getByText('¿Cuál es la tríada de Virchow?'));
+
+    // Flip first
+    fireEvent.keyDown(window, { key: ' ' });
+    await waitFor(() => screen.getByText(/Estasis venosa/));
+
+    // Rate with Space
+    fireEvent.keyDown(window, { key: ' ' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Agente causal más común de epiglotitis')).toBeTruthy();
+    });
+
+    expect(FlashcardService.reviewFlashcard).toHaveBeenCalledWith(1, 4); // Space maps to quality 4
+  });
 });
