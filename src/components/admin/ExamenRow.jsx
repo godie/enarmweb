@@ -1,40 +1,25 @@
-import PropTypes from 'prop-types';
-import CustomButton from '../custom/CustomButton';
+import { CustomButton } from '../CustomButton';
 
-const ExamenRow = ({ exam, onDelete }) => {
+export const ExamenRow = ({ exam, onDelete }) => {
     return (
         <tr>
             <td>{exam.name}</td>
             <td>{exam.description || 'Sin descripción'}</td>
-            <td>{exam.exam_questions?.length || 0}</td>
+            <td>{exam.clinical_cases_count ?? (exam.exam_questions?.length || 0)}</td>
             <td className="right-align">
                 <CustomButton
-                    flat
-                    href={`#/dashboard/edit/exam/${exam.id}`}
+                    variant="icon"
+                    color="blue-text"
+                    route={`#/dashboard/edit/exam/${exam.id}`}
                     icon="edit"
-                    className="blue-text"
-                    tooltip="Editar Examen"
                 />
                 <CustomButton
-                    flat
-                    className="red-text"
-                    icon="delete"
+                    variant="icon"
+                    color="red-text"
                     onClick={() => onDelete(exam)}
-                    tooltip="Eliminar Examen"
+                    icon="delete"
                 />
             </td>
         </tr>
     );
 };
-
-ExamenRow.propTypes = {
-    exam: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string,
-        description: PropTypes.string,
-        exam_questions: PropTypes.array,
-    }).isRequired,
-    onDelete: PropTypes.func.isRequired,
-};
-
-export default ExamenRow;
