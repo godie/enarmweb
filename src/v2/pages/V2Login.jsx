@@ -241,6 +241,7 @@ const V2Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-required='true'
               className='v2-input-with-prefix'
             />
           </div>
@@ -255,6 +256,7 @@ const V2Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              aria-required='true'
               className='v2-input-with-prefix v2-input-with-suffix'
             />
             <button

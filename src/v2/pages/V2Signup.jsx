@@ -246,6 +246,7 @@ const V2Signup = () => {
               value={formData.name}
               onChange={handleChange}
               required
+              aria-required='true'
               className='v2-input-with-prefix'
             />
           </div>
@@ -261,6 +262,7 @@ const V2Signup = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              aria-required='true'
               className='v2-input-with-prefix'
             />
           </div>
@@ -276,6 +278,7 @@ const V2Signup = () => {
               value={formData.username}
               onChange={handleChange}
               required
+              aria-required='true'
               className='v2-input-with-prefix'
             />
           </div>
@@ -291,6 +294,7 @@ const V2Signup = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              aria-required='true'
               className='v2-input-with-prefix v2-input-with-suffix'
             />
             <button
@@ -313,7 +317,7 @@ const V2Signup = () => {
             ) : (
               <>
                 Registrarse
-                <i className='material-icons'>person_add</i>
+                <i className='material-icons' aria-hidden='true'>person_add</i>
               </>
             )}
           </button>

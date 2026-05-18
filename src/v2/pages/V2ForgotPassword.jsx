@@ -52,6 +52,7 @@ const V2ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                aria-required='true'
                 className='v2-input-with-prefix'
               />
             </div>
@@ -65,7 +66,7 @@ const V2ForgotPassword = () => {
               ) : (
                 <>
                   Enviar Instrucciones
-                  <i className='material-icons'>send</i>
+                  <i className='material-icons' aria-hidden='true'>send</i>
                 </>
               )}
             </button>
