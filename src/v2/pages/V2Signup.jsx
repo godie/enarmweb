@@ -218,7 +218,7 @@ const V2Signup = () => {
       <div className='v2-card v2-page-centered-content-wide'>
         <div className='v2-mb-24'>
           <div className='v2-icon-box-xl v2-icon-box-primary v2-mx-auto v2-mb-16'>
-            <i className='material-icons' style={{ fontSize: '40px' }}>app_registration</i>
+            <i className='material-icons' style={{ fontSize: '40px' }} aria-hidden='true'>app_registration</i>
           </div>
           <h1 className='v2-headline-medium v2-text-primary'>Crear Cuenta</h1>
           <p className='v2-body-large v2-opacity-70'>Únete a la comunidad de médicos de élite</p>

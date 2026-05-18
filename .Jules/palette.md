@@ -115,3 +115,7 @@
 ## 2025-01-15 - [Keyboard Efficiency and Discoverability in Flashcards]
 **Learning:** For high-repetition tasks like flashcard study, keyboard shortcuts (Space/Enter for flip, 1-4 for rating) dramatically improve user flow and "flow state" immersion. However, shortcuts must be discoverable; adding bracketed visual hints like "[Espacio]" or "[1]" directly to button labels, along with descriptive "aria-label" and "title" attributes, ensures accessibility and lowers the learning curve for power users.
 **Action:** Always include keyboard shortcuts for core repetitive loops and provide integrated visual hints for those shortcuts to ensure they aren't "hidden" features.
+
+## 2025-06-18 - [Standardized Accessibility and Password Visibility in V2 Auth Forms]
+**Learning:** In V2 authentication flows, maintaining feature parity between Login, Signup, and Forgot Password pages—specifically regarding password visibility toggles and label-input associations—ensures a predictable and accessible user experience. Missing `id` and `htmlFor` attributes on inputs breaks screen reader navigation even if the layout looks correct.
+**Action:** Always audit the full authentication suite (Login, Signup, Recovery) for accessibility parity and ensure interactive password fields consistently offer visibility toggles.
