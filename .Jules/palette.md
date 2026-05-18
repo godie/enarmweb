@@ -119,3 +119,7 @@
 ## 2025-06-18 - [Standardized Accessibility and Password Visibility in V2 Auth Forms]
 **Learning:** In V2 authentication flows, maintaining feature parity between Login, Signup, and Forgot Password pages—specifically regarding password visibility toggles and label-input associations—ensures a predictable and accessible user experience. Missing `id` and `htmlFor` attributes on inputs breaks screen reader navigation even if the layout looks correct.
 **Action:** Always audit the full authentication suite (Login, Signup, Recovery) for accessibility parity and ensure interactive password fields consistently offer visibility toggles.
+
+## 2025-06-17 - [Accessible Progress Indicators and V2 Navigation Polish]
+**Learning:** For progress indicators to be truly accessible, they must include `role="progressbar"` along with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` attributes, allowing screen readers to accurately report status. In side-navigation rails, ensuring decorative icons are marked with `aria-hidden="true"` and the active link has `aria-current="page"` significantly improves screen reader navigation. Additionally, maintaining localization consistency (e.g., 'Inicio' vs 'Home') in new UI versions (V2) is essential for a cohesive user experience.
+**Action:** Always implement full ARIA attributes for progress components and audit new navigation structures for both accessibility markers and language consistency.

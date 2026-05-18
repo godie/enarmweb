@@ -18,13 +18,22 @@ const CustomProgressBar = ({
   wrapperColor = 'grey lighten-3',
   className = '',
   style = EMPTY_STYLE,
-  height
+  height,
+  'aria-label': ariaLabel
 }) => {
   const isIndeterminate = progress === undefined || progress === null;
   const finalStyle = height ? { ...style, height } : style;
 
   return (
-    <div className={`progress ${wrapperColor} ${className}`} style={finalStyle}>
+    <div
+      className={`progress ${wrapperColor} ${className}`}
+      style={finalStyle}
+      role="progressbar"
+      aria-label={ariaLabel}
+      aria-valuenow={!isIndeterminate ? Math.round(progress) : undefined}
+      aria-valuemin={!isIndeterminate ? 0 : undefined}
+      aria-valuemax={!isIndeterminate ? 100 : undefined}
+    >
       <div
         className={`${isIndeterminate ? 'indeterminate' : 'determinate'} ${color}`}
         style={!isIndeterminate ? { width: `${progress}%` } : {}}
@@ -40,6 +49,7 @@ CustomProgressBar.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   height: PropTypes.string,
+  'aria-label': PropTypes.string,
 };
 
 export default CustomProgressBar;
