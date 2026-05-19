@@ -75,6 +75,7 @@ describe('V2Checkout', () => {
   });
 
   it('shows error message on payment failure', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     PaymentService.createCheckoutSession.mockRejectedValue(new Error('Payment failed'));
 
     render(

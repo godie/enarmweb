@@ -50,6 +50,38 @@ const ensureMaterializeGlobal = () => {
 
 ensureMaterializeGlobal();
 
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+let _capturedConsoleError;
+let _capturedConsoleWarn;
+
+// Patterns that indicate test-quality issues (act warnings, prop leaks, controlled inputs)
+const CONSOLE_ERROR_PATTERNS = [
+  /not wrapped in act/i,
+  /changing an uncontrolled/i,
+  /does not recognize the.*prop/i,
+  /checked.*onChange/i,
+  /value.*onChange/i,
+  /validateDOMNesting/i,
+];
+const CONSOLE_WARN_PATTERNS = [
+  /not wrapped in act/i,
+  /changing an uncontrolled/i,
+  /does not recognize the.*prop/i,
+];
+
+function hasBadConsoleCall(calls, patterns) {
+  return calls.some(args =>
+    args.some(arg =>
+      typeof arg === 'string' && patterns.some(p => p.test(arg))
+    )
+  );
+}
+
+function formatCalls(calls) {
+  return calls.map(c => c.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ')).join('\n');
+}
+
 beforeEach(() => {
   ensureMaterializeGlobal();
   globalThis.M.toast.mockClear();
@@ -57,4 +89,32 @@ beforeEach(() => {
   globalThis.M.validate_field.mockClear();
   globalThis.M.Modal.init.mockClear();
   globalThis.M.FormSelect.init.mockClear();
+  _capturedConsoleError = console.error = vi.fn();
+  _capturedConsoleWarn = console.warn = vi.fn();
+});
+
+afterEach(() => {
+  const skipChecks = globalThis.__SKIP_CONSOLE_CHECKS__;
+  globalThis.__SKIP_CONSOLE_CHECKS__ = false;
+  const errors = _capturedConsoleError.mock.calls;
+  const warns = _capturedConsoleWarn.mock.calls;
+  console.error = originalConsoleError;
+  console.warn = originalConsoleWarn;
+
+  if (!skipChecks && hasBadConsoleCall(errors, CONSOLE_ERROR_PATTERNS)) {
+    const bad = errors.filter(args =>
+      args.some(arg => typeof arg === 'string' && CONSOLE_ERROR_PATTERNS.some(p => p.test(arg)))
+    );
+    throw new Error(
+      `Unexpected console.error warning(s) during test:\n${formatCalls(bad)}`
+    );
+  }
+  if (!skipChecks && hasBadConsoleCall(warns, CONSOLE_WARN_PATTERNS)) {
+    const bad = warns.filter(args =>
+      args.some(arg => typeof arg === 'string' && CONSOLE_WARN_PATTERNS.some(p => p.test(arg)))
+    );
+    throw new Error(
+      `Unexpected console.warn warning(s) during test:\n${formatCalls(bad)}`
+    );
+  }
 });

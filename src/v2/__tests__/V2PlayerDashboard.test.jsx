@@ -146,6 +146,7 @@ describe('V2PlayerDashboard', () => {
   });
 
   it('handles API error gracefully with fallback data', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     UserService.getUserStats.mockRejectedValueOnce(new Error('API Error'));
     
     render(

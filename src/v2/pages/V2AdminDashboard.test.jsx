@@ -34,6 +34,7 @@ describe('V2AdminDashboard', () => {
   });
 
   it('renders error state when API fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     UserService.getAdminStats.mockRejectedValue(new Error('API Error'));
 
     render(

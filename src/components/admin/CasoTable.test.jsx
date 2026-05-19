@@ -138,6 +138,7 @@ describe('CasoTable Component', () => {
   });
 
   test('shows error message and toast when API fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     let rejectDelayed;
     const delayedError = new Promise((_resolve, reject) => {
       rejectDelayed = reject;

@@ -259,6 +259,7 @@ describe('V2FlashcardCreator', () => {
   });
 
   it('uses mock specialties when API fails', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     ExamService.loadCategories.mockRejectedValue(new Error('API Error'));
     render(
       <MemoryRouter>

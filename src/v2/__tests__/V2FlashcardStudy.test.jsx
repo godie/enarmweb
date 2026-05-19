@@ -167,6 +167,7 @@ describe('V2FlashcardStudy', () => {
   });
 
   it('handles API error gracefully with fallback data', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     FlashcardService.getDueFlashcards.mockRejectedValue(new Error('Network error'));
     
     render(

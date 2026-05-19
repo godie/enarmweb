@@ -195,6 +195,7 @@ describe('V2ErrorReview', () => {
   });
 
   it('handles API error gracefully with fallback data', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     ExamService.getUserAnswers.mockRejectedValue(new Error('Network error'));
     
     render(

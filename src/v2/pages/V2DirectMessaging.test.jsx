@@ -34,6 +34,7 @@ vi.mock('../../services/MessageService', () => ({
 describe('V2DirectMessaging', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     // Error triggers mock data fallback in component
     MessageService.getConversations.mockRejectedValue(new Error('Network Error'));
     MessageService.getConversation.mockResolvedValue({ data: MOCK_MESSAGES });

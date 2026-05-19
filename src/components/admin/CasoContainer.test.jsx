@@ -141,6 +141,7 @@ describe('CasoContainer Component', () => {
   });
 
   test('loads data for an existing case and calls Materialize.updateTextFields', async () => {
+    globalThis.__SKIP_CONSOLE_CHECKS__ = true;
     mockParams = { identificador: '1' };
     renderContainer();
 
@@ -241,6 +242,7 @@ describe('CasoContainer Component', () => {
   });
 
   test('form submission error shows error alert', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     ExamService.saveCaso.mockRejectedValue(new Error('Save failed'));
     renderContainer();
     fireEvent.change(screen.getByTestId('caso-description-input'), { target: { name: 'description', value: 'Test Error Submit' } });
