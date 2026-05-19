@@ -1,0 +1,23 @@
+#!/bin/sh
+# Pre-commit hook to run tests and catch console warnings before pushing
+# This file should be symlinked or copied to .git/hooks/pre-commit
+#
+# Quick setup (from project root):
+#   mkdir -p .git/hooks && cp hooks/pre-commit .git/hooks/ && chmod +x .git/hooks/pre-commit
+#
+# Or use Husky for automatic installation (recommended for teams):
+#   npx husky add .husky/pre-commit 'npx vitest run'
+
+echo "Running tests before commit..."
+
+npx vitest run
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "ERROR: Tests failed. Please fix all failing tests before committing."
+    echo "If you need to skip this hook temporarily, use: git commit --no-verify"
+    exit 1
+fi
+
+echo "Tests passed successfully!"
+exit 0
