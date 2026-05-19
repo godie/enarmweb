@@ -1,5 +1,5 @@
 
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { vi, describe, beforeEach, it, expect } from 'vitest';
 import PlayerDashboard from "./PlayerDashboard";
@@ -128,5 +128,6 @@ describe("PlayerDashboard Component", () => {
 
         fireEvent.mouseLeave(cardioCard);
         expect(cardioCard.className).not.toMatch(/specialtyItemFocused|_specialtyItemFocused_/);
+        await waitFor(() => {});
     });
 });

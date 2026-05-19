@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import V2ErrorReview from '../pages/V2ErrorReview';
 import ExamService from '../../services/ExamService';
@@ -168,7 +168,7 @@ describe('V2ErrorReview', () => {
     expect(questionCards.length).toBeGreaterThan(0);
     
     if (questionCards.length > 0) {
-      questionCards[0].click();
+      fireEvent.click(questionCards[0]);
     }
     
     // Verify click happened - no assertion needed on visual element

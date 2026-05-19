@@ -117,57 +117,64 @@ describe('CasoForm Component', () => {
       },
     };
 
-    test('renders questions and their texts', () => {
+    test('renders questions and their texts', async () => {
       renderWithContext(<CasoForm />, contextWithQuestions);
       expect(screen.getByDisplayValue('Question 1')).toBeInTheDocument();
       expect(screen.getByDisplayValue('Question 2')).toBeInTheDocument();
+      await waitFor(() => {});
     });
 
-    test('renders answers and their texts', () => {
+    test('renders answers and their texts', async () => {
       renderWithContext(<CasoForm />, contextWithQuestions);
       expect(screen.getByDisplayValue('Answer 1.1')).toBeInTheDocument();
       expect(screen.getByDisplayValue('Answer 1.2')).toBeInTheDocument();
       expect(screen.getByDisplayValue('Answer 2.1')).toBeInTheDocument();
+      await waitFor(() => {});
     });
 
-    test('calls onChangeQuestion when a question text is changed', () => {
+    test('calls onChangeQuestion when a question text is changed', async () => {
       renderWithContext(<CasoForm />, contextWithQuestions);
       const question1Textarea = screen.getByDisplayValue('Question 1');
       fireEvent.change(question1Textarea, { target: { value: 'New Question 1 Text' } });
       expect(contextWithQuestions.onChangeQuestion).toHaveBeenCalledTimes(1);
       expect(contextWithQuestions.onChangeQuestion).toHaveBeenCalledWith(0, expect.anything()); // 0 for first question
+      await waitFor(() => {});
     });
 
-    test('calls onChangeAnswer for answer text change', () => {
+    test('calls onChangeAnswer for answer text change', async () => {
       renderWithContext(<CasoForm />, contextWithQuestions);
       const answer11Text = screen.getByDisplayValue('Answer 1.1');
       fireEvent.change(answer11Text, { target: { value: 'New Answer 1.1 Text' } });
       expect(contextWithQuestions.onChangeAnswer).toHaveBeenCalledTimes(1);
       expect(contextWithQuestions.onChangeAnswer).toHaveBeenCalledWith(0, 0, 'text', expect.anything()); // Q0, A0
+      await waitFor(() => {});
     });
 
-    test('calls deleteQuestion when a question delete button is clicked', () => {
+    test('calls deleteQuestion when a question delete button is clicked', async () => {
       renderWithContext(<CasoForm />, contextWithQuestions);
       const deleteQuestionButtons = screen.getAllByRole('button', { name: /borrar pregunta/i });
       fireEvent.click(deleteQuestionButtons[0]);
       expect(contextWithQuestions.deleteQuestion).toHaveBeenCalledTimes(1);
       expect(contextWithQuestions.deleteQuestion).toHaveBeenCalledWith(0, expect.anything());
+      await waitFor(() => {});
     });
 
-    test('calls addAnswer when "add answer" button for a question is clicked', () => {
+    test('calls addAnswer when "add answer" button for a question is clicked', async () => {
       renderWithContext(<CasoForm />, contextWithQuestions);
       const addAnswerButtons = screen.getAllByRole('button', { name: /agregar una respuesta/i });
       fireEvent.click(addAnswerButtons[0]);
       expect(contextWithQuestions.addAnswer).toHaveBeenCalledTimes(1);
       expect(contextWithQuestions.addAnswer).toHaveBeenCalledWith(0, expect.anything());
+      await waitFor(() => {});
     });
 
-    test('calls deleteAnswer when an answer delete button is clicked', () => {
+    test('calls deleteAnswer when an answer delete button is clicked', async () => {
       renderWithContext(<CasoForm />, contextWithQuestions);
       const deleteAnswerButtons = screen.getAllByRole('button', { name: /borrar respuesta/i });
       fireEvent.click(deleteAnswerButtons[0]);
       expect(contextWithQuestions.deleteAnswer).toHaveBeenCalledTimes(1);
       expect(contextWithQuestions.deleteAnswer).toHaveBeenCalledWith(0, 0, expect.anything());
+      await waitFor(() => {});
     });
   });
 });
