@@ -42,3 +42,11 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Check for console warnings in test output
+        run: |
+          npm test 2>&1 | tee vitest-output.txt
+          if grep -qE 'not wrapped in act|changing an uncontrolled|does not recognize the.*prop|Received `.+?` for a non-boolean attribute|Invalid DOM property|Each child in a list should have a unique.*key' vitest-output.txt; then
+            echo "ERROR: Console warnings detected in test output!"
+            exit 1
+          fi

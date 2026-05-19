@@ -63,11 +63,18 @@ const CONSOLE_ERROR_PATTERNS = [
   /checked.*onChange/i,
   /value.*onChange/i,
   /validateDOMNesting/i,
+  /Received `.+?` for a non-boolean attribute/i,
+  /Invalid DOM property/i,
+  /Each child in a list should have a unique.*key/i,
+  /`value` prop on `%s` should not be null/i,
 ];
 const CONSOLE_WARN_PATTERNS = [
   /not wrapped in act/i,
   /changing an uncontrolled/i,
   /does not recognize the.*prop/i,
+  /Received `.+?` for a non-boolean attribute/i,
+  /Invalid DOM property/i,
+  /Each child in a list should have a unique.*key/i,
 ];
 
 function hasBadConsoleCall(calls, patterns) {
@@ -83,6 +90,7 @@ function formatCalls(calls) {
 }
 
 beforeEach(() => {
+  globalThis.__SKIP_CONSOLE_CHECKS__ = false;
   ensureMaterializeGlobal();
   globalThis.M.toast.mockClear();
   globalThis.M.updateTextFields.mockClear();

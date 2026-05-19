@@ -71,7 +71,6 @@ describe('MyContributions Component', () => {
     });
 
     it('shows error message when fetching contributions fails', async () => {
-        vi.spyOn(console, 'error').mockImplementation(() => {});
         ExamService.loadCategories.mockResolvedValue({ data: [] });
         ExamService.getUserContributions.mockRejectedValue(new Error('Failed to fetch'));
 

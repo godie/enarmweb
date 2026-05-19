@@ -156,7 +156,6 @@ describe('V2SessionSummary', () => {
   });
 
   it('handles API error gracefully', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
     LeaderboardService.getTopUsers.mockRejectedValueOnce(new Error('API Error'));
     
     render(

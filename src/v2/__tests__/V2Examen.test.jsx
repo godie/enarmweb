@@ -161,7 +161,6 @@ describe('V2Examen', () => {
   });
 
   it('shows error message on API failure with fallback', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
     // Mock returns fallback data after error
     ExamService.getCaso.mockRejectedValueOnce(new Error('API Error'));
     
