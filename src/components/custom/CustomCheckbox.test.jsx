@@ -60,7 +60,7 @@ describe('CustomCheckbox', () => {
     expect(wrapper).toHaveClass('s12');
     expect(wrapper).toHaveClass('m6');
     expect(wrapper).toHaveClass('offset-s1');
-    expect(wrapper).toHaveStyle('margin-bottom: 16px');
+    expect(wrapper).toHaveStyle('margin-bottom: 1rem');
     expect(wrapper).toHaveAttribute('data-testid', 'outer-wrapper');
   });
 
@@ -75,7 +75,7 @@ describe('CustomCheckbox', () => {
     );
     const label = container.firstChild;
     expect(label.tagName).toBe('LABEL');
-    expect(label).toHaveStyle('color: red');
+    expect(label).toHaveStyle('color: rgb(255, 0, 0)');
     expect(label).toHaveAttribute('data-custom', 'test');
   });
 

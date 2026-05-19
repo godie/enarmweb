@@ -1,25 +1,29 @@
-import { CustomButton } from '../CustomButton';
+import CustomButton from '../custom/CustomButton';
 
-export const ExamenRow = ({ exam, onDelete }) => {
+const ExamenRow = ({ exam, onDelete }) => {
     return (
         <tr>
             <td>{exam.name}</td>
             <td>{exam.description || 'Sin descripción'}</td>
-            <td>{exam.clinical_cases_count ?? (exam.exam_questions?.length || 0)}</td>
+            <td>{exam.exam_questions?.length || 0}</td>
             <td className="right-align">
                 <CustomButton
-                    variant="icon"
-                    color="blue-text"
-                    route={`#/dashboard/edit/exam/${exam.id}`}
+                    flat
+                    href={`#/dashboard/edit/exam/${exam.id}`}
                     icon="edit"
+                    className="blue-text"
+                    tooltip="Editar Examen"
                 />
                 <CustomButton
-                    variant="icon"
-                    color="red-text"
-                    onClick={() => onDelete(exam)}
+                    flat
+                    className="red-text"
                     icon="delete"
+                    onClick={() => onDelete(exam)}
+                    tooltip="Eliminar Examen"
                 />
             </td>
         </tr>
     );
 };
+
+export default ExamenRow;
