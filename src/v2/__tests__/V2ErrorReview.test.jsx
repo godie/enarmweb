@@ -59,6 +59,7 @@ describe('V2ErrorReview', () => {
   });
 
   it('renders loading state initially', () => {
+    ExamService.getUserAnswers.mockReturnValue(new Promise(() => {}));
     render(
       <MemoryRouter>
         <V2ErrorReview />
@@ -172,6 +173,7 @@ describe('V2ErrorReview', () => {
     
     // Verify click happened - no assertion needed on visual element
     expect(true).toBeTruthy();
+    await waitFor(() => {});
   });
 
   it('uses mock data when API returns empty array', async () => {

@@ -41,6 +41,7 @@ describe('V2FlashcardStudy', () => {
   });
 
   it('renders loading state initially', () => {
+    FlashcardService.getDueFlashcards.mockReturnValue(new Promise(() => {}));
     render(
       <MemoryRouter>
         <V2FlashcardStudy />
@@ -72,6 +73,7 @@ describe('V2FlashcardStudy', () => {
     // Progress bar should exist
     const progressBar = document.querySelector('.v2-linear-progress');
     expect(progressBar).toBeDefined();
+    await waitFor(() => {});
   });
 
   it('shows flashcard front text', async () => {

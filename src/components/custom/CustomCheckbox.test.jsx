@@ -51,6 +51,7 @@ describe('CustomCheckbox', () => {
         offset="s1"
         style={{ marginBottom: '1rem' }}
         data-testid="outer-wrapper"
+        onChange={() => {}}
       />
     );
 
@@ -71,6 +72,7 @@ describe('CustomCheckbox', () => {
         label="No Wrap"
         style={{ color: 'red' }}
         data-custom="test"
+        onChange={() => {}}
       />
     );
     const label = container.firstChild;
@@ -80,7 +82,7 @@ describe('CustomCheckbox', () => {
   });
 
   test('renders helper text and links with aria-describedby', () => {
-    render(<CustomCheckbox id="help-check" label="Help Label" helperText="Be careful" />);
+    render(<CustomCheckbox id="help-check" label="Help Label" helperText="Be careful" onChange={() => {}} />);
 
     const helper = screen.getByText('Be careful');
     expect(helper).toBeInTheDocument();
@@ -92,13 +94,13 @@ describe('CustomCheckbox', () => {
   });
 
   test('does not wrap in div if no grid or wrapperClassName provided', () => {
-    const { container } = render(<CustomCheckbox id="no-wrap" label="No Wrap" />);
+    const { container } = render(<CustomCheckbox id="no-wrap" label="No Wrap" onChange={() => {}} />);
     expect(container.firstChild.tagName).toBe('LABEL');
   });
 
   test('wraps in div if wrapperClassName is provided', () => {
     const { container } = render(
-      <CustomCheckbox id="wrap-class" label="Wrap Class" wrapperClassName="custom-wrap" />
+      <CustomCheckbox id="wrap-class" label="Wrap Class" wrapperClassName="custom-wrap" onChange={() => {}} />
     );
     expect(container.firstChild.tagName).toBe('DIV');
     expect(container.firstChild).toHaveClass('custom-wrap');
@@ -106,7 +108,7 @@ describe('CustomCheckbox', () => {
 
   test('applies wrapperClassName to the wrapper div', () => {
     const { container } = render(
-      <CustomCheckbox id="wrap-class-2" label="Wrap Class" wrapperClassName="extra-class" s={12} />
+      <CustomCheckbox id="wrap-class-2" label="Wrap Class" wrapperClassName="extra-class" s={12} onChange={() => {}} />
     );
     const wrapper = container.firstChild;
     expect(wrapper).toHaveClass('extra-class');

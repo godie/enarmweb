@@ -96,8 +96,9 @@ describe('CasoTable Component', () => {
   // =====================
 
   test('shows preloader while data is loading', () => {
-    // Promise that never resolves during this test
+    // Promises that never resolve during this test
     ExamService.getClinicalCases.mockReturnValue(new Promise(() => {}));
+    ExamService.loadCategories.mockReturnValue(new Promise(() => {}));
 
     renderCasoTable();
 

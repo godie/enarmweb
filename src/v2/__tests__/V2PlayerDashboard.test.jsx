@@ -58,6 +58,9 @@ describe('V2PlayerDashboard', () => {
   });
 
   it('renders loading state initially', () => {
+    UserService.getUserStats.mockReturnValue(new Promise(() => {}));
+    ExamService.loadCategories.mockReturnValue(new Promise(() => {}));
+    AchievementService.getAchievements.mockReturnValue(new Promise(() => {}));
     render(
       <MemoryRouter>
         <V2PlayerDashboard />

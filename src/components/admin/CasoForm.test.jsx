@@ -1,5 +1,5 @@
 
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 import CasoForm from './CasoForm';
@@ -47,7 +47,7 @@ describe('CasoForm Component', () => {
     ExamService.loadCategories.mockResolvedValue({ data: [{ id: 1, name: 'Cardiología' }] });
   });
 
-  test('renders initial description and basic form elements', () => {
+  test('renders initial description and basic form elements', async () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
 
@@ -56,65 +56,43 @@ describe('CasoForm Component', () => {
     expect(screen.getByRole('button', { name: /agregar pregunta/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /cancelar/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /guardar/i })).toBeInTheDocument();
+    await waitFor(() => {});
   });
 
-  test('calls onChange when description is changed', () => {
+  test('calls onChange when description is changed', async () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
     const descriptionTextarea = screen.getByLabelText(/Caso clínico/i);
     fireEvent.change(descriptionTextarea, { target: { name: 'description', value: 'New description' } });
     expect(contextValue.onChange).toHaveBeenCalledTimes(1);
+    await waitFor(() => {});
   });
 
-  test('calls saveCasoAction when form is submitted', () => {
+  test('calls saveCasoAction when form is submitted', async () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
 
-    // We need to submit the form. The button is type="submit" inside the form.
-    // Finding the button and clicking it should submit the form.
     const submitButton = screen.getByRole('button', { name: /guardar/i });
-
-    // Note: Since `saveCasoAction` is the form action (for useActionState), 
-    // simply clicking submit in JSDOM might not trigger it exactly as a browser form action 
-    // unless mapped correctly, but if it was passed as prop `action={saveCasoAction}`, 
-    // we can check if the prop was set on the form.
-    // However, react-dom's useActionState/form actions are newer. 
-    // Let's assume for this test we check if the button is there.
-    // If the test was relying on prop function call, it's fine.
-    // But `saveCasoAction` is passed to `<form action={saveCasoAction}>`.
-    // JSDOM might not simulate form action submission to function fully without setup.
-    // Let's rely on the previous test logic: passing a mock as `action` prop.
-
-    // Actually, checking if the attribute is present or if we can simulate submit.
-    // If we just want to verify it's passed, we can query the form.
-    // Wait, previous test was `fireEvent.click(submitButton); expect(props.saveCasoAction).toHaveBeenCalledTimes(1);`
-    // This worked because it was likely a normal onSubmit handler or the test environment handled it.
-    // Wait, the original code had `<form action={saveCasoAction}>`. 
-    // Calling the action prop on submit event is React 18/19 feature.
-
-    // Let's try to simulate form submission.
     fireEvent.submit(submitButton.closest('form'));
-
-    // Note: Since Vitest/JSDOM with React 19 features might be tricky, checking if it was rendered is good enough for now.
-    // But let's seeing if calling submit works.
-    // Actually, if we pass a mock to `action`, does React call it on submit event in test?
-    // Maybe not.
+    await waitFor(() => {});
   });
 
-  test('calls onCancel when cancel button is clicked', () => {
+  test('calls onCancel when cancel button is clicked', async () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
     const cancelButton = screen.getByRole('button', { name: /cancelar/i });
     fireEvent.click(cancelButton);
     expect(contextValue.onCancel).toHaveBeenCalledTimes(1);
+    await waitFor(() => {});
   });
 
-  test('calls addQuestion when "Agregar Pregunta" button is clicked', () => {
+  test('calls addQuestion when "Agregar Pregunta" button is clicked', async () => {
     const contextValue = getDefaultContextValue();
     renderWithContext(<CasoForm />, contextValue);
     const addQuestionButton = screen.getByRole('button', { name: /agregar pregunta/i });
     fireEvent.click(addQuestionButton);
     expect(contextValue.addQuestion).toHaveBeenCalledTimes(1);
+    await waitFor(() => {});
   });
 
   describe('With Questions and Answers', () => {
