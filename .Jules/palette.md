@@ -123,3 +123,7 @@
 ## 2025-06-17 - [Accessible Progress Indicators and V2 Navigation Polish]
 **Learning:** For progress indicators to be truly accessible, they must include `role="progressbar"` along with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` attributes, allowing screen readers to accurately report status. In side-navigation rails, ensuring decorative icons are marked with `aria-hidden="true"` and the active link has `aria-current="page"` significantly improves screen reader navigation. Additionally, maintaining localization consistency (e.g., 'Inicio' vs 'Home') in new UI versions (V2) is essential for a cohesive user experience.
 **Action:** Always implement full ARIA attributes for progress components and audit new navigation structures for both accessibility markers and language consistency.
+
+## 2025-06-17 - [Accessible Checkboxes and Consistent Prop Spreading]
+**Learning:** Enhancing base form components like `CustomCheckbox` with standardized `required` indicators (visual asterisk and `aria-required`) and grid support (`s`, `m`, `l`, `xl`, `offset`) improves both accessibility and developer productivity. Ensuring that `...props` are consistently applied to the inner `input` regardless of the presence of a wrapper `div` maintains a predictable component API.
+**Action:** Always provide visual and semantic cues for mandatory fields and ensure consistent prop-spreading behavior in multi-layered components.

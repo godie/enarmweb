@@ -35,6 +35,12 @@ describe('CustomCheckbox', () => {
     expect(checkbox).toHaveAttribute('aria-required', 'true');
   });
 
+  test('is disabled when the prop is true', () => {
+    render(<CustomCheckbox id="test-check" label="Accept Terms" disabled onChange={() => {}} />);
+    const checkbox = screen.getByLabelText(/Accept Terms/i);
+    expect(checkbox).toBeDisabled();
+  });
+
   test('applies grid classes and style to wrapper div', () => {
     const { container } = render(
       <CustomCheckbox
@@ -98,5 +104,13 @@ describe('CustomCheckbox', () => {
     expect(container.firstChild).toHaveClass('custom-wrap');
   });
 
+  test('applies wrapperClassName to the wrapper div', () => {
+    const { container } = render(
+      <CustomCheckbox id="wrap-class-2" label="Wrap Class" wrapperClassName="extra-class" s={12} />
+    );
+    const wrapper = container.firstChild;
+    expect(wrapper).toHaveClass('extra-class');
+    expect(wrapper).toHaveClass('col');
+    expect(wrapper).toHaveClass('s12');
   });
 });

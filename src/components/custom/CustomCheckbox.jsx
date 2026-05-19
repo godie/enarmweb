@@ -10,22 +10,16 @@ const CustomCheckbox = ({
   className = '', // Applied to the input element
   labelClassName = '', // Applied to the label element
   indeterminate = false,
-<<<<<<< HEAD
-  value, // HTML value attribute
-  required = false,
-  ...props
-=======
   value, // HTML value attribute, not for checked state
   s,
   m,
   l,
   xl,
   offset,
-  required,
+  required = false,
   helperText,
   wrapperClassName = '',
   ...props // Contains style and other custom props
->>>>>>> origin/palette-custom-checkbox-ux-6267069839876251188
 }) => {
   const inputRef = useRef(null);
 
@@ -41,16 +35,21 @@ const CustomCheckbox = ({
   }
 
   // Construct grid and wrapper classes
-  const hasGrid = s || m || l || xl || offset || wrapperClassName;
+  const hasGrid = s || m || l || xl || offset;
   let finalWrapperClasses = wrapperClassName;
-  if (s) finalWrapperClasses += ` col s${s}`;
-  if (m) finalWrapperClasses += ` col m${m}`;
-  if (l) finalWrapperClasses += ` col l${l}`;
-  if (xl) finalWrapperClasses += ` col xl${xl}`;
-  if (offset) {
-    offset.split(' ').forEach(off => {
-      if (off) finalWrapperClasses += ` offset-${off}`;
-    });
+  if (hasGrid || wrapperClassName) {
+    if (!finalWrapperClasses.includes('col')) {
+      finalWrapperClasses += ' col';
+    }
+    if (s) finalWrapperClasses += ` s${s}`;
+    if (m) finalWrapperClasses += ` m${m}`;
+    if (l) finalWrapperClasses += ` l${l}`;
+    if (xl) finalWrapperClasses += ` xl${xl}`;
+    if (offset) {
+      offset.split(' ').forEach(off => {
+        if (off) finalWrapperClasses += ` offset-${off}`;
+      });
+    }
   }
 
   const helperTextId = helperText ? `${id}-helper` : undefined;
@@ -59,8 +58,8 @@ const CustomCheckbox = ({
     <>
       <label
         htmlFor={id}
-        className={labelClassName.trim()}
-        {...(!hasGrid ? props : {})} // Apply style/custom props to label if NOT wrapped in div
+        className={labelClassName}
+        {...(!hasGrid && !wrapperClassName ? props : {})} // Apply style/custom props to label if NOT wrapped in div
       >
         <input
           ref={inputRef}
@@ -93,7 +92,7 @@ const CustomCheckbox = ({
     </>
   );
 
-  if (hasGrid) {
+  if (hasGrid || wrapperClassName) {
     return (
       <div
         className={finalWrapperClasses.trim()}
