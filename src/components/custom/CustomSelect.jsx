@@ -24,6 +24,7 @@ const CustomSelect = ({
   placeholder, // Placeholder text for the first disabled option
   offset,
   helperText,
+  noMargin,
   ...props
 }) => {
   const selectRef = useRef(null);

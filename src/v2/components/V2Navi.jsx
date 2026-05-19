@@ -119,6 +119,7 @@ const V2Navi = () => {
         variant={isMobile ? 'mobile' : 'desktop'}
       />
     </>
+
   );
 };
 

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import CustomButton from '../custom/CustomButton';
 
 const ExamenRow = ({ exam, onDelete }) => {
@@ -25,16 +24,6 @@ const ExamenRow = ({ exam, onDelete }) => {
             </td>
         </tr>
     );
-};
-
-ExamenRow.propTypes = {
-    exam: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string,
-        description: PropTypes.string,
-        exam_questions: PropTypes.array,
-    }).isRequired,
-    onDelete: PropTypes.func.isRequired,
 };
 
 export default ExamenRow;

@@ -89,5 +89,6 @@ describe('V2CouponCenter', () => {
     const backButton = screen.getByLabelText('Volver');
     fireEvent.click(backButton);
     expect(mockGoBack).toHaveBeenCalled();
+    await waitFor(() => {});
   });
 });

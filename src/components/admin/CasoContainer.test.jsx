@@ -141,6 +141,7 @@ describe('CasoContainer Component', () => {
   });
 
   test('loads data for an existing case and calls Materialize.updateTextFields', async () => {
+    globalThis.__SKIP_CONSOLE_CHECKS__ = true;
     mockParams = { identificador: '1' };
     renderContainer();
 

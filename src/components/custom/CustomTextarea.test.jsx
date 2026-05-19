@@ -16,24 +16,24 @@ vi.mock('@materializecss/materialize', () => ({
 
 describe('CustomTextarea', () => {
   test('renders label correctly', () => {
-    render(<CustomTextarea id="test-area" label="My Area" />);
+    render(<CustomTextarea id="test-area" label="My Area" onChange={() => {}} />);
     expect(screen.getByLabelText(/My Area/i)).toBeInTheDocument();
   });
 
   test('renders helper text when provided', () => {
-    render(<CustomTextarea id="test-area" label="My Area" helperText="Helpful info" />);
+    render(<CustomTextarea id="test-area" label="My Area" helperText="Helpful info" onChange={() => {}} />);
     expect(screen.getByText('Helpful info')).toHaveClass('helper-text');
   });
 
   test('applies offset class to the wrapper', () => {
-    const { container } = render(<CustomTextarea id="test-area" offset="s2 m1" />);
+    const { container } = render(<CustomTextarea id="test-area" offset="s2 m1" onChange={() => {}} />);
     const wrapper = container.firstChild;
     expect(wrapper).toHaveClass('offset-s2');
     expect(wrapper).toHaveClass('offset-m1');
   });
 
   test('renders prefix icon with aria-hidden', () => {
-    const { container } = render(<CustomTextarea id="test-area" icon="edit" />);
+    const { container } = render(<CustomTextarea id="test-area" icon="edit" onChange={() => {}} />);
     const icon = container.querySelector('.material-icons.prefix');
     expect(icon).toBeInTheDocument();
     expect(icon).toHaveAttribute('aria-hidden', 'true');

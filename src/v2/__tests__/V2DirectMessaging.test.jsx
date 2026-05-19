@@ -75,6 +75,7 @@ describe('V2DirectMessaging', () => {
   });
 
   it('renders loading state initially', () => {
+    MessageService.getConversations.mockReturnValue(new Promise(() => {}));
     render(
       <MemoryRouter>
         <V2DirectMessaging />

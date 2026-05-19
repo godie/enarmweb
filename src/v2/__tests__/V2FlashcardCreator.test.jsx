@@ -46,6 +46,7 @@ describe('V2FlashcardCreator', () => {
   });
 
   it('renders loading state initially', () => {
+    ExamService.loadCategories.mockReturnValue(new Promise(() => {}));
     render(
       <MemoryRouter>
         <V2FlashcardCreator />

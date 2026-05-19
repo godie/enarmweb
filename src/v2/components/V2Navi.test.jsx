@@ -37,7 +37,10 @@ describe('V2Navi', () => {
 
   it('toggles theme on button click', () => {
     const setAttributeSpy = vi.spyOn(document.documentElement, 'setAttribute');
-    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue('light');
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+      if (key === 'theme') return 'light';
+      return null;
+    });
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
 
     render(

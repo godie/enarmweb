@@ -44,6 +44,7 @@ describe('V2Examen', () => {
   });
 
   it('renders loading state initially', () => {
+    ExamService.getCaso.mockReturnValue(new Promise(() => {}));
     render(
       <MemoryRouter initialEntries={['/caso/1']}>
         <V2Examen />

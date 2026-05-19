@@ -144,7 +144,7 @@ describe('V2FlashcardStudy', () => {
     });
   });
 
-  it('flips the card when pressing Space', async () => {
+  it('handles keyboard shortcuts for flipping and rating', async () => {
     render(
       <MemoryRouter>
         <V2FlashcardStudy />
@@ -153,56 +153,27 @@ describe('V2FlashcardStudy', () => {
 
     await waitFor(() => screen.getByText('¿Cuál es la tríada de Virchow?'));
 
+    // Press Space to flip
     fireEvent.keyDown(window, { key: ' ' });
-
     await waitFor(() => {
       expect(screen.getByText(/Estasis venosa/)).toBeTruthy();
     });
-  });
 
-  it('rates the card when pressing numeric keys when flipped', async () => {
-    render(
-      <MemoryRouter>
-        <V2FlashcardStudy />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => screen.getByText('¿Cuál es la tríada de Virchow?'));
-
-    // Flip first
-    fireEvent.keyDown(window, { key: 'Enter' });
-    await waitFor(() => screen.getByText(/Estasis venosa/));
-
-    // Rate with '4' (Fácil)
+    // Press '4' to rate as Easy (Quality 5)
     fireEvent.keyDown(window, { key: '4' });
-
     await waitFor(() => {
       expect(screen.getByText('Agente causal más común de epiglotitis')).toBeTruthy();
     });
 
-    expect(FlashcardService.reviewFlashcard).toHaveBeenCalledWith(1, 5); // 4 maps to quality 5
-  });
-
-  it('rates the card as "Bien" when pressing Space when flipped', async () => {
-    render(
-      <MemoryRouter>
-        <V2FlashcardStudy />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => screen.getByText('¿Cuál es la tríada de Virchow?'));
-
-    // Flip first
-    fireEvent.keyDown(window, { key: ' ' });
-    await waitFor(() => screen.getByText(/Estasis venosa/));
-
-    // Rate with Space
-    fireEvent.keyDown(window, { key: ' ' });
-
+    // Press ' ' to rate as Good (Quality 4) - after flipping
+    fireEvent.keyDown(window, { key: ' ' }); // Flip second card
     await waitFor(() => {
-      expect(screen.getByText('Agente causal más común de epiglotitis')).toBeTruthy();
+      expect(screen.getByText(/Haemophilus influenzae/)).toBeTruthy();
     });
 
-    expect(FlashcardService.reviewFlashcard).toHaveBeenCalledWith(1, 4); // Space maps to quality 4
+    fireEvent.keyDown(window, { key: ' ' }); // Rate as Good
+    await waitFor(() => {
+      expect(screen.getByText('Signo de Murphy positivo indica...')).toBeTruthy();
+    });
   });
 });

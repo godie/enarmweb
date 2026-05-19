@@ -10,9 +10,16 @@ const CustomCheckbox = ({
   className = '', // Applied to the input element
   labelClassName = '', // Applied to the label element
   indeterminate = false,
-  value, // HTML value attribute
+  value, // HTML value attribute, not for checked state
+  s,
+  m,
+  l,
+  xl,
+  offset,
   required = false,
-  ...props
+  helperText,
+  wrapperClassName = '',
+  ...props // Contains style and other custom props
 }) => {
   const inputRef = useRef(null);
 
@@ -27,36 +34,76 @@ const CustomCheckbox = ({
     inputClasses += ' indeterminate-checkbox';
   }
 
-  // The main wrapper is the label for Materialize checkboxes
-  return (
-    <label htmlFor={id} className={labelClassName} {...props}>
-      <input
-        ref={inputRef}
-        type="checkbox"
-        id={id}
-        checked={checked}
-        onChange={onChange}
-        disabled={disabled}
-        className={inputClasses.trim()}
-        value={value}
-        required={required}
-        aria-required={required ? 'true' : undefined}
-      />
-      <span>
-        {label}
-        {required && (
-          <span
-            className="red-text"
-            style={{ marginLeft: '4px', fontWeight: 'bold' }}
-            aria-hidden="true"
-            title="Obligatorio"
-          >
-            *
-          </span>
-        )}
-      </span>
-    </label>
+  // Construct grid and wrapper classes
+  const hasGrid = s || m || l || xl || offset;
+  let finalWrapperClasses = wrapperClassName;
+  if (hasGrid || wrapperClassName) {
+    if (!finalWrapperClasses.includes('col')) {
+      finalWrapperClasses += ' col';
+    }
+    if (s) finalWrapperClasses += ` s${s}`;
+    if (m) finalWrapperClasses += ` m${m}`;
+    if (l) finalWrapperClasses += ` l${l}`;
+    if (xl) finalWrapperClasses += ` xl${xl}`;
+    if (offset) {
+      offset.split(' ').forEach(off => {
+        if (off) finalWrapperClasses += ` offset-${off}`;
+      });
+    }
+  }
+
+  const helperTextId = helperText ? `${id}-helper` : undefined;
+
+  const checkboxContent = (
+    <>
+      <label
+        htmlFor={id}
+        className={labelClassName}
+        {...(!hasGrid && !wrapperClassName ? props : {})} // Apply style/custom props to label if NOT wrapped in div
+      >
+        <input
+          ref={inputRef}
+          type="checkbox"
+          id={id}
+          checked={checked}
+          onChange={onChange}
+          disabled={disabled}
+          className={inputClasses.trim()}
+          value={value}
+          required={required}
+          aria-required={required ? 'true' : undefined}
+          aria-describedby={helperTextId}
+        />
+        <span>
+          {label}
+          {required && (
+            <span
+              className="red-text"
+              style={{ marginLeft: '4px', fontWeight: 'bold' }}
+              aria-hidden="true"
+              title="Obligatorio"
+            >
+              *
+            </span>
+          )}
+        </span>
+      </label>
+      {helperText && <span id={helperTextId} className="helper-text">{helperText}</span>}
+    </>
   );
+
+  if (hasGrid || wrapperClassName) {
+    return (
+      <div
+        className={finalWrapperClasses.trim()}
+        {...props} // Apply style/custom props to wrapper div if present
+      >
+        {checkboxContent}
+      </div>
+    );
+  }
+
+  return checkboxContent;
 };
 
 CustomCheckbox.propTypes = {
@@ -69,7 +116,14 @@ CustomCheckbox.propTypes = {
   labelClassName: PropTypes.string, // For the label element
   indeterminate: PropTypes.bool,
   value: PropTypes.string, // HTML value attribute for the checkbox
+  s: PropTypes.number,
+  m: PropTypes.number,
+  l: PropTypes.number,
+  xl: PropTypes.number,
+  offset: PropTypes.string,
   required: PropTypes.bool,
+  helperText: PropTypes.string,
+  wrapperClassName: PropTypes.string,
 };
 
 export default CustomCheckbox;

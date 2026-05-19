@@ -30,7 +30,7 @@ const V2ForgotPassword = () => {
       <div className='v2-card v2-page-centered-content'>
         <div className='v2-mb-24'>
           <div className='v2-icon-box-xl v2-icon-box-primary v2-mx-auto v2-mb-16'>
-            <i className='material-icons' style={{ fontSize: '40px' }}>lock_reset</i>
+            <i className='material-icons' style={{ fontSize: '40px' }} aria-hidden='true'>lock_reset</i>
           </div>
           <h1 className='v2-headline-medium v2-text-primary'>Recuperar Acceso</h1>
           <p className='v2-body-large v2-opacity-70'>
@@ -52,6 +52,7 @@ const V2ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                aria-required='true'
                 className='v2-input-with-prefix'
               />
             </div>
@@ -65,7 +66,7 @@ const V2ForgotPassword = () => {
               ) : (
                 <>
                   Enviar Instrucciones
-                  <i className='material-icons'>send</i>
+                  <i className='material-icons' aria-hidden='true'>send</i>
                 </>
               )}
             </button>
