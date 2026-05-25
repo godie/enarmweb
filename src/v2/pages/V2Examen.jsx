@@ -177,6 +177,50 @@ const V2Examen = () => {
     history.push('/dashboard');
   }, [history]);
 
+  // Keyboard shortcuts (defined after callbacks to avoid ReferenceError)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (loading || !caso) return;
+
+      const currentQuestion = caso?.preguntas?.[currentQuestionIndex];
+      if (!currentQuestion) return;
+
+      const key = e.key.toLowerCase();
+
+      // Select answer options (1-4 or A-D)
+      if (!showFeedback) {
+        const optionKeys = ['1', '2', '3', '4'];
+        const alphaKeys = ['a', 'b', 'c', 'd'];
+
+        let index = -1;
+        if (optionKeys.includes(key)) {
+          index = optionKeys.indexOf(key);
+        } else if (alphaKeys.includes(key)) {
+          index = alphaKeys.indexOf(key);
+        }
+
+        if (index !== -1 && index < currentQuestion.respuestas.length) {
+          handleSelectAnswer(currentQuestionIndex, index);
+        }
+      }
+
+      // Submit or Next (Enter)
+      if (key === 'enter') {
+        if (!showFeedback) {
+          if (selectedAnswers[currentQuestionIndex] !== undefined) {
+            handleSubmitAnswer();
+          }
+        } else {
+          handleNext();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown, { passive: true });
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [loading, caso, showFeedback, currentQuestionIndex, selectedAnswers, handleSelectAnswer, handleSubmitAnswer, handleNext]);
+
   if (loading) {
     return (
       <div className='v2-center-state v2-min-h-60vh' role='status' aria-live='polite' aria-label='Cargando caso clínico'>
@@ -203,8 +247,8 @@ const V2Examen = () => {
     );
   }
 
-  const currentQuestion = caso.preguntas[currentQuestionIndex];
-  
+  const currentQuestion = caso?.preguntas?.[currentQuestionIndex];
+
   // Guard: if no question at current index, show error
   if (!currentQuestion) {
     return (
@@ -347,13 +391,15 @@ const V2Examen = () => {
               iconColor = 'var(--md-sys-color-on-primary)';
             }
             
+            const shortcut = rIdx + 1;
             return (
               <button
                 key={rIdx}
                 onClick={() => !showFeedback && handleSelectAnswer(currentQuestionIndex, rIdx)}
                 disabled={showFeedback}
                 className='v2-card-outlined'
-                aria-label={`Opción ${String.fromCharCode(65 + rIdx)}: ${resp.texto}${showFeedback ? (isCorrectAnswer ? ' - Correcta' : (isSelected ? ' - Incorrecta' : '')) : ''}`}
+                aria-label={`Opción ${String.fromCharCode(65 + rIdx)} (atajo: ${shortcut}): ${resp.texto}${showFeedback ? (isCorrectAnswer ? ' - Correcta' : (isSelected ? ' - Incorrecta' : '')) : ''}`}
+                title={`Atajo: ${shortcut} o ${String.fromCharCode(65 + rIdx)}`}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -367,22 +413,27 @@ const V2Examen = () => {
                   transition: 'all 0.2s ease'
                 }}
               >
-                <span style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '50%',
-                  backgroundColor: iconBg,
-                  color: iconColor,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: '16px',
-                  fontWeight: 'bold',
-                  fontSize: '14px',
-                  flexShrink: 0
-                }}>
-                  {iconContent}
-                </span>
+                <div className='v2-flex-col v2-flex-align-center v2-flex-shrink-0' style={{ marginRight: '16px' }}>
+                  <span style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '50%',
+                    backgroundColor: iconBg,
+                    color: iconColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}>
+                    {iconContent}
+                  </span>
+                  {!showFeedback && (
+                    <span className='v2-label-small v2-opacity-50' style={{ marginTop: '4px', fontSize: '10px' }}>
+                      [{shortcut}]
+                    </span>
+                  )}
+                </div>
                 <span className='v2-body-large'>{resp.texto}</span>
               </button>
             );
@@ -398,9 +449,10 @@ const V2Examen = () => {
                 style={{ padding: '0 40px' }}
                 onClick={handleSubmitAnswer}
                 disabled={selectedAnswer === undefined}
-                aria-label='Confirmar respuesta'
+                aria-label='Confirmar respuesta (atajo: Enter)'
+                title='Atajo: Enter'
               >
-                Confirmar Respuesta
+                Confirmar Respuesta <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[Enter]</span>
                 <i className='material-icons' aria-hidden='true'>check_circle</i>
               </button>
               {selectedAnswer === undefined && (
@@ -430,9 +482,10 @@ const V2Examen = () => {
                     className='v2-btn-filled v2-btn-h-56'
                     style={{ padding: '0 40px' }}
                     onClick={handleNext}
-                    aria-label='Siguiente pregunta'
+                    aria-label='Siguiente pregunta (atajo: Enter)'
+                    title='Atajo: Enter'
                   >
-                    Siguiente
+                    Siguiente <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[Enter]</span>
                     <i className='material-icons' aria-hidden='true'>arrow_forward</i>
                   </button>
                 )}
@@ -441,9 +494,10 @@ const V2Examen = () => {
                     className='v2-btn-filled v2-btn-h-56'
                     style={{ padding: '0 40px' }}
                     onClick={handleNext}
-                    aria-label='Ver resumen de sesión'
+                    aria-label='Ver resumen de sesión (atajo: Enter)'
+                    title='Atajo: Enter'
                   >
-                    Ver Resumen
+                    Ver Resumen <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[Enter]</span>
                     <i className='material-icons' aria-hidden='true'>emoji_events</i>
                   </button>
                 )}
