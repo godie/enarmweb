@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
-import { MemoryRouter, useHistory } from 'react-router-dom';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import V2Examen from '../pages/V2Examen';
 import ExamService from '../../services/ExamService';
 
@@ -101,12 +101,67 @@ describe('V2Examen', () => {
     await screen.findByText('ECG');
     
     // Click on the ECG option (Option A) - aria-label uses lowercase
-    const ecgButton = await screen.findByRole('button', { name: /Opción A: ECG/i });
+    const ecgButton = await screen.findByRole('button', { name: /Opción A/i });
     fireEvent.click(ecgButton);
     
     // Confirm button should be enabled after selection - aria-label is 'Confirmar respuesta'
     const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
     expect(confirmBtn).not.toBeDisabled();
+  });
+
+  it('allows selecting an answer using keyboard shortcut', async () => {
+    render(
+      <MemoryRouter initialEntries={['/caso/1']}>
+        <V2Examen />
+      </MemoryRouter>
+    );
+
+    await screen.findByText('ECG');
+
+    // Simulate pressing '1'
+    fireEvent.keyDown(window, { key: '1' });
+
+    // Confirm button should be enabled
+    const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
+    expect(confirmBtn).not.toBeDisabled();
+  });
+
+  it('allows selecting an answer using alpha keyboard shortcut', async () => {
+    render(
+      <MemoryRouter initialEntries={['/caso/1']}>
+        <V2Examen />
+      </MemoryRouter>
+    );
+
+    await screen.findByText('ECG');
+
+    // Simulate pressing 'a'
+    fireEvent.keyDown(window, { key: 'a' });
+
+    // Confirm button should be enabled
+    const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
+    expect(confirmBtn).not.toBeDisabled();
+  });
+
+  it('allows submitting an answer using Enter key', async () => {
+    render(
+      <MemoryRouter initialEntries={['/caso/1']}>
+        <V2Examen />
+      </MemoryRouter>
+    );
+
+    await screen.findByText('ECG');
+
+    // Select answer
+    fireEvent.keyDown(window, { key: '1' });
+
+    // Simulate pressing 'Enter'
+    fireEvent.keyDown(window, { key: 'Enter' });
+
+    // Check feedback appears
+    await waitFor(() => {
+      expect(screen.getByText('+50 XP')).toBeDefined();
+    });
   });
 
   it('shows feedback after submitting answer', async () => {
@@ -120,7 +175,7 @@ describe('V2Examen', () => {
     await screen.findByText('ECG');
     
     // Select answer
-    const ecgButton = await screen.findByRole('button', { name: /Opción A: ECG/i });
+    const ecgButton = await screen.findByRole('button', { name: /Opción A/i });
     fireEvent.click(ecgButton);
     
     // Submit - use lowercase in aria-label
