@@ -124,6 +124,10 @@
 **Learning:** For progress indicators to be truly accessible, they must include `role="progressbar"` along with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` attributes, allowing screen readers to accurately report status. In side-navigation rails, ensuring decorative icons are marked with `aria-hidden="true"` and the active link has `aria-current="page"` significantly improves screen reader navigation. Additionally, maintaining localization consistency (e.g., 'Inicio' vs 'Home') in new UI versions (V2) is essential for a cohesive user experience.
 **Action:** Always implement full ARIA attributes for progress components and audit new navigation structures for both accessibility markers and language consistency.
 
+## 2025-02-27 - [Discoverable Shortcuts and Contextual Actions in Session Summaries]
+**Learning:** Adding keyboard shortcuts (`Enter`, `I`, `R`) to session summary pages significantly streamlines the transition back to core study loops. To ensure these shortcuts are discoverable, visual hints in brackets (e.g., `[Enter]`) should be integrated into button labels, complemented by descriptive `aria-label` and `title` attributes. Furthermore, contextual actions (like "Revisar Errores") should only be keyboard-accessible when the underlying condition (presence of errors) is met, preventing non-functional shortcut triggers.
+**Action:** Implement bracketed shortcut hints for primary post-session actions and ensure keyboard listeners respect the same conditional logic as the UI.
+
 ## 2025-06-17 - [Accessible Checkboxes and Consistent Prop Spreading]
 **Learning:** Enhancing base form components like `CustomCheckbox` with standardized `required` indicators (visual asterisk and `aria-required`) and grid support (`s`, `m`, `l`, `xl`, `offset`) improves both accessibility and developer productivity. Ensuring that `...props` are consistently applied to the inner `input` regardless of the presence of a wrapper `div` maintains a predictable component API.
 **Action:** Always provide visual and semantic cues for mandatory fields and ensure consistent prop-spreading behavior in multi-layered components.
