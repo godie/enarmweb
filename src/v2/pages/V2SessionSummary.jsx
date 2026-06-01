@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import LeaderboardService from '../../services/LeaderboardService';
 import Auth from '../../modules/Auth';
@@ -87,17 +87,40 @@ const V2SessionSummary = () => {
     return 'var(--md-sys-color-error)';
   };
 
-  const handleNewSession = () => {
+  const handleNewSession = useCallback(() => {
     history.push('/practica');
-  };
+  }, [history]);
 
-  const handleGoToDashboard = () => {
+  const handleGoToDashboard = useCallback(() => {
     history.push('/dashboard');
-  };
+  }, [history]);
 
-  const handleReviewMistakes = () => {
+  const handleReviewMistakes = useCallback(() => {
     history.push('/errores');
-  };
+  }, [history]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (loading) return;
+
+      const key = e.key.toLowerCase();
+      const hasErrors = totalQuestions - correctAnswers > 0;
+
+      if (key === 'enter') {
+        e.preventDefault();
+        handleNewSession();
+      } else if (key === 'i') {
+        handleGoToDashboard();
+      } else if (key === 'r' && hasErrors) {
+        handleReviewMistakes();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [loading, totalQuestions, correctAnswers, handleNewSession, handleGoToDashboard, handleReviewMistakes]);
 
   return (
     <div className='v2-page-medium v2-text-center'>
@@ -208,10 +231,11 @@ const V2SessionSummary = () => {
           className='v2-btn-tonal v2-btn-h-56'
           onClick={handleGoToDashboard}
           style={{ padding: '0 32px' }}
-          aria-label='Volver al inicio'
+          aria-label='Volver al inicio (atajo: I)'
+          title='Atajo: I'
         >
           <i className='material-icons' aria-hidden='true'>home</i>
-          Inicio
+          Inicio <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[I]</span>
         </button>
         
         {totalQuestions - correctAnswers > 0 && (
@@ -219,10 +243,11 @@ const V2SessionSummary = () => {
             className='v2-btn-tonal v2-btn-h-56'
             onClick={handleReviewMistakes}
             style={{ padding: '0 32px' }}
-            aria-label='Revisar errores'
+            aria-label='Revisar errores (atajo: R)'
+            title='Atajo: R'
           >
             <i className='material-icons' aria-hidden='true'>error_outline</i>
-            Revisar Errores
+            Revisar Errores <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[R]</span>
           </button>
         )}
         
@@ -230,10 +255,11 @@ const V2SessionSummary = () => {
           className='v2-btn-filled v2-btn-h-56' 
           onClick={handleNewSession}
           style={{ padding: '0 32px' }}
-          aria-label='Nueva sesión de práctica'
+          aria-label='Nueva sesión de práctica (atajo: Enter)'
+          title='Atajo: Enter'
         >
           <i className='material-icons' aria-hidden='true'>refresh</i>
-          Nueva Sesión
+          Nueva Sesión <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[Enter]</span>
         </button>
       </div>
 
