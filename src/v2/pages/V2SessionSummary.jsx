@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import LeaderboardService from '../../services/LeaderboardService';
 import Auth from '../../modules/Auth';
@@ -87,17 +87,46 @@ const V2SessionSummary = () => {
     return 'var(--md-sys-color-error)';
   };
 
-  const handleNewSession = () => {
+  const handleNewSession = useCallback(() => {
     history.push('/practica');
-  };
+  }, [history]);
 
-  const handleGoToDashboard = () => {
+  const handleGoToDashboard = useCallback(() => {
     history.push('/dashboard');
-  };
+  }, [history]);
 
-  const handleReviewMistakes = () => {
+  const handleReviewMistakes = useCallback(() => {
     history.push('/errores');
-  };
+  }, [history]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Avoid triggering shortcuts when typing in inputs/textareas or if contentEditable
+      if (
+        e.target.tagName === 'INPUT' ||
+        e.target.tagName === 'TEXTAREA' ||
+        e.target.isContentEditable
+      ) return;
+
+      const key = e.key.toLowerCase();
+      const hasErrors = totalQuestions - correctAnswers > 0;
+
+      if (key === 'enter') {
+        // Only trigger if not already on a button or link to avoid double activation
+        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
+          handleNewSession();
+        }
+      } else if (key === 'i') {
+        handleGoToDashboard();
+      } else if (key === 'r' && hasErrors) {
+        handleReviewMistakes();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [totalQuestions, correctAnswers, handleNewSession, handleGoToDashboard, handleReviewMistakes]);
 
   return (
     <div className='v2-page-medium v2-text-center'>
@@ -205,35 +234,38 @@ const V2SessionSummary = () => {
       {/* Action Buttons */}
       <div className='v2-flex v2-gap-16 v2-flex-justify-center v2-flex-wrap'>
         <button 
-          className='v2-btn-tonal v2-btn-h-56'
+          className='v2-btn-tonal v2-btn-h-56 v2-gap-4'
           onClick={handleGoToDashboard}
           style={{ padding: '0 32px' }}
-          aria-label='Volver al inicio'
+          aria-label='Volver al inicio (atajo: i)'
+          title='Atajo: i'
         >
           <i className='material-icons' aria-hidden='true'>home</i>
-          Inicio
+          Inicio <span className='v2-opacity-50 v2-label-small'>[i]</span>
         </button>
         
         {totalQuestions - correctAnswers > 0 && (
           <button 
-            className='v2-btn-tonal v2-btn-h-56'
+            className='v2-btn-tonal v2-btn-h-56 v2-gap-4'
             onClick={handleReviewMistakes}
             style={{ padding: '0 32px' }}
-            aria-label='Revisar errores'
+            aria-label='Revisar errores (atajo: r)'
+            title='Atajo: r'
           >
             <i className='material-icons' aria-hidden='true'>error_outline</i>
-            Revisar Errores
+            Revisar Errores <span className='v2-opacity-50 v2-label-small'>[r]</span>
           </button>
         )}
         
         <button 
-          className='v2-btn-filled v2-btn-h-56' 
+          className='v2-btn-filled v2-btn-h-56 v2-gap-4'
           onClick={handleNewSession}
           style={{ padding: '0 32px' }}
-          aria-label='Nueva sesión de práctica'
+          aria-label='Nueva sesión de práctica (atajo: Enter)'
+          title='Atajo: Enter'
         >
           <i className='material-icons' aria-hidden='true'>refresh</i>
-          Nueva Sesión
+          Nueva Sesión <span className='v2-opacity-50 v2-label-small'>[Enter]</span>
         </button>
       </div>
 
