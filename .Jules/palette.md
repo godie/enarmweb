@@ -127,3 +127,7 @@
 ## 2025-06-17 - [Accessible Checkboxes and Consistent Prop Spreading]
 **Learning:** Enhancing base form components like `CustomCheckbox` with standardized `required` indicators (visual asterisk and `aria-required`) and grid support (`s`, `m`, `l`, `xl`, `offset`) improves both accessibility and developer productivity. Ensuring that `...props` are consistently applied to the inner `input` regardless of the presence of a wrapper `div` maintains a predictable component API.
 **Action:** Always provide visual and semantic cues for mandatory fields and ensure consistent prop-spreading behavior in multi-layered components.
+
+## 2025-06-27 - [Session Summary Keyboard Shortcuts and Visual Hints]
+**Learning:** Adding keyboard shortcuts (Enter for primary action, mnemonic keys like 'i' and 'r' for secondary actions) to session summaries significantly speeds up the post-study workflow. Discoverability is key; bracketed hints (e.g., `[Enter]`) and detailed `aria-label` attributes ensure the feature is both intuitive and accessible. Comprehensive event listener guards (excluding inputs, textareas, and contentEditable) and `useCallback` for handlers are essential for a stable implementation.
+**Action:** Always implement keyboard shortcuts for summary/result screens and provide integrated visual and ARIA hints for discoverability, ensuring robust event targeting guards.
