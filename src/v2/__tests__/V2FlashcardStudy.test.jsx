@@ -256,4 +256,39 @@ describe('V2FlashcardStudy', () => {
     await screen.findByText(/Conocidas: 0/);
     await screen.findByText(/Otra vez: 0/);
   });
+
+  it('handles keyboard shortcuts for flipping and rating', async () => {
+    render(
+      <MemoryRouter>
+        <V2FlashcardStudy />
+      </MemoryRouter>
+    );
+
+    await screen.findByText(/tríada de Virchow/);
+
+    // Press Space to flip
+    fireEvent.keyDown(window, { key: ' ' });
+
+    // Check if flipped (rating buttons appear)
+    await screen.findByText('Otra vez');
+
+    // Press '4' to rate as Easy (Quality 5)
+    fireEvent.keyDown(window, { key: '4' });
+
+    // Should move to next card
+    await waitFor(() => {
+      expect(screen.getByText(/Agente causal de epiglotitis/)).toBeDefined();
+    });
+
+    // Press ' ' to rate as Good (Quality 4) - after flipping
+    fireEvent.keyDown(window, { key: ' ' }); // Flip second card
+    await screen.findByText(/Haemophilus influenzae/);
+
+    fireEvent.keyDown(window, { key: ' ' }); // Rate as Good
+
+    // Should show session complete (since there were only 2 cards in mockDueFlashcards)
+    await waitFor(() => {
+      expect(screen.getByText('¡Sesión Completada!')).toBeDefined();
+    });
+  });
 });
