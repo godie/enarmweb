@@ -30,13 +30,17 @@ const V2ForgotPassword = () => {
       <div className='v2-card v2-page-centered-content'>
         <div className='v2-mb-24'>
           <div className='v2-icon-box-xl v2-icon-box-primary v2-mx-auto v2-mb-16'>
-            <i className='material-icons' style={{ fontSize: '40px' }} aria-hidden='true'>lock_reset</i>
+            <i className='material-icons' style={{ fontSize: '40px' }} aria-hidden='true'>
+              {submitted ? 'mark_email_read' : 'lock_reset'}
+            </i>
           </div>
-          <h1 className='v2-headline-medium v2-text-primary'>Recuperar Acceso</h1>
+          <h1 className='v2-headline-medium v2-text-primary'>
+            {submitted ? '¡Correo Enviado!' : 'Recuperar Acceso'}
+          </h1>
           <p className='v2-body-large v2-opacity-70'>
             {submitted
-                ? 'Las instrucciones han sido enviadas a tu correo.'
-                : 'Ingresa tu correo para restablecer tu contraseña.'}
+              ? 'Las instrucciones han sido enviadas a tu correo. Revisa tu bandeja de entrada y carpeta de spam.'
+              : 'Ingresa tu correo para restablecer tu contraseña.'}
           </p>
         </div>
 
@@ -57,7 +61,11 @@ const V2ForgotPassword = () => {
               />
             </div>
 
-            <button type='submit' className='v2-btn-filled v2-btn-full v2-btn-h-56' disabled={loading}>
+            <button
+              type='submit'
+              className='v2-btn-filled v2-btn-full v2-btn-h-56'
+              disabled={loading}
+            >
               {loading ? (
                 <span className='v2-flex-align-center v2-gap-12'>
                   <CustomPreloader size='small' />
@@ -72,12 +80,20 @@ const V2ForgotPassword = () => {
             </button>
           </form>
         ) : (
+          <div className='v2-flex-col v2-gap-12'>
             <button
-                className='v2-btn-tonal v2-btn-full v2-btn-h-56'
-                onClick={() => history.push('/login')}
+              className='v2-btn-filled v2-btn-full v2-btn-h-56'
+              onClick={() => history.push('/login')}
             >
-                Volver al Inicio de Sesión
+              Volver al Inicio de Sesión
             </button>
+            <button
+              className='v2-btn-ghost v2-btn-full v2-btn-h-56'
+              onClick={() => setSubmitted(false)}
+            >
+              No recibí el correo, intentar de nuevo
+            </button>
+          </div>
         )}
 
         <div className='v2-mt-32 v2-border-top v2-pt-24'>
