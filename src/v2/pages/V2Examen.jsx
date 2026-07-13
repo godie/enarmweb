@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import ExamService from '../../services/ExamService';
 import Auth from '../../modules/Auth';
+import Util from '../../commons/Util';
 import '../styles/v2-theme.css';
 
 // Mock case for fallback
@@ -215,11 +216,16 @@ const V2Examen = () => {
           handleNext();
         }
       }
+
+      // Exit (Escape)
+      if (key === 'escape') {
+        handleExit();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown, { passive: true });
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [loading, caso, showFeedback, currentQuestionIndex, selectedAnswers, handleSelectAnswer, handleSubmitAnswer, handleNext]);
+  }, [loading, caso, showFeedback, currentQuestionIndex, selectedAnswers, handleSelectAnswer, handleSubmitAnswer, handleNext, handleExit]);
 
   if (loading) {
     return (
@@ -311,10 +317,11 @@ const V2Examen = () => {
             className='v2-btn-tonal' 
             style={{ padding: '8px 16px' }}
             onClick={handleExit}
-            aria-label='Salir de la sesión'
+            aria-label='Salir de la sesión (atajo: Esc)'
+            title='Atajo: Esc'
           >
             <i className='material-icons' aria-hidden='true'>close</i>
-            Salir
+            Salir <span className='v2-opacity-50' style={{ fontSize: '0.8em', marginLeft: '4px' }}>[Esc]</span>
           </button>
         </div>
         <p className='v2-body-large' style={{ lineHeight: '1.8' }}>
@@ -466,10 +473,24 @@ const V2Examen = () => {
               {/* Medical Pearl */}
               {caso.pearl && (
                 <div className='v2-card-outlined v2-bg-tertiary-container v2-mb-24' style={{ padding: '24px', border: 'none' }}>
-                  <h4 className='v2-title-large v2-flex-align-center v2-gap-8 v2-mb-12'>
-                    <i className='material-icons' aria-hidden='true'>lightbulb</i>
-                    Perla Médica
-                  </h4>
+                  <div className='v2-flex-justify-between v2-flex-align-center v2-mb-12'>
+                    <h4 className='v2-title-large v2-flex-align-center v2-gap-8 v2-m-0'>
+                      <i className='material-icons' aria-hidden='true'>lightbulb</i>
+                      <span>Perla Médica</span>
+                    </h4>
+                    <button
+                      className='v2-btn-icon'
+                      onClick={() => {
+                        navigator.clipboard.writeText(caso.pearl)
+                          .then(() => Util.showToast('Perla copiada al portapapeles'))
+                          .catch(() => Util.showToast('Error al copiar al portapapeles'));
+                      }}
+                      aria-label='Copiar perla médica'
+                      title='Copiar perla médica'
+                    >
+                      <i className='material-icons' style={{ fontSize: '20px' }}>content_copy</i>
+                    </button>
+                  </div>
                   <p className='v2-body-large v2-line-height-relaxed'>
                     {caso.pearl}
                   </p>

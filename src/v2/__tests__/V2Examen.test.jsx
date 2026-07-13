@@ -253,4 +253,29 @@ describe('V2Examen', () => {
       expect(screen.getByText('1/1')).toBeDefined();
     });
   });
+
+  it('allows copying medical pearl to clipboard', async () => {
+    // Mock clipboard
+    const mockClipboard = {
+      writeText: vi.fn().mockResolvedValue()
+    };
+    global.navigator.clipboard = mockClipboard;
+
+    render(
+      <MemoryRouter initialEntries={['/caso/1']}>
+        <V2Examen />
+      </MemoryRouter>
+    );
+
+    // Wait for case to load and answer it to show feedback (where pearl is)
+    await screen.findByText('ECG');
+    fireEvent.click(await screen.findByRole('button', { name: /Opción A/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /Confirmar respuesta/i }));
+
+    // Find and click copy pearl button
+    const copyBtn = await screen.findByRole('button', { name: /Copiar perla médica/i });
+    fireEvent.click(copyBtn);
+
+    expect(mockClipboard.writeText).toHaveBeenCalledWith(mockCaso.pearl);
+  });
 });
