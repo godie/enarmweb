@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { alertSuccess, alertError } from '../../services/AlertService';
+import CustomPreloader from '../../components/custom/CustomPreloader';
 import '../styles/v2-theme.css';
 
 const V2Contribuir = () => {
@@ -9,12 +11,38 @@ const V2Contribuir = () => {
         correcta: 0,
         perla: ''
     });
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
     const handleOptionChange = (idx, value) => {
         const newOps = [...form.opciones];
         newOps[idx] = value;
         setForm(prev => ({ ...prev, opciones: newOps }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!form.caso.trim() || !form.pregunta.trim() || !form.perla.trim() || form.opciones.some(op => !op.trim())) {
+            alertError('Campos vacíos', 'Por favor, completa todos los campos antes de enviar.');
+            return;
+        }
+        setLoading(true);
+        try {
+            // Simular envío a revisión
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            alertSuccess('¡Gracias por tu aporte!', 'Tu caso clínico ha sido enviado y será revisado por nuestro equipo médico.');
+            setForm({
+                caso: '',
+                pregunta: '',
+                opciones: ['', '', '', ''],
+                correcta: 0,
+                perla: ''
+            });
+        } catch {
+            alertError('Error', 'No se pudo enviar tu contribución. Intenta de nuevo.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -24,7 +52,7 @@ const V2Contribuir = () => {
                 <p className='v2-body-large v2-opacity-70'>Tu aporte mejora la preparación de miles de colegas aspirantes.</p>
             </header>
 
-            <div className='v2-grid v2-gap-24' style={{ gridTemplateColumns: '1.5fr 1fr' }}>
+            <form onSubmit={handleSubmit} className='v2-grid v2-gap-24' style={{ gridTemplateColumns: '1.5fr 1fr' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <section className="v2-card">
                         <h2 className='v2-title-large v2-mb-20'>
@@ -70,13 +98,19 @@ const V2Contribuir = () => {
                             {form.opciones.map((op, idx) => (
                                 <div key={idx} className='v2-flex-align-center v2-gap-12'>
                                     <input
+                                        id={`correcta-${idx}`}
                                         type="radio"
+                                        name="correcta"
                                         checked={form.correcta === idx}
                                         onChange={() => handleChange('correcta', idx)}
-                                        style={{ width: '20px', height: '20px', accentColor: 'var(--md-sys-color-primary)' }}
+                                        style={{ width: '20px', height: '20px', accentColor: 'var(--md-sys-color-primary)', cursor: 'pointer' }}
+                                        aria-label={`Marcar opción ${String.fromCharCode(65 + idx)} como correcta`}
+                                        title={`Marcar opción ${String.fromCharCode(65 + idx)} como correcta`}
                                     />
                                     <div className="v2-input-outlined" style={{ flex: 1, marginTop: '0' }}>
+                                        <label htmlFor={`opcion-${idx}`}>{`Opción ${String.fromCharCode(65 + idx)}`}</label>
                                         <input
+                                            id={`opcion-${idx}`}
                                             style={{ padding: '12px' }}
                                             placeholder={`Opción ${String.fromCharCode(65 + idx)}`}
                                             value={op}
@@ -105,12 +139,21 @@ const V2Contribuir = () => {
                         </div>
                     </section>
 
-                    <button className='v2-btn-filled v2-btn-h-56 v2-btn-full v2-btn-justify-center'>
-                        Enviar para Revisión
-                        <i className="material-icons">send</i>
+                    <button type="submit" className='v2-btn-filled v2-btn-h-56 v2-btn-full v2-btn-justify-center' disabled={loading}>
+                        {loading ? (
+                            <span className='v2-flex-align-center v2-gap-12'>
+                                <CustomPreloader size='small' />
+                                Enviando...
+                            </span>
+                        ) : (
+                            <>
+                                Enviar para Revisión
+                                <i className="material-icons" aria-hidden="true">send</i>
+                            </>
+                        )}
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };
