@@ -105,8 +105,10 @@ describe('V2Examen', () => {
     fireEvent.click(ecgButton);
     
     // Confirm button should be enabled after selection - aria-label is 'Confirmar respuesta'
-    const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
-    expect(confirmBtn).not.toBeDisabled();
+    await waitFor(async () => {
+      const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
+      expect(confirmBtn).not.toBeDisabled();
+    });
   });
 
   it('allows selecting an answer using keyboard shortcut', async () => {
@@ -122,8 +124,10 @@ describe('V2Examen', () => {
     fireEvent.keyDown(window, { key: '1' });
 
     // Confirm button should be enabled
-    const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
-    expect(confirmBtn).not.toBeDisabled();
+    await waitFor(async () => {
+      const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
+      expect(confirmBtn).not.toBeDisabled();
+    });
   });
 
   it('allows selecting an answer using alpha keyboard shortcut', async () => {
@@ -139,8 +143,10 @@ describe('V2Examen', () => {
     fireEvent.keyDown(window, { key: 'a' });
 
     // Confirm button should be enabled
-    const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
-    expect(confirmBtn).not.toBeDisabled();
+    await waitFor(async () => {
+      const confirmBtn = await screen.findByRole('button', { name: /Confirmar respuesta/i });
+      expect(confirmBtn).not.toBeDisabled();
+    });
   });
 
   it('allows submitting an answer using Enter key', async () => {
