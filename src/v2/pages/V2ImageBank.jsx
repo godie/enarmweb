@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/v2-theme.css';
 
 const V2ImageBank = () => {
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const [data] = useState({
         images: [
@@ -17,6 +18,16 @@ const V2ImageBank = () => {
     });
 
     const categories = ['All', 'Radiología', 'Cardiología', 'Neurología', 'Dermatología', 'Gastroenterología'];
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape' && selectedImage) {
+                setSelectedImage(null);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedImage]);
 
     const filteredImages = data.images.filter(img =>
         (category === 'All' || img.category === category) &&
@@ -70,7 +81,12 @@ const V2ImageBank = () => {
                                 {img.category}
                             </span>
                             <h3 className='v2-title-large v2-mb-12' style={{ fontSize: '18px', margin: 0 }}>{img.title}</h3>
-                            <button className='v2-btn-tonal v2-btn-full v2-btn-justify-center' style={{ fontSize: '14px' }}>
+                            <button
+                                className='v2-btn-tonal v2-btn-full v2-btn-justify-center'
+                                style={{ fontSize: '14px' }}
+                                onClick={() => setSelectedImage(img)}
+                                aria-label={`Ver detalle de ${img.title}`}
+                            >
                                 Ver Detalle
                                 <i className="material-icons" aria-hidden="true" style={{ fontSize: '18px' }}>open_in_new</i>
                             </button>
@@ -83,6 +99,65 @@ const V2ImageBank = () => {
                 <div className='v2-text-center v2-opacity-50' style={{ marginTop: '64px' }}>
                     <i className="material-icons" aria-hidden="true" style={{ fontSize: '64px' }}>search_off</i>
                     <p className="v2-body-large">No se encontraron imágenes que coincidan con tu búsqueda</p>
+                </div>
+            )}
+
+            {/* Detail Modal Overlay */}
+            {selectedImage && (
+                <div
+                    className="v2-nav-drawer-backdrop visible"
+                    onClick={() => setSelectedImage(null)}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '16px',
+                        zIndex: 1200
+                    }}
+                >
+                    <div
+                        className="v2-card v2-p-24"
+                        style={{
+                            maxWidth: '600px',
+                            width: '100%',
+                            maxHeight: '90vh',
+                            overflowY: 'auto',
+                            position: 'relative'
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="modal-image-title"
+                    >
+                        <div className="v2-flex-justify-between v2-flex-align-center v2-mb-16">
+                            <span className="v2-badge v2-badge-primary">{selectedImage.category}</span>
+                            <button
+                                className="v2-btn-icon"
+                                onClick={() => setSelectedImage(null)}
+                                aria-label="Cerrar detalle de imagen"
+                                title="Cerrar [Esc]"
+                            >
+                                <i className="material-icons" aria-hidden="true">close</i>
+                            </button>
+                        </div>
+                        <h2 id="modal-image-title" className="v2-headline-medium v2-mb-16">{selectedImage.title}</h2>
+                        <div className="v2-card v2-p-0 v2-overflow-hidden v2-mb-16" style={{ background: 'var(--md-sys-color-surface-variant)' }}>
+                            <img
+                                src={selectedImage.url}
+                                alt={selectedImage.title}
+                                style={{ width: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }}
+                            />
+                        </div>
+                        <div className="v2-flex-justify-between v2-flex-align-center">
+                            <span className="v2-body-medium v2-opacity-70">Categoría: {selectedImage.category}</span>
+                            <button
+                                className="v2-btn-filled"
+                                onClick={() => setSelectedImage(null)}
+                            >
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
