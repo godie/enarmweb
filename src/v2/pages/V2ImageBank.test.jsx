@@ -39,4 +39,32 @@ describe('V2ImageBank', () => {
 
     expect(screen.getByText('No se encontraron imágenes que coincidan con tu búsqueda')).toBeTruthy();
   });
+
+  it('opens and closes image detail modal', () => {
+    render(<V2ImageBank />);
+
+    const detailBtn = screen.getByRole('button', { name: 'Ver detalle de Radiografía Tórax - Neumonía' });
+    fireEvent.click(detailBtn);
+
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByLabelText('Cerrar detalle de imagen')).toBeTruthy();
+
+    const closeBtn = screen.getByLabelText('Cerrar detalle de imagen');
+    fireEvent.click(closeBtn);
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('closes detail modal with Escape key', () => {
+    render(<V2ImageBank />);
+
+    const detailBtn = screen.getByRole('button', { name: 'Ver detalle de Radiografía Tórax - Neumonía' });
+    fireEvent.click(detailBtn);
+
+    expect(screen.getByRole('dialog')).toBeTruthy();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
 });

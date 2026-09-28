@@ -131,3 +131,7 @@
 ## 2025-06-17 - [Accessible Checkboxes and Consistent Prop Spreading]
 **Learning:** Enhancing base form components like `CustomCheckbox` with standardized `required` indicators (visual asterisk and `aria-required`) and grid support (`s`, `m`, `l`, `xl`, `offset`) improves both accessibility and developer productivity. Ensuring that `...props` are consistently applied to the inner `input` regardless of the presence of a wrapper `div` maintains a predictable component API.
 **Action:** Always provide visual and semantic cues for mandatory fields and ensure consistent prop-spreading behavior in multi-layered components.
+
+## 2025-06-27 - [Modal Dialog Accessibility and Dismissability in Media Banks]
+**Learning:** In media and image bank interfaces, providing a full-resolution modal detail view allows users to thoroughly inspect clinical resources. For modal dialogs to be fully accessible, they must incorporate `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, explicit `aria-label`s on dismiss buttons (including visual keyboard shortcut hints like `[Esc]`), and a global `keydown` event listener for `Escape` key dismissal.
+**Action:** Always include full ARIA dialog attributes and global keyboard dismissal (`Escape`) when implementing modal overlays.
