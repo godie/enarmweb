@@ -74,14 +74,14 @@ const V2ForgotPassword = () => {
         ) : (
             <button
                 className='v2-btn-tonal v2-btn-full v2-btn-h-56'
-                onClick={() => history.push('/login')}
+                onClick={() => history.push('/v2/login')}
             >
                 Volver al Inicio de Sesión
             </button>
         )}
 
         <div className='v2-mt-32 v2-border-top v2-pt-24'>
-          <Link to='/login' className='v2-text-primary v2-text-decoration-none v2-text-bold'>
+          <Link to='/v2/login' className='v2-text-primary v2-text-decoration-none v2-text-bold'>
             Regresar al Login
           </Link>
         </div>
