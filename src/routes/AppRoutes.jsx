@@ -46,7 +46,6 @@ import V2AdminDashboard from "../v2/pages/V2AdminDashboard";
 import V2AdminUsers from "../v2/pages/V2AdminUsers";
 
 // V1 Admin (temporary — will be migrated to V2 in Phase 5)
-import App from "../App";
 import Dashboard from "../components/admin/Dashboard";
 import Summary from "../components/admin/Summary";
 import CasoTable from "../components/admin/CasoTable";

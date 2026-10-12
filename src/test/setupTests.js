@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest';
-import { beforeEach, vi } from 'vitest';
+import { beforeEach, afterEach, vi } from 'vitest';
 
 vi.mock('@materializecss/materialize', async () => {
   const actual = await vi.importActual('@materializecss/materialize');
