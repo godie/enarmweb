@@ -67,10 +67,10 @@ const V2Login = () => {
   }, []);
 
   // Google Response Handler
-  const handleGoogleResponse = useCallback(async (response) => {
+  const handleGoogleResponse = useCallback(async (gResponse) => {
     setLoading(true);
     try {
-      const idToken = response.credential;
+      const idToken = gResponse.credential;
       // Decode and process Google token
       const base64Url = idToken.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -117,7 +117,7 @@ const V2Login = () => {
     }, { scope: 'public_profile,email' });
   };
 
-  const handleFacebookResponse = useCallback(async (response) => {
+  const handleFacebookResponse = useCallback(async () => {
     setLoading(true);
     try {
       const fbResponse = await new Promise((resolve, reject) => {

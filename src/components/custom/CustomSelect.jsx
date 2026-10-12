@@ -24,6 +24,7 @@ const CustomSelect = ({
   placeholder, // Placeholder text for the first disabled option
   offset,
   helperText,
+  // eslint-disable-next-line no-unused-vars
   noMargin,
   ...props
 }) => {
