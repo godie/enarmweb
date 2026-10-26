@@ -98,7 +98,7 @@ const CustomButton = ({
 
   // Renderizar icono si existe
   const iconElement = icon ? (
-    <i className="material-icons" aria-hidden="true">{icon}</i>
+    <i className={`material-icons ${iconPosition}`} aria-hidden="true">{icon}</i>
   ) : null;
 
   // Render FAB if enabled
