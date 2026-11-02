@@ -131,3 +131,7 @@
 ## 2025-06-17 - [Accessible Checkboxes and Consistent Prop Spreading]
 **Learning:** Enhancing base form components like `CustomCheckbox` with standardized `required` indicators (visual asterisk and `aria-required`) and grid support (`s`, `m`, `l`, `xl`, `offset`) improves both accessibility and developer productivity. Ensuring that `...props` are consistently applied to the inner `input` regardless of the presence of a wrapper `div` maintains a predictable component API.
 **Action:** Always provide visual and semantic cues for mandatory fields and ensure consistent prop-spreading behavior in multi-layered components.
+
+## 2025-06-30 - [Accessible Selectable Buttons and Range Inputs in V2 Setup]
+**Learning:** Toggle/selectable buttons in V2 forms must specify `type="button"` to avoid accidental form submissions and provide `aria-pressed` states so assistive technologies can convey toggle status. For sliders (`<input type="range">`), pairing them with an explicit `<label htmlFor="...">` and ARIA attributes (`aria-valuenow`, `aria-valuemin`, `aria-valuemax`, and `aria-valuetext`) ensures screen reader users receive immediate, contextual auditory feedback during range adjustments.
+**Action:** Always apply `type="button"` and `aria-pressed` to selectable button grids, and equip range inputs with explicit label associations and full range ARIA attributes.
